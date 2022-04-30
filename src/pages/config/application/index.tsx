@@ -1,9 +1,15 @@
 import { Button, Col, PaginationProps, Row, Table } from "antd";
 import { initPaginationConfig, tacitPagingProps } from "../../../shared/ajax/request"
+import { useEffect, useState } from "react";
 
-import { useState } from "react";
+import { IApplicationService } from "@/domain/applications/iapplication-service";
+import { IocTypes } from "@/shared/config/ioc-types";
+import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
 const UserPage = () => {
+
+    const _applicationService: IApplicationService = useHookProvider(IocTypes.ApplicationService);
+    
     const [tableData, setTableData] = useState<Array<any>>([]);
     const [loading, setloading] = useState<boolean>(false);
     const [paginationConfig, setPaginationConfig] = useState<initPaginationConfig>(new initPaginationConfig());
@@ -67,6 +73,34 @@ const UserPage = () => {
             // }
         }
     ];
+
+    /**
+     * 页面初始化事件
+     */
+     useEffect(() => {
+        getTable();
+    }, [paginationConfig]);
+    /**
+     * 页面初始化获取数据
+     */
+     const getTable = () => {
+        _applicationService.gettable().then((x) => {
+            if (x.success) {
+                setPaginationConfig((Pagination) => {
+                    Pagination.total = x.data.total;
+                    return Pagination;
+                });
+                x.data.data.map((item: any, index: number) => {
+                    item.key = item.id;
+                    return item;
+                });
+                setTableData(x.data.data);
+                setloading(false);
+            }
+        });
+
+    };
+
     
     return (<div>
         <Row>

@@ -37,7 +37,7 @@ export const menuList: IMenuOutput[] = [
     type: 0,
     children: [
     {
-      id: "12122212",
+      id: "asda",
       name: "测试页面",
       path: "/test",
       component: "pages/test-page/test-page",
@@ -58,7 +58,7 @@ export const menuList: IMenuOutput[] = [
       id: "12122212",
       name: "应用信息",
       path: "/application",
-      component: "pages/config/application-page/application-page",
+      component: "pages/config/application/index",
       tabs: [],
       buttonClick: "",
       buttons: [],
