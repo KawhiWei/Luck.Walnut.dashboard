@@ -1,3 +1,3 @@
 export const ApplicationApi = {
-  application: "/applications",
+  application: "/walnut/api/applications",
 }

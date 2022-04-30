@@ -3,7 +3,7 @@ export interface IEntity<T> {
 }
 
 export interface IServerReturn<T> {
-  data: T;
+  result: T;
   success: boolean;
   message: string;
   type: number;
