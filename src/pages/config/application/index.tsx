@@ -72,7 +72,7 @@ const ApplicationPage = () => {
             render: (text: any, record: any) => {
                 return <div>
                     <Form.Item {...tailLayout}>
-                        <Button type="primary" >编辑</Button>
+                        <Button type="primary" onClick={() => editRow(record.id)}>编辑</Button>
                         <Button type="primary" style={{ margin: '0 8px' }}>分配角色</Button>
                         <Button type="primary" danger onClick={() => deleteRow(record.id)}>删除</Button>
                     </Form.Item>
@@ -93,6 +93,14 @@ const ApplicationPage = () => {
     const onSearch = () => {
 
     }
+    /**
+     * 修改任务
+     * @param _id 
+     */
+     const editRow = (_id: any) => {
+        setOperationElement(<Operation onCallbackEvent={getTable} operationType={OperationTypeEnum.edit} id={_id} />)
+    }
+
     /**
      * 页面初始化获取数据
      */

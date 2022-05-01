@@ -38,7 +38,7 @@ const validateMessages = {
 };
 
 const Operation = (props: IProp) => {
-    
+
     const _applicationService: IApplicationService = useHookProvider(IocTypes.ApplicationService);
 
     const [operationState, setOperationState] = useState<IOperationConfig>({ visible: false })
@@ -50,6 +50,8 @@ const Operation = (props: IProp) => {
     useEffect(() => {
         onGetLoad()
     }, [formData]);
+
+
 
     /**
      * 修改弹框属性
@@ -73,50 +75,65 @@ const Operation = (props: IProp) => {
             case OperationTypeEnum.view:
                 editOperationState(true, "查看")
                 break;
+            case OperationTypeEnum.edit:
+                props.id && _applicationService.getDetail(props.id).then(rep => {
+                    console.log(rep)
+                    if (rep.success) {
+                        formData.setFieldsValue(rep.result);
+                        editOperationState(true, "修改")
+                    }
+                })
+                break;
         }
-        // props.id && _menuservice.getloadRow(props.id).then(res => {
-        //     if (res.success) {
-        //         console.log(res);
-        //         formData.setFieldsValue(res.data);
-        //         editOperationState(true, "查看")
-        //     }
-        // })
     }
 
     /**
      * 弹框取消事件
      */
-     const onCancel = () => {
+    const onCancel = () => {
         editOperationState(false)
         props.onCallbackEvent && props.onCallbackEvent()
     };
-    
+
     /**
          * 底部栏OK事件
          */
     const onFinish = () => {
         let param = formData.getFieldsValue();
-        _applicationService.addApplication(param).then(rep=>{
+        switch (props.operationType) {
+            case OperationTypeEnum.add:
+                onAdd(param);
+                break;
+            case OperationTypeEnum.edit:
+                onUpdate(param);
+                break;
+        }
+        editOperationState(false, "修改")
+
+    }
+    const onAdd = (_param: any) => {
+        _applicationService.addApplication(_param).then(rep => {
             if (!rep.success) {
                 message.error(rep.errorMessage, 3)
             }
-            else
-            {
+            else {
                 props.onCallbackEvent && props.onCallbackEvent();
             }
         })
-        // // console.log(param)
-        // let inputDto=new MenuInputDto(param.name,param.path,param.component,param.componentName,"","","","",);
-        // switch (props.operationType) {
-        //     case OperationTypeEnum.add:
-        //         onCreate(inputDto);
-        //         break;
-        //     case OperationTypeEnum.edit:
-        //         onEdit(inputDto);
-        //         break;
-        //     case OperationTypeEnum.view:
-        //         break;
-        // }
+
+    }
+    const onUpdate = (_param: any) => {
+        props.id && _applicationService.update(props.id, _param).then(rep => {
+            if (!rep.success) {
+                message.error(rep.errorMessage, 3)
+            }
+            else {
+                debugger
+                props.onCallbackEvent && props.onCallbackEvent();
+            }
+        })
+
+
     }
 
     return (
@@ -168,7 +185,7 @@ const Operation = (props: IProp) => {
                         </Col>
                     </Row>
                     <Row>
-                    <Col span="12">
+                        <Col span="12">
                             <Form.Item
                                 name="departmentName"
                                 label="所属部门"
@@ -177,7 +194,7 @@ const Operation = (props: IProp) => {
                                 <Input />
                             </Form.Item>
                         </Col>
-                    
+
                         <Col span="12">
                             <Form.Item
                                 name="linkMan"
@@ -192,7 +209,7 @@ const Operation = (props: IProp) => {
                         <Col span="24" style={{ textAlign: 'right' }}>
                             <Form.Item {...tailLayout}>
                                 <Button onClick={() => onCancel()}>取消</Button>
-                                <Button style={{ margin: '0 8px' }}  type="primary" htmlType="submit">保存</Button>
+                                <Button style={{ margin: '0 8px' }} type="primary" htmlType="submit">保存</Button>
                             </Form.Item>
                         </Col>
                     </Row>
