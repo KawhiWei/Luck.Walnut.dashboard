@@ -5,7 +5,7 @@ export interface IEntity<T> {
 export interface IServerReturn<T> {
   result: T;
   success: boolean;
-  message: string;
+  errorMessage: string;
   type: number;
 }
 

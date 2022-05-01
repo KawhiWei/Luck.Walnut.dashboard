@@ -1,4 +1,5 @@
-import { Button, Col, PaginationProps, Row, Table, message } from "antd";
+import { Button, Col, Form, Input, PaginationProps, Row, Table, message } from "antd";
+import { formItemLayout, tailLayout } from "@/constans/layout/optionlayout";
 import { initPaginationConfig, tacitPagingProps } from "../../../shared/ajax/request"
 import { useEffect, useState } from "react";
 
@@ -8,15 +9,13 @@ import Operation from "./operation";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
-const UserPage = () => {
-
+const ApplicationPage = () => {
     const _applicationService: IApplicationService = useHookProvider(IocTypes.ApplicationService);
-
     const [tableData, setTableData] = useState<Array<any>>([]);
     const [loading, setloading] = useState<boolean>(false);
     const [paginationConfig, setPaginationConfig] = useState<initPaginationConfig>(new initPaginationConfig());
     const [subOperationElement, setOperationElement] = useState<any>(null);
-
+    const [formData] = Form.useForm();
     const pagination: PaginationProps = {
         ...tacitPagingProps,
         total: paginationConfig.total,
@@ -72,9 +71,12 @@ const UserPage = () => {
             key: "id",
             render: (text: any, record: any) => {
                 return <div>
-                    <Button type="primary">编辑</Button>
-                    <Button type="primary">分配角色</Button>
-                    <Button type="primary" danger onClick={() => deleteRow(record.id)}>删除</Button>
+                    <Form.Item {...tailLayout}>
+                        <Button type="primary" >编辑</Button>
+                        <Button type="primary" style={{ margin: '0 8px' }}>分配角色</Button>
+                        <Button type="primary" danger onClick={() => deleteRow(record.id)}>删除</Button>
+                    </Form.Item>
+
                 </div>
             }
         }
@@ -86,6 +88,11 @@ const UserPage = () => {
     useEffect(() => {
         getTable();
     }, [paginationConfig]);
+
+
+    const onSearch = () => {
+
+    }
     /**
      * 页面初始化获取数据
      */
@@ -109,12 +116,15 @@ const UserPage = () => {
 
     const clearsubAllocationRoleElement = () => {
         setOperationElement(null);
+        getTable();
     }
-    
+
     const deleteRow = (_id: string) => {
         _applicationService.delete(_id).then(res => {
-            if (res.success) {
-                message.success(res.message, 3)
+            if (!res.success) {
+                message.error(res.errorMessage, 3)
+            }
+            else {
                 getTable();
             }
         });
@@ -124,11 +134,23 @@ const UserPage = () => {
         setOperationElement(<Operation onCallbackEvent={clearsubAllocationRoleElement} operationType={OperationTypeEnum.add} />)
     }
 
-    
     return (<div>
+        <Row >
+            <Form form={formData}
+                name="horizontal_login" layout="inline"
+                onFinish={onSearch}>
+            <Form.Item
+                    name="appId"
+                    label="应用标识">
+                <Input />
+            </Form.Item>
+            <Button type="primary" htmlType="submit" >查询</Button>
+            </Form>
+        </Row>
         <Row>
-            <Button type="primary" onClick={() => { addChange() }}>添加</Button>
-            <Button type="primary" onClick={() => { }}>查询</Button>
+            <Col span="24" style={{ textAlign: 'right' }}>
+                <Button type="primary" style={{ margin: '8px 8px' }} onClick={() => { addChange() }}>添加</Button>
+            </Col>
         </Row>
         <Row>
             <Col span={24}><Table bordered columns={columns} dataSource={tableData} loading={loading} pagination={pagination} /></Col>
@@ -138,4 +160,4 @@ const UserPage = () => {
 
 }
 
-export default UserPage;
+export default ApplicationPage;

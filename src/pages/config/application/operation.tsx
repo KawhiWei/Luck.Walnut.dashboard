@@ -1,4 +1,5 @@
-import { Button, Col, Form, Input, InputNumber, Modal, Row } from "antd";
+import { Button, Col, Form, Input, InputNumber, Modal, Row, message } from "antd";
+import { formItemLayout, tailLayout } from "@/constans/layout/optionlayout";
 import { useEffect, useState } from "react";
 
 import { IApplicationService } from "@/domain/applications/iapplication-service";
@@ -21,13 +22,9 @@ interface IProp {
      */
     operationType: OperationTypeEnum
 }
-/**
- * form表单布局设置
- */
-const formItemLayout = {
-    labelCol: { span: 7 },
-    wrapperCol: { span: 17 },
-};
+
+
+
 
 const validateMessages = {
     required: "${label} 不可为空",
@@ -100,7 +97,13 @@ const Operation = (props: IProp) => {
     const onFinish = () => {
         let param = formData.getFieldsValue();
         _applicationService.addApplication(param).then(rep=>{
-            console.log(rep)
+            if (!rep.success) {
+                message.error(rep.errorMessage, 3)
+            }
+            else
+            {
+                props.onCallbackEvent && props.onCallbackEvent();
+            }
         })
         // // console.log(param)
         // let inputDto=new MenuInputDto(param.name,param.path,param.component,param.componentName,"","","","",);
@@ -187,9 +190,9 @@ const Operation = (props: IProp) => {
                     </Row>
                     <Row>
                         <Col span="24" style={{ textAlign: 'right' }}>
-                            <Form.Item>
-                                <Button style={{ margin: '0 8px' }} onClick={() => onCancel()}>取消</Button>
-                                <Button style={{ margin: '0 8px' }} type="primary" htmlType="submit">保存</Button>
+                            <Form.Item {...tailLayout}>
+                                <Button onClick={() => onCancel()}>取消</Button>
+                                <Button style={{ margin: '0 8px' }}  type="primary" htmlType="submit">保存</Button>
                             </Form.Item>
                         </Col>
                     </Row>
