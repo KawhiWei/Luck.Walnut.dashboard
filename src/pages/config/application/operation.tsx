@@ -179,7 +179,9 @@ const Operation = (props: IProp) => {
                         <Col span="12">
                             <Form.Item
                                 name="status"
-                                label="状态">
+                                label="状态"
+                                rules={[{ required: true }]}
+                            >
                                 <Input />
                             </Form.Item>
                         </Col>
