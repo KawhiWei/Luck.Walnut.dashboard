@@ -1,3 +1,5 @@
+import "../table.less"
+
 import { Button, Col, Form, Input, PaginationProps, Row, Table, message } from "antd";
 import { formItemLayout, tailLayout } from "@/constans/layout/optionlayout";
 import { initPaginationConfig, tacitPagingProps } from "../../../shared/ajax/request"
@@ -71,9 +73,9 @@ const ApplicationPage = () => {
             key: "id",
             render: (text: any, record: any) => {
                 return <div>
-                    <Form.Item {...tailLayout}>
+                    <Form.Item {...tailLayout} >
                         <Button type="primary" onClick={() => editRow(record.id)}>编辑</Button>
-                        <Button type="primary" style={{ margin: '0 8px' }}>分配角色</Button>
+                        <Button type="primary" >分配角色</Button>
                         <Button type="primary" danger onClick={() => deleteRow(record.id)}>删除</Button>
                     </Form.Item>
 

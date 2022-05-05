@@ -1,5 +1,5 @@
 export const tailLayout = {
-    wrapperCol: { offset: 8, span: 16 },
+    wrapperCol: { offset: 0, span: 24 },
   };
 
   /**

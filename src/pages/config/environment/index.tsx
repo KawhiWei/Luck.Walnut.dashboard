@@ -1,11 +1,11 @@
-import { Form, Input, Row, Button, Col, Table, PaginationProps } from "antd";
-import { useEffect, useState } from "react";
+import { Button, Col, Form, Input, PaginationProps, Row, Table } from "antd";
 import { formItemLayout, tailLayout } from "@/constans/layout/optionlayout";
 import { initPaginationConfig, tacitPagingProps } from "../../../shared/ajax/request"
+import { useEffect, useState } from "react";
 
-import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
-import { IEnvironmentService } from "@/domain/environment/Ienvironment-service";
+import { IEnvironmentService } from "@/domain/environment/ienvironment-service";
 import { IocTypes } from "@/shared/config/ioc-types";
+import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
 const EnvironmentPage  = () => {
     const _environmentService: IEnvironmentService = useHookProvider(IocTypes.EnvironmentService);
