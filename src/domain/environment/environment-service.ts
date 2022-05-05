@@ -7,4 +7,13 @@ export class EnvironmentService extends BaseService implements IEnvironmentServi
     getTable(): Promise<IServerPageReturn<any>> {
         return this.dataRequest.getRequest(`${EnvironmentApi.application}/getenvironmentlist`)
     }
+    delete(_id:string): Promise<IServerPageReturn<any>> {
+        return this.dataRequest.deleteRequest(`${EnvironmentApi.application}/${_id}`)
+    }
+    // getDetail(_id: string): Promise<IServerPageReturn<any>>{
+    //     return this.dataRequest.deleteRequest(`${EnvironmentApi.application}/${_id}`)
+    // }
+    add(_param: any): Promise<IServerPageReturn<any>>{
+        return this.dataRequest.postRequest(`${EnvironmentApi.application}`,_param);
+    }
 }
