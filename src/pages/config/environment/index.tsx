@@ -8,6 +8,7 @@ import { IEnvironmentService } from "@/domain/environment/ienvironment-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 import Operation from "./operation";
+import ConfigOperation from "./configOperation";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
 
 const EnvironmentPage  = () => {
@@ -19,8 +20,16 @@ const EnvironmentPage  = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [rowId, setRowId] = useState(null);
     const [subOperationElement, setOperationElement] = useState<any>(null);
+    const [configOperationElement, setconfigOperationElement] = useState<any>(null);
+
+    const [currentenv,setCurrentenv] = useState<any>(null);
 
     const { Header, Footer, Sider, Content } = Layout;
+    /**
+     * 配置项ID
+     */
+    const [configid, setconfigid] = useState<any>(null);
+    const [deltype, setDelType] = useState<any>(null);
 
     const pagination: PaginationProps = {
         ...tacitPagingProps,
@@ -72,9 +81,9 @@ const EnvironmentPage  = () => {
             render: (text:any, record: any) => {
                 return <div>
                     <Form.Item {...tailLayout}>
-                    {/* onClick={() => editRow(record.id)} */}
-                        <Button type="primary" >编辑</Button>
-                        <Button type="primary" danger >删除</Button>
+                    {/*  */}
+                        <Button type="primary" onClick={() => editRow(record.id)}>编辑</Button>
+                        <Button type="primary" danger  onClick={() => deleteClick(record.id, "config")}>删除</Button>
                         {/* onClick={() => deleteClick(record.id)} */}
                         {/*  */}
                     </Form.Item>
@@ -114,15 +123,31 @@ const EnvironmentPage  = () => {
         })
     }
 
-    const deleteClick=(id:any)=>{
-        setRowId(id);
+    const deleteClick=(id:any,type:any)=>{
+        switch (deltype){
+            case "env" :
+                setRowId(id);
+                break;
+            case "config":
+                setconfigid(id);
+                break;
+        }
+        setDelType(type)
         setIsModalVisible(true);
 
     }
 
     const handleOk = () => {
         setIsModalVisible(false);
-        deleteRow(rowId);
+        switch (deltype){
+            case "env" :
+                deleteRow(rowId);
+                break;
+            case "config":
+                delConfigClick();
+                break;
+        }
+        
     }
 
     const handleCancel = () =>{
@@ -138,12 +163,42 @@ const EnvironmentPage  = () => {
         getList();
     }
 
+    const addChangeConfig=()=>{
+        setconfigOperationElement(<ConfigOperation onCallbackEvent={claerConfigOperation} operationType={OperationTypeEnum.add} envId={currentenv}></ConfigOperation>)
+    }
+    const claerConfigOperation = () => {
+        setconfigOperationElement(null);
+        getTable(currentenv);
+    }
+
+    /**
+     * 删除
+     * @param id 
+     */
+    const delConfigClick = () => {
+        _environmentService.delConfig(currentenv,configid).then(p => {
+            if(p.success){
+                message.success('删除成功');
+                getTable(currentenv);
+            }else{
+                message.error(p.errorMessage, 3);
+            }
+        })
+    }
+
+    const editRow = (_id:any) => {
+        setOperationElement(<Operation onCallbackEvent={() => getTable(currentenv)} operationType={OperationTypeEnum.edit} id={_id} />)
+    }
+
+
+
     /**
      * 根据环境获取配置
      * @param _id 
      */
     const getTable=(_id:any)=>{
         setloading(true);
+        setCurrentenv(_id);
         _environmentService.getTable(_id).then(x => {
             if(x.success){
                 setTableData(x.result);
@@ -169,7 +224,7 @@ const EnvironmentPage  = () => {
                     split
                     renderItem={item => (
                         <List.Item key={item.id} onClick={p => getTable(item.id)}
-                            actions={[<DeleteTwoTone onClick={p => deleteClick(item.id)}/>]}
+                            actions={[<DeleteTwoTone onClick={p => deleteClick(item.id,"env")}/>]}
                         >
                             <List.Item.Meta title={
                                     <a>{item.environmentName}</a>
@@ -193,7 +248,7 @@ const EnvironmentPage  = () => {
                     </Row>
                     <Row>
                         <Col span="24" style={{ textAlign: 'right' }}>
-                            <Button type="primary" style={{ margin: '8px 8px' }} onClick={() => { addChange() }}>添加</Button>
+                            <Button type="primary" style={{ margin: '8px 8px' }} onClick={() => { addChangeConfig() }}>添加</Button>
                         </Col>
                     </Row>
                     <Row>
@@ -211,6 +266,7 @@ const EnvironmentPage  = () => {
             <p>是否确认删除?</p>
         </Modal>
         {subOperationElement}
+        {configOperationElement}
     </div>)
 }
 

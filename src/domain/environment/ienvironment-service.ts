@@ -31,4 +31,17 @@ export interface IEnvironmentService{
      * @param _id 
      */
     getTable(_id: string):Promise<IServerPageReturn<any>>;
+
+    /**
+     * 环境添加配置
+     * @param _id 
+     * @param _param 
+     */
+    addConfig(_id: string, _param: any):Promise<IServerPageReturn<any>>;
+
+    /**
+     * 删除配置项
+     * @param _id 
+     */
+    delConfig(_id:string,_config:any):Promise<IServerPageReturn<any>>;
 }
