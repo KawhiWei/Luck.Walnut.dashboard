@@ -4,8 +4,8 @@ import { IEnvironmentService } from "./ienvironment-service";
 import { IServerPageReturn } from "@/shared/entity";
 
 export class EnvironmentService extends BaseService implements IEnvironmentService{
-    getTable(): Promise<IServerPageReturn<any>> {
-        return this.dataRequest.getRequest(`${EnvironmentApi.application}/getenvironmentlist`)
+    getList(): Promise<IServerPageReturn<any>> {
+        return this.dataRequest.getRequest(`${EnvironmentApi.application}`)
     }
     delete(_id:string): Promise<IServerPageReturn<any>> {
         return this.dataRequest.deleteRequest(`${EnvironmentApi.application}/${_id}`)
@@ -16,4 +16,9 @@ export class EnvironmentService extends BaseService implements IEnvironmentServi
     add(_param: any): Promise<IServerPageReturn<any>>{
         return this.dataRequest.postRequest(`${EnvironmentApi.application}`,_param);
     }
+    getTable(_id: string):Promise<IServerPageReturn<any>>{
+        return this.dataRequest.getRequest(`${EnvironmentApi.application}/${_id}`);
+    }
+
+
 }
