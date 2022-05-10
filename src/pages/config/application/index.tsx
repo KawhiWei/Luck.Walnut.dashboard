@@ -75,7 +75,7 @@ const ApplicationPage = () => {
                 return <div>
                     <Form.Item {...tailLayout} >
                         <Button type="primary" onClick={() => editRow(record.id)}>编辑</Button>
-                        <Button type="primary" >分配角色</Button>
+                        <Button type="primary" onClick={() => goToConfig(record.id)}>配置管理</Button>
                         <Button type="primary" danger onClick={() => deleteRow(record.id)}>删除</Button>
                     </Form.Item>
 
@@ -129,6 +129,11 @@ const ApplicationPage = () => {
         getTable();
     }
 
+    const goToConfig=(_id:string)=>{
+        
+        console.log(_id);
+
+    }    
     const deleteRow = (_id: string) => {
         _applicationService.delete(_id).then(res => {
             if (!res.success) {
