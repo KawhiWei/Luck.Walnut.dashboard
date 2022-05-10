@@ -20,7 +20,11 @@ interface IProp {
     /**
      * 操作类型
      */
-    operationType: OperationTypeEnum
+    operationType: OperationTypeEnum;
+    /**
+     * 环境id
+     */
+    envId:string;
 }
 const validateMessages = {
     required: "${label} 不可为空",
@@ -36,6 +40,65 @@ const validateMessages = {
 const ConfigOperation = (props:IProp) => {
     const [formData] = Form.useForm();
     const [operationState, setOperationState] = useState<IOperationConfig>({ visible: false })
+    const _environmentService: IEnvironmentService = useHookProvider(IocTypes.EnvironmentService);
+
+    /**
+    * 页面初始化事件
+    */
+    useEffect(() => {
+        onGetLoad()
+    }, [formData]);
+
+    const onFinish = () => {
+        let param = formData.getFieldsValue();
+        switch (props.operationType){
+            case OperationTypeEnum.add:
+                onAdd(param);
+                break;
+        }
+    }
+
+    const onAdd = (_param: any) => {
+        _environmentService.addConfig(props.envId,_param).then(rep => {
+            if(!rep.success){
+                message.error(rep.errorMessage, 3)
+            }else{
+                props.onCallbackEvent && props.onCallbackEvent();
+            }
+        })
+    }
+
+    const editOperationState = (_visible: boolean, _title?: string) => {
+        setOperationState({ visible: _visible, title: _title });
+    }
+    /**
+     * 编辑
+     */
+    const onGetLoad = () => {
+        switch (props.operationType){
+            case OperationTypeEnum.add:
+                editOperationState(true, "添加")
+                break;
+            case OperationTypeEnum.edit:
+                // props.id && _environmentService.getDetail(props.id).then(rep => {
+                //     console.log(rep)
+                //     if (rep.success) {
+                //         formData.setFieldsValue(rep.result);
+                //         editOperationState(true, "修改")
+                //     }
+                // })
+                break;
+        }
+    }
+
+    /**
+     * 弹框取消
+     */
+    const onCancel = () => {
+        editOperationState(false)
+        props.onCallbackEvent && props.onCallbackEvent()
+    }
+    
     return (<div>
         <Modal width={500} getContainer={false} 
             maskClosable={false} 
@@ -43,7 +106,74 @@ const ConfigOperation = (props:IProp) => {
             closable={false} 
             visible={operationState.visible}
             footer={null}
-        ></Modal>
+        >
+            <Form form={formData}
+                {...formItemLayout}
+                name="nest-messages"
+                onFinish={onFinish}
+                validateMessages={validateMessages}
+            >
+                <Row>
+                    <Col span={12}>
+                        <Form.Item
+                            name="key"
+                            label="配置项Key"
+                            rules={[{ required: true }]}
+                        >
+                            <Input />
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item
+                            name="value"
+                            label="配置项Value"
+                            rules={[{ required: true }]}
+                        >
+                            <Input />
+                        </Form.Item>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={12}>
+                        <Form.Item
+                            name="type"
+                            label="配置项类型"
+                            // rules={[{ required: true }]}
+                        >
+                            <Input />
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item
+                            name="isOpen"
+                            label="是否公开"
+                            // rules={[{ required: true }]}
+                        >
+                            <Input />
+                        </Form.Item>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={12}>
+                        <Form.Item
+                            name="isPublish"
+                            label="是否发布"
+                            // rules={[{ required: true }]}
+                        >
+                            <Input />
+                        </Form.Item>
+                    </Col>
+                </Row>
+                <Row>
+                        <Col span="24" style={{ textAlign: 'right' }}>
+                            <Form.Item {...tailLayout}>
+                                <Button onClick={() => onCancel()}>取消</Button>
+                                <Button style={{ margin: '0 8px' }} type="primary" htmlType="submit">保存</Button>
+                            </Form.Item>
+                        </Col>
+                    </Row>
+            </Form>
+        </Modal>
     </div>)
 
 }
