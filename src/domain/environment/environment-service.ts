@@ -27,4 +27,8 @@ export class EnvironmentService extends BaseService implements IEnvironmentServi
     delConfig(_id:string, _config:any):Promise<IServerPageReturn<any>>{
         return this.dataRequest.deleteRequest(`${EnvironmentApi.application}/${_id}/${_config}`)
     }
+
+    getConfigDetail(_id:string):Promise<IServerPageReturn<any>>{
+        return this.dataRequest.getRequest(`${EnvironmentApi.application}/ConfigurationDetail/${_id}`)
+    }
 }

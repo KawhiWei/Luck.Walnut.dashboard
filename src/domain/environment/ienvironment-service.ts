@@ -44,4 +44,10 @@ export interface IEnvironmentService{
      * @param _id 
      */
     delConfig(_id:string,_config:any):Promise<IServerPageReturn<any>>;
+
+    /**
+     * 获取配置项明细
+     * @param _id 
+     */
+    getConfigDetail(_id:string):Promise<IServerPageReturn<any>>;
 }

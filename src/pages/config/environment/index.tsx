@@ -187,7 +187,7 @@ const EnvironmentPage  = () => {
     }
 
     const editRow = (_id:any) => {
-        setOperationElement(<Operation onCallbackEvent={() => getTable(currentenv)} operationType={OperationTypeEnum.edit} id={_id} />)
+        setOperationElement(<ConfigOperation onCallbackEvent={() => getTable(currentenv)} operationType={OperationTypeEnum.edit} id={_id} envId={currentenv}/>)
     }
 
 
