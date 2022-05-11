@@ -77,7 +77,7 @@ const ApplicationPage = () => {
                 return <div>
                     <Form.Item {...tailLayout} >
                         <Button type="primary" onClick={() => editRow(record.id)}>编辑</Button>
-                        <Button type="primary" >分配角色</Button>
+                        <Button type="primary" onClick={()=>goToConfig(record.id)}>应用配置</Button>
                         <Button type="primary" danger onClick={() => deleteRow(record.id)}>删除</Button>
                     </Form.Item>
 
