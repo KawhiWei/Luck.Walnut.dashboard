@@ -9,9 +9,11 @@ import { IApplicationService } from "@/domain/applications/iapplication-service"
 import { IocTypes } from "@/shared/config/ioc-types";
 import Operation from "./operation";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
+import { useHistory } from "react-router-dom"
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
 const ApplicationPage = () => {
+    const history = useHistory();
     const _applicationService: IApplicationService = useHookProvider(IocTypes.ApplicationService);
     const [tableData, setTableData] = useState<Array<any>>([]);
     const [loading, setloading] = useState<boolean>(false);
@@ -83,7 +85,14 @@ const ApplicationPage = () => {
             }
         }
     ];
-
+    const goToConfig = (_id: string) => {
+        history.push({
+            pathname: "environment",
+            state:{
+                id:_id
+            }
+        });
+    }
     /**
      * 页面初始化事件
      */
@@ -99,7 +108,7 @@ const ApplicationPage = () => {
      * 修改任务
      * @param _id 
      */
-     const editRow = (_id: any) => {
+    const editRow = (_id: any) => {
         setOperationElement(<Operation onCallbackEvent={getTable} operationType={OperationTypeEnum.edit} id={_id} />)
     }
 
@@ -149,12 +158,12 @@ const ApplicationPage = () => {
             <Form form={formData}
                 name="horizontal_login" layout="inline"
                 onFinish={onSearch}>
-            <Form.Item
+                <Form.Item
                     name="appId"
                     label="应用标识">
-                <Input />
-            </Form.Item>
-            <Button type="primary" htmlType="submit" >查询</Button>
+                    <Input />
+                </Form.Item>
+                <Button type="primary" htmlType="submit" >查询</Button>
             </Form>
         </Row>
         <Row>

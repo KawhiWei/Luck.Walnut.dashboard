@@ -86,7 +86,7 @@ export const menuList: IMenuOutput[] = [
       microName: "",
       componentName: "menu-page",
       sort: 0,
-      isShow: true,
+      isShow: false,
       type: 0,
       children: [],
     }],

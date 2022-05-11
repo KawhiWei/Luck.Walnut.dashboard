@@ -14,16 +14,16 @@ interface IProp {
 
 }
 class Menus extends React.Component<IProp, any> {
-  renderMenu = (data: IMenuOutput[]) => {
+  renderMenu = (data: IMenuOutput[]):any => {
     return data.map(item => {
       if (isShow(item.children)) {
         return <Menu.SubMenu  key={item.id} title={item.name}>
           {this.renderMenu(item.children)}
         </Menu.SubMenu>
       }
-      return <Menu.Item key={item.id} title={item.name}>
+      return item.isShow  ? (<Menu.Item key={item.id} title={item.name}> 
         <Link to={item.path}>{item.name}</Link>
-      </Menu.Item>
+      </Menu.Item>): null
     })
   }
   componentWillMount() {

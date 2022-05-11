@@ -4,7 +4,7 @@ export interface IEnvironmentService{
     /**
      * 获取环境列表
      */
-    getList(): Promise<IServerPageReturn<any>>;
+     getEnvironmentList(_applicationId:string): Promise<IServerPageReturn<any>>;
 
 
     /**

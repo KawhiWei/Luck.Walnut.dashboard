@@ -1,17 +1,17 @@
-import { Button, Col, Form, Input, PaginationProps, Row, Table, message, Modal, Layout, List} from "antd";
+import { Button, Col, Form, Input, Layout, List, Modal, PaginationProps, Row, Table, message } from "antd";
+import { DeleteTwoTone, FileAddTwoTone } from '@ant-design/icons';
 import { formItemLayout, tailLayout } from "@/constans/layout/optionlayout";
 import { initPaginationConfig, tacitPagingProps } from "../../../shared/ajax/request"
 import { useEffect, useState } from "react";
-import { DeleteTwoTone,FileAddTwoTone } from '@ant-design/icons';
 
+import ConfigOperation from "./configOperation";
 import { IEnvironmentService } from "@/domain/environment/ienvironment-service";
 import { IocTypes } from "@/shared/config/ioc-types";
-import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 import Operation from "./operation";
-import ConfigOperation from "./configOperation";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
+import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
-const EnvironmentPage  = () => {
+const EnvironmentPage  = (props:any) => {
     const _environmentService: IEnvironmentService = useHookProvider(IocTypes.EnvironmentService);
     const [paginationConfig, setPaginationConfig] = useState<initPaginationConfig>(new initPaginationConfig());
     const [tableData, setTableData] = useState<Array<any>>([]);
@@ -49,6 +49,8 @@ const EnvironmentPage  = () => {
             });
         }
     };
+
+    console.log(props.location.state.id)
 
     // var rowId:any = "";
 
@@ -100,12 +102,18 @@ const EnvironmentPage  = () => {
      * 获取列表信息
      */
     const getList = () =>{
-        _environmentService.getList().then((x) => {
-            if(x.success){
-                setListData(x.result);
-                setloading(false);
-            }
-        })
+
+        if(props.location.state.id)
+        {
+            _environmentService.getEnvironmentList(props.location.state.id).then((x) => {
+                if(x.success){
+                    setListData(x.result);
+                    setloading(false);
+                }
+            })
+        }
+        
+        
     }
 
     /**

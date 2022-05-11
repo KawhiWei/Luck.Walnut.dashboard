@@ -7,6 +7,7 @@ import IocProvider from '@/shared/utils/ioc-provider';
 import { IocTypes } from '@/shared/config/ioc-types';
 import LayoutView from "@/layout/layout-view";
 import React from 'react';
+import Test from "@/pages/test-page/test-page";
 import { USER_MENU } from '@/store/actionType';
 import { asyncComponent as async } from "./asyncComponent";
 import { message } from 'antd';
