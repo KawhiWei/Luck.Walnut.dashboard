@@ -1,10 +1,11 @@
-import { Button, Col, Descriptions, Form, Input, Layout, List, Modal, PaginationProps, Row, Table, message } from "antd";
+import { Button, Card, Col, Descriptions, Form, Input, Layout, List, Modal, PaginationProps, Row, Table, message } from "antd";
 import { DeleteTwoTone, FileAddTwoTone } from '@ant-design/icons';
 import { formItemLayout, tailLayout } from "@/constans/layout/optionlayout";
 import { initPaginationConfig, tacitPagingProps } from "../../../shared/ajax/request"
 import { useEffect, useState } from "react";
 
 import ConfigOperation from "./configOperation";
+import { IApplication } from "@/domain/applications/application";
 import { IEnvironmentService } from "@/domain/environment/ienvironment-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import Operation from "./operation";
@@ -12,12 +13,13 @@ import { OperationTypeEnum } from "@/shared/operation/operationType";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
 const EnvironmentPage = (props: any) => {
+    const aa = "sdada";
     const _environmentService: IEnvironmentService = useHookProvider(IocTypes.EnvironmentService);
     const [paginationConfig, setPaginationConfig] = useState<initPaginationConfig>(new initPaginationConfig());
     const [tableData, setTableData] = useState<Array<any>>([]);
     const [listData, setListData] = useState<Array<any>>([]);
-
-    const [applicationData, setApplicationData] = useState<any>();
+    const [applicationId,setApplicationId]=useState<string>();
+    const [applicationData, setApplicationData] = useState<IApplication>();
 
     const [loading, setloading] = useState<boolean>(false);
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -105,11 +107,12 @@ const EnvironmentPage = (props: any) => {
      * 获取列表信息
      */
     const getList = () => {
-
         if (props.location.state.id) {
+            setApplicationId(props.location.state.id)
             _environmentService.getEnvironmentList(props.location.state.id).then((x) => {
                 if (x.success) {
                     setListData(x.result.environmentLists);
+                    setApplicationData(x.result.application)
                     setloading(false);
                 }
             })
@@ -165,7 +168,7 @@ const EnvironmentPage = (props: any) => {
     }
 
     const addChange = () => {
-        setOperationElement(<Operation onCallbackEvent={clearsubAllocationRoleElement} operationType={OperationTypeEnum.add} />)
+        setOperationElement(<Operation id={applicationId} onCallbackEvent={clearsubAllocationRoleElement} operationType={OperationTypeEnum.add} />)
     }
 
     const clearsubAllocationRoleElement = () => {
@@ -212,23 +215,41 @@ const EnvironmentPage = (props: any) => {
         _environmentService.getTable(_id).then(x => {
             if (x.success) {
                 setTableData(x.result);
-                setApplicationData(x.result.application)
                 setloading(false);
             }
         })
     }
 
 
-    return (<div>
-        <Row>
-            <Col span={4}>
-                <Descriptions title="应用信息">
-                    <div></div>
-                </Descriptions>
-            </Col>
-            <Col span={20}>
-                <div>
-                    <Row><h2>KEY列表</h2></Row>
+    return (
+        <>
+            <Layout>
+                <Sider theme="light" className="" >
+                    <Card size="small" title="应用环境列表" >
+                    <Button type="primary"   onClick={() => { addChange() }} block>添加环境</Button>
+                        {
+                            listData.map(x => {
+                                return <div>
+                                    <Button style={{ marginTop: '10px' }} block onClick={p => getTable(x.id)}>{x.environmentName}</Button>
+                                    {/* <Button type="primary" shape="circle">A</Button> */}
+                                </div>
+                            })
+                        }
+
+                    </Card>
+                    <div style={{ marginTop: '10px' }}>
+                        <Card size="small" title="应用信息" >
+                            <p>唯一标识：{applicationData?.appId}</p>
+                            <p>应用名称：{applicationData?.appId}</p>
+                            <p>中文名称：{applicationData?.chinessName}</p>
+                            <p>英文名称：{applicationData?.englishName}</p>
+                            <p>负责人{applicationData?.linkMan}</p>
+                            <p>状态：{applicationData?.status}</p>
+                        </Card>
+                    </div>
+                </Sider>
+                <Content>
+
                     <Row>
                         <Form layout="inline" name="horizontal_login">
                             <Form.Item name="environmentName">
@@ -238,25 +259,25 @@ const EnvironmentPage = (props: any) => {
                         </Form>
                     </Row>
                     <Row>
-                        <Col span="24" style={{ textAlign: 'right' }}>
-                            <Button type="primary" style={{ margin: '8px 8px' }} onClick={() => { addChangeConfig() }}>添加</Button>
-                        </Col>
-                    </Row>
+            <Col span="24" style={{ textAlign: 'right' }}>
+                <Button type="primary" style={{ margin: '8px 8px' }} onClick={() => { addChangeConfig() }}>添加</Button>
+            </Col>
+        </Row>
+
                     <Row>
                         <Col span={24}><Table bordered columns={columns} dataSource={tableData} loading={loading} pagination={pagination} /></Col>
                     </Row>
-                </div>
-            </Col>
-        </Row>
-        <Modal title="提示" visible={isModalVisible} onOk={handleOk}
-            onCancel={handleCancel}
-            okText="确认"
-            cancelText="取消">
-            <p>是否确认删除?</p>
-        </Modal>
-        {subOperationElement}
-        {configOperationElement}
-    </div>)
+                </Content>
+                <Modal title="提示" visible={isModalVisible} onOk={handleOk}
+                    onCancel={handleCancel}
+                    okText="确认"
+                    cancelText="取消">
+                    <p>是否确认删除?</p>
+                </Modal>
+                {subOperationElement}
+                {configOperationElement}
+            </Layout>
+        </>)
 }
 
 export default EnvironmentPage;

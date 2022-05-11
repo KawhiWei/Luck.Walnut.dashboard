@@ -124,14 +124,6 @@ const Operation = (props: IProp) => {
                     <Input></Input>
                 </Form.Item>
                 <Form.Item
-                    name="applicationId"
-                    label="应用id"
-                    rules={[{ required: true }]}
-                    style={{ textAlign:'left'}}
-                >
-                    <Input></Input>
-                </Form.Item>
-                <Form.Item
                     {...tailLayout}
                     style={{ textAlign:'right'}}
                 >
