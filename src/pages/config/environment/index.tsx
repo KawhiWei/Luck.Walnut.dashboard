@@ -139,7 +139,7 @@ const EnvironmentPage = (props: any) => {
      * @param id 
      */
     const deleteRow = (id: any) => {
-        _environmentService.delete(id).then(x => {
+        _environmentService.deleteEnvironment(id).then(x => {
             if (x.success) {
                 message.success('删除成功');
                 getEnvironmentList();
@@ -202,7 +202,7 @@ const EnvironmentPage = (props: any) => {
      * @param id 
      */
     const delConfigClick = () => {
-        _environmentService.delConfig(currentenv, configid).then(p => {
+        _environmentService.deleteAppConfiguration(currentenv, configid).then(p => {
             if (p.success) {
                 message.success('删除成功');
                 getConfigList(currentenv);

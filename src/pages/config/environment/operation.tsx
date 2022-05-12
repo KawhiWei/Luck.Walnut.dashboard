@@ -84,7 +84,7 @@ const Operation = (props: IProp) => {
     };
 
     const onAdd=(_param: any) => {
-        _environmentService.add(_param).then(res => {
+        _environmentService.addEnvironment(_param).then(res => {
             if (!res.success) {
                 message.error(res.errorMessage, 3)
             }

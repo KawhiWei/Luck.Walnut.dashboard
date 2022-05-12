@@ -55,11 +55,14 @@ const ConfigOperation = (props: IProp) => {
             case OperationTypeEnum.add:
                 onAdd(param);
                 break;
+                case OperationTypeEnum.edit:
+                onAdd(param);
+                break;
         }
     }
 
     const onAdd = (_param: any) => {
-        _environmentService.addConfig(props.envId, _param).then(rep => {
+        _environmentService.addAppConfiguration(props.envId, _param).then(rep => {
             if (!rep.success) {
                 message.error(rep.errorMessage, 3)
             } else {

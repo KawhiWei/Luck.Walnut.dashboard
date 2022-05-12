@@ -11,7 +11,7 @@ export interface IEnvironmentService{
      * 删除一行数据
      * @param _id 
      */
-    delete(_id: string): Promise<IServerPageReturn<any>>;
+    deleteEnvironment(_id: string): Promise<IServerPageReturn<any>>;
 
     // /**
     //  * 查询明细
@@ -23,7 +23,7 @@ export interface IEnvironmentService{
      * 添加环境
      * @param _param 
      */
-    add(_param: any): Promise<IServerPageReturn<any>>;
+    addEnvironment(_param: any): Promise<IServerPageReturn<any>>;
 
 
     /**
@@ -37,13 +37,13 @@ export interface IEnvironmentService{
      * @param _id 
      * @param _param 
      */
-    addConfig(_id: string, _param: any):Promise<IServerPageReturn<any>>;
+    addAppConfiguration(_id: string, _param: any):Promise<IServerPageReturn<any>>;
 
     /**
      * 删除配置项
      * @param _id 
      */
-    delConfig(_id:string,_config:any):Promise<IServerPageReturn<any>>;
+    deleteAppConfiguration(_id:string,_config:any):Promise<IServerPageReturn<any>>;
 
     /**
      * 获取配置项明细
