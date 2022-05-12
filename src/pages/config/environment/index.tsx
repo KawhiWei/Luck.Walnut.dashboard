@@ -26,7 +26,7 @@ const EnvironmentPage = (props: any) => {
     const [subOperationElement, setOperationElement] = useState<any>(null);
     const [configOperationElement, setconfigOperationElement] = useState<any>(null);
 
-    const [currentenv, setCurrentenv] = useState<any>(null);
+    const [currentEnvironment, setCurrentEnvironment] = useState<any>(null);
 
     const { Header, Footer, Sider, Content } = Layout;
     /**
@@ -110,7 +110,7 @@ const EnvironmentPage = (props: any) => {
             _environmentService.getEnvironmentList(props.location.state.id).then((x) => {
                 if (x.success) {
                     if (x.result.environmentLists.length > 0) {
-                        getConfigList(x.result.environmentLists[0].id);
+                        getConfigTable(x.result.environmentLists[0]);
                     }
                     setListData(x.result.environmentLists);
                     setApplicationData(x.result.application)
@@ -123,10 +123,10 @@ const EnvironmentPage = (props: any) => {
  * 根据环境获取配置
  * @param _id 
  */
-    const getConfigList = (_id: any) => {
+    const getConfigTable = (_currentEnvironment: any) => {
         setloading(true);
-        setCurrentenv(_id);
-        _environmentService.getConfigListForEnvironmentId(_id).then(x => {
+        setCurrentEnvironment(_currentEnvironment?.id);
+        _currentEnvironment.id && _environmentService.getTable(_currentEnvironment.id).then(x => {
             if (x.success) {
                 setTableData(x.result);
                 setloading(false);
@@ -139,7 +139,7 @@ const EnvironmentPage = (props: any) => {
      * @param id 
      */
     const deleteRow = (id: any) => {
-        _environmentService.deleteEnvironment(id).then(x => {
+        _environmentService.delete(id).then(x => {
             if (x.success) {
                 message.success('删除成功');
                 getEnvironmentList();
@@ -190,11 +190,11 @@ const EnvironmentPage = (props: any) => {
     }
 
     const addChangeConfig = () => {
-        setconfigOperationElement(<ConfigOperation onCallbackEvent={claerConfigOperation} operationType={OperationTypeEnum.add} envId={currentenv}></ConfigOperation>)
+        setconfigOperationElement(<ConfigOperation onCallbackEvent={claerConfigOperation} operationType={OperationTypeEnum.add} envId={currentEnvironment.id}></ConfigOperation>)
     }
     const claerConfigOperation = () => {
         setconfigOperationElement(null);
-        getConfigList(currentenv);
+        getConfigTable(currentEnvironment);
     }
 
     /**
@@ -202,10 +202,10 @@ const EnvironmentPage = (props: any) => {
      * @param id 
      */
     const delConfigClick = () => {
-        _environmentService.deleteAppConfiguration(currentenv, configid).then(p => {
+        currentEnvironment && _environmentService.delConfig(currentEnvironment.id, configid).then(p => {
             if (p.success) {
                 message.success('删除成功');
-                getConfigList(currentenv);
+                getConfigTable(currentEnvironment);
             } else {
                 message.error(p.errorMessage, 3);
             }
@@ -213,7 +213,7 @@ const EnvironmentPage = (props: any) => {
     }
 
     const editRow = (_id: any) => {
-        setOperationElement(<ConfigOperation onCallbackEvent={() => getConfigList(currentenv)} operationType={OperationTypeEnum.edit} id={_id} envId={currentenv} />)
+        setOperationElement(<ConfigOperation onCallbackEvent={() => getConfigTable(currentEnvironment)} operationType={OperationTypeEnum.edit} id={_id} envId={currentEnvironment.id} />)
     }
 
     return (
@@ -225,7 +225,7 @@ const EnvironmentPage = (props: any) => {
                         {
                             listData.map(x => {
                                 return <div>
-                                    <Button style={{ marginTop: '10px' }} block onClick={p => getConfigList(x.id)}>{x.environmentName}</Button>
+                                    <Button style={{ marginTop: '10px' }} block onClick={p => getConfigTable(x.id)}>{x.environmentName}</Button>
                                     {/* <Button type="primary" shape="circle">A</Button> */}
                                 </div>
                             })
@@ -244,14 +244,14 @@ const EnvironmentPage = (props: any) => {
                 </Sider>
                 <Content>
 
-                    <Row>
+                    <Card title={currentEnvironment?.environmentName} >
                         <Form layout="inline" name="horizontal_login">
                             <Form.Item name="environmentName">
                                 <Input placeholder="查找key" />
                             </Form.Item>
                             <Button type="primary" htmlType="submit" >查询</Button>
                         </Form>
-                    </Row>
+                        </Card>
                     <Row>
                         <Col span="24" style={{ textAlign: 'right' }}>
                             <Button type="primary" style={{ margin: '8px 8px' }} onClick={() => { addChangeConfig() }}>添加</Button>
