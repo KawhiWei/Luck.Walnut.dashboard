@@ -13,12 +13,11 @@ import { OperationTypeEnum } from "@/shared/operation/operationType";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
 const EnvironmentPage = (props: any) => {
-    const aa = "sdada";
     const _environmentService: IEnvironmentService = useHookProvider(IocTypes.EnvironmentService);
     const [paginationConfig, setPaginationConfig] = useState<initPaginationConfig>(new initPaginationConfig());
     const [tableData, setTableData] = useState<Array<any>>([]);
     const [listData, setListData] = useState<Array<any>>([]);
-    const [applicationId,setApplicationId]=useState<string>();
+    const [applicationId, setApplicationId] = useState<string>();
     const [applicationData, setApplicationData] = useState<IApplication>();
 
     const [loading, setloading] = useState<boolean>(false);
@@ -42,7 +41,6 @@ const EnvironmentPage = (props: any) => {
         current: paginationConfig.current,
         pageSize: paginationConfig.pageSize,
         onShowSizeChange: (current: number, pageSize: number) => {
-
         },
         onChange: (page: number, pageSize?: number) => {
             setPaginationConfig((Pagination) => {
@@ -100,25 +98,40 @@ const EnvironmentPage = (props: any) => {
     ]
 
     useEffect(() => {
-        getList();
+        getEnvironmentList();
     }, [paginationConfig])
 
     /**
      * 获取列表信息
      */
-    const getList = () => {
+    const getEnvironmentList = () => {
         if (props.location.state.id) {
             setApplicationId(props.location.state.id)
             _environmentService.getEnvironmentList(props.location.state.id).then((x) => {
                 if (x.success) {
+                    if (x.result.environmentLists.length > 0) {
+                        getConfigTable(x.result.environmentLists[0].id);
+                    }
                     setListData(x.result.environmentLists);
                     setApplicationData(x.result.application)
-                    setloading(false);
                 }
             })
         }
+    }
 
-
+    /**
+ * 根据环境获取配置
+ * @param _id 
+ */
+    const getConfigTable = (_id: any) => {
+        setloading(true);
+        setCurrentenv(_id);
+        _environmentService.getTable(_id).then(x => {
+            if (x.success) {
+                setTableData(x.result);
+                setloading(false);
+            }
+        })
     }
 
     /**
@@ -129,7 +142,7 @@ const EnvironmentPage = (props: any) => {
         _environmentService.delete(id).then(x => {
             if (x.success) {
                 message.success('删除成功');
-                getList();
+                getEnvironmentList();
             } else {
                 message.error(x.errorMessage, 3);
             }
@@ -173,7 +186,7 @@ const EnvironmentPage = (props: any) => {
 
     const clearsubAllocationRoleElement = () => {
         setOperationElement(null);
-        getList();
+        getEnvironmentList();
     }
 
     const addChangeConfig = () => {
@@ -181,7 +194,7 @@ const EnvironmentPage = (props: any) => {
     }
     const claerConfigOperation = () => {
         setconfigOperationElement(null);
-        getTable(currentenv);
+        getConfigTable(currentenv);
     }
 
     /**
@@ -192,7 +205,7 @@ const EnvironmentPage = (props: any) => {
         _environmentService.delConfig(currentenv, configid).then(p => {
             if (p.success) {
                 message.success('删除成功');
-                getTable(currentenv);
+                getConfigTable(currentenv);
             } else {
                 message.error(p.errorMessage, 3);
             }
@@ -200,42 +213,23 @@ const EnvironmentPage = (props: any) => {
     }
 
     const editRow = (_id: any) => {
-        setOperationElement(<ConfigOperation onCallbackEvent={() => getTable(currentenv)} operationType={OperationTypeEnum.edit} id={_id} envId={currentenv} />)
+        setOperationElement(<ConfigOperation onCallbackEvent={() => getConfigTable(currentenv)} operationType={OperationTypeEnum.edit} id={_id} envId={currentenv} />)
     }
-
-
-
-    /**
-     * 根据环境获取配置
-     * @param _id 
-     */
-    const getTable = (_id: any) => {
-        setloading(true);
-        setCurrentenv(_id);
-        _environmentService.getTable(_id).then(x => {
-            if (x.success) {
-                setTableData(x.result);
-                setloading(false);
-            }
-        })
-    }
-
 
     return (
         <>
             <Layout>
                 <Sider theme="light" className="" >
                     <Card size="small" title="应用环境列表" >
-                    <Button type="primary"   onClick={() => { addChange() }} block>添加环境</Button>
+                        <Button type="primary" onClick={() => { addChange() }} block>添加环境</Button>
                         {
                             listData.map(x => {
                                 return <div>
-                                    <Button style={{ marginTop: '10px' }} block onClick={p => getTable(x.id)}>{x.environmentName}</Button>
+                                    <Button style={{ marginTop: '10px' }} block onClick={p => getConfigTable(x.id)}>{x.environmentName}</Button>
                                     {/* <Button type="primary" shape="circle">A</Button> */}
                                 </div>
                             })
                         }
-
                     </Card>
                     <div style={{ marginTop: '10px' }}>
                         <Card size="small" title="应用信息" >
@@ -259,10 +253,10 @@ const EnvironmentPage = (props: any) => {
                         </Form>
                     </Row>
                     <Row>
-            <Col span="24" style={{ textAlign: 'right' }}>
-                <Button type="primary" style={{ margin: '8px 8px' }} onClick={() => { addChangeConfig() }}>添加</Button>
-            </Col>
-        </Row>
+                        <Col span="24" style={{ textAlign: 'right' }}>
+                            <Button type="primary" style={{ margin: '8px 8px' }} onClick={() => { addChangeConfig() }}>添加</Button>
+                        </Col>
+                    </Row>
 
                     <Row>
                         <Col span={24}><Table bordered columns={columns} dataSource={tableData} loading={loading} pagination={pagination} /></Col>
