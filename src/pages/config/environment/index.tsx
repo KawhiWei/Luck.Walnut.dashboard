@@ -126,7 +126,7 @@ const EnvironmentPage = (props: any) => {
     const getConfigTable = (_currentEnvironment: any) => {
         setloading(true);
         setCurrentEnvironment(_currentEnvironment?.id);
-        _currentEnvironment.id && _environmentService.getTable(_currentEnvironment.id).then(x => {
+        _currentEnvironment.id && _environmentService.getConfigListForEnvironmentId(_currentEnvironment.id).then(x => {
             if (x.success) {
                 setTableData(x.result);
                 setloading(false);
@@ -139,7 +139,7 @@ const EnvironmentPage = (props: any) => {
      * @param id 
      */
     const deleteRow = (id: any) => {
-        _environmentService.delete(id).then(x => {
+        _environmentService.deleteEnvironment(id).then(x => {
             if (x.success) {
                 message.success('删除成功');
                 getEnvironmentList();
@@ -202,7 +202,7 @@ const EnvironmentPage = (props: any) => {
      * @param id 
      */
     const delConfigClick = () => {
-        currentEnvironment && _environmentService.delConfig(currentEnvironment.id, configid).then(p => {
+        currentEnvironment && _environmentService.deleteAppConfiguration(currentEnvironment.id, configid).then(p => {
             if (p.success) {
                 message.success('删除成功');
                 getConfigTable(currentEnvironment);
