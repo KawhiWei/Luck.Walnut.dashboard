@@ -16,19 +16,19 @@ export class EnvironmentService extends BaseService implements IEnvironmentServi
     add(_param: any): Promise<IServerPageReturn<any>>{
         return this.dataRequest.postRequest(`${EnvironmentApi.application}`,_param);
     }
-    getTable(_id: string):Promise<IServerPageReturn<any>>{
-        return this.dataRequest.getRequest(`${EnvironmentApi.application}/${_id}`);
+    getConfigListForEnvironmentId(_id: string):Promise<IServerPageReturn<any>>{
+        return this.dataRequest.getRequest(`${EnvironmentApi.application}/${_id}/configlist`);
     }
 
     addConfig(_id: string, _param: any):Promise<IServerPageReturn<any>>{
-        return this.dataRequest.postRequest(`${EnvironmentApi.application}/${_id}`,_param)
+        return this.dataRequest.postRequest(`${EnvironmentApi.application}/${_id}/config`,_param)
     }
 
     delConfig(_id:string, _config:any):Promise<IServerPageReturn<any>>{
-        return this.dataRequest.deleteRequest(`${EnvironmentApi.application}/${_id}/${_config}`)
+        return this.dataRequest.deleteRequest(`${EnvironmentApi.application}/${_id}/${_config}/config`)
     }
 
     getConfigDetail(_id:string):Promise<IServerPageReturn<any>>{
-        return this.dataRequest.getRequest(`${EnvironmentApi.application}/ConfigurationDetail/${_id}`)
+        return this.dataRequest.getRequest(`${EnvironmentApi.application}/${_id}/config`)
     }
 }

@@ -110,7 +110,7 @@ const EnvironmentPage = (props: any) => {
             _environmentService.getEnvironmentList(props.location.state.id).then((x) => {
                 if (x.success) {
                     if (x.result.environmentLists.length > 0) {
-                        getConfigTable(x.result.environmentLists[0].id);
+                        getConfigList(x.result.environmentLists[0].id);
                     }
                     setListData(x.result.environmentLists);
                     setApplicationData(x.result.application)
@@ -123,10 +123,10 @@ const EnvironmentPage = (props: any) => {
  * 根据环境获取配置
  * @param _id 
  */
-    const getConfigTable = (_id: any) => {
+    const getConfigList = (_id: any) => {
         setloading(true);
         setCurrentenv(_id);
-        _environmentService.getTable(_id).then(x => {
+        _environmentService.getConfigListForEnvironmentId(_id).then(x => {
             if (x.success) {
                 setTableData(x.result);
                 setloading(false);
@@ -194,7 +194,7 @@ const EnvironmentPage = (props: any) => {
     }
     const claerConfigOperation = () => {
         setconfigOperationElement(null);
-        getConfigTable(currentenv);
+        getConfigList(currentenv);
     }
 
     /**
@@ -205,7 +205,7 @@ const EnvironmentPage = (props: any) => {
         _environmentService.delConfig(currentenv, configid).then(p => {
             if (p.success) {
                 message.success('删除成功');
-                getConfigTable(currentenv);
+                getConfigList(currentenv);
             } else {
                 message.error(p.errorMessage, 3);
             }
@@ -213,7 +213,7 @@ const EnvironmentPage = (props: any) => {
     }
 
     const editRow = (_id: any) => {
-        setOperationElement(<ConfigOperation onCallbackEvent={() => getConfigTable(currentenv)} operationType={OperationTypeEnum.edit} id={_id} envId={currentenv} />)
+        setOperationElement(<ConfigOperation onCallbackEvent={() => getConfigList(currentenv)} operationType={OperationTypeEnum.edit} id={_id} envId={currentenv} />)
     }
 
     return (
@@ -225,7 +225,7 @@ const EnvironmentPage = (props: any) => {
                         {
                             listData.map(x => {
                                 return <div>
-                                    <Button style={{ marginTop: '10px' }} block onClick={p => getConfigTable(x.id)}>{x.environmentName}</Button>
+                                    <Button style={{ marginTop: '10px' }} block onClick={p => getConfigList(x.id)}>{x.environmentName}</Button>
                                     {/* <Button type="primary" shape="circle">A</Button> */}
                                 </div>
                             })

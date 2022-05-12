@@ -30,7 +30,7 @@ export interface IEnvironmentService{
      * 根据环境获取配置
      * @param _id 
      */
-    getTable(_id: string):Promise<IServerPageReturn<any>>;
+    getConfigListForEnvironmentId(_id: string):Promise<IServerPageReturn<any>>;
 
     /**
      * 环境添加配置
