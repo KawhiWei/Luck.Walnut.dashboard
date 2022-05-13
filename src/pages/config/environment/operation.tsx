@@ -72,7 +72,13 @@ const Operation = (props: IProp) => {
     }
 
     const onFinish = () => {
-        let param = formData.getFieldsValue();
+        let field = formData.getFieldsValue();        
+        let param={
+            environmentName:field.environmentName,
+            applicationId:props.id
+        }
+        console.log(param)
+        
         switch (props.operationType) {
             case OperationTypeEnum.add:
                 onAdd(param);

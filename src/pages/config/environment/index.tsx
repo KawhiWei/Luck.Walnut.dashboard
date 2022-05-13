@@ -1,5 +1,5 @@
 import { Button, Card, Col, Descriptions, Form, Input, Layout, List, Modal, PaginationProps, Row, Table, message } from "antd";
-import { DeleteTwoTone, FileAddTwoTone } from '@ant-design/icons';
+import { DeleteTwoTone, FileAddTwoTone, LeftOutlined } from '@ant-design/icons';
 import { formItemLayout, tailLayout } from "@/constans/layout/optionlayout";
 import { initPaginationConfig, tacitPagingProps } from "../../../shared/ajax/request"
 import { useEffect, useState } from "react";
@@ -10,9 +10,12 @@ import { IEnvironmentService } from "@/domain/environment/ienvironment-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import Operation from "./operation";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
+import { useHistory } from "react-router-dom";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
 const EnvironmentPage = (props: any) => {
+    const history = useHistory();
+
     const _environmentService: IEnvironmentService = useHookProvider(IocTypes.EnvironmentService);
     const [paginationConfig, setPaginationConfig] = useState<initPaginationConfig>(new initPaginationConfig());
     const [tableData, setTableData] = useState<Array<any>>([]);
@@ -52,11 +55,7 @@ const EnvironmentPage = (props: any) => {
             });
         }
     };
-
-    console.log(props.location.state.id)
-
-    // var rowId:any = "";
-
+    
     const columns = [
         {
             title: "配置项key",
@@ -149,13 +148,14 @@ const EnvironmentPage = (props: any) => {
         })
     }
 
-    const deleteClick = (id: any, type: any) => {
+    const deleteClick = (_id: any, type: any) => {
         switch (deltype) {
             case "env":
-                setRowId(id);
+                setRowId(_id);
                 break;
             case "config":
-                setconfigid(id);
+                console.log(_id)
+                setconfigid(_id);
                 break;
         }
         setDelType(type)
@@ -170,10 +170,17 @@ const EnvironmentPage = (props: any) => {
                 deleteRow(rowId);
                 break;
             case "config":
-                delConfigClick();
+                // currentEnvironment && delConfigClick(currentEnvironment.id,);
                 break;
         }
 
+    }
+
+    const backApplicationPage=()=>{
+        history.push({
+            pathname: "application",
+        });
+        
     }
 
     const handleCancel = () => {
@@ -197,12 +204,13 @@ const EnvironmentPage = (props: any) => {
         getConfigTable(currentEnvironment);
     }
 
+    
     /**
      * 删除
      * @param id 
      */
-    const delConfigClick = () => {
-        currentEnvironment && _environmentService.deleteAppConfiguration(currentEnvironment.id, configid).then(p => {
+    const delConfigClick = (_currentEnvironmentId:any,_configid:string) => {
+        currentEnvironment && _environmentService.deleteAppConfiguration(_currentEnvironmentId, _configid).then(p => {
             if (p.success) {
                 message.success('删除成功');
                 getConfigTable(currentEnvironment);
@@ -225,7 +233,7 @@ const EnvironmentPage = (props: any) => {
                         {
                             listData.map(x => {
                                 return <div>
-                                    <Button style={{ marginTop: '10px' }} block onClick={p => getConfigTable(x.id)}>{x.environmentName}</Button>
+                                    <Button style={{ marginTop: '10px' }} block onClick={p => getConfigTable(x)}>{x.environmentName}</Button>
                                     {/* <Button type="primary" shape="circle">A</Button> */}
                                 </div>
                             })
@@ -243,7 +251,6 @@ const EnvironmentPage = (props: any) => {
                     </div>
                 </Sider>
                 <Content>
-
                     <Card title={currentEnvironment?.environmentName} >
                         <Form layout="inline" name="horizontal_login">
                             <Form.Item name="environmentName">
@@ -251,10 +258,12 @@ const EnvironmentPage = (props: any) => {
                             </Form.Item>
                             <Button type="primary" htmlType="submit" >查询</Button>
                         </Form>
-                        </Card>
+                    </Card>
                     <Row>
                         <Col span="24" style={{ textAlign: 'right' }}>
+                            <Button onClick={() => { backApplicationPage() }} ><LeftOutlined/>返回应用列表</Button>
                             <Button type="primary" style={{ margin: '8px 8px' }} onClick={() => { addChangeConfig() }}>添加</Button>
+
                         </Col>
                     </Row>
 
