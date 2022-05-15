@@ -1,4 +1,4 @@
-import { Button, Card, Col, Descriptions, Form, Input, Layout, List, Modal, PaginationProps, Row, Table, message } from "antd";
+import { Button, Card, Col, Descriptions, Form, Input, Layout, List, Modal, PaginationProps, Row, Table, Tag, message } from "antd";
 import { DeleteTwoTone, FileAddTwoTone, LeftOutlined } from '@ant-design/icons';
 import { formItemLayout, tailLayout } from "@/constans/layout/optionlayout";
 import { initPaginationConfig, tacitPagingProps } from "../../../shared/ajax/request"
@@ -73,24 +73,32 @@ const EnvironmentPage = (props: any) => {
         }, {
             title: "是否公开",
             dataIndex: "isOpen",
-            key: "isOpen",
+            key: "id",
+            render: (text: any, record: any) => {
+                return <div>
+                    {record.isOpen?<Tag color="cyan">是</Tag>:<Tag color="orange">否</Tag>}
+                </div>
+            }
         }, {
             title: "是否发布",
             dataIndex: "isPublish",
-            key: "isPublish",
+            key: "id",
+            render: (text: any, record: any) => {
+                return <div>
+                    {record.isPublish?<Tag color="cyan">是</Tag>:<Tag color="orange">否</Tag>}
+                </div>
+            }
         }, {
             title: "操作",
             dataIndex: "id",
             key: "id",
             render: (text: any, record: any) => {
-                return <div>
-                    <Form.Item {...tailLayout}>
+                return <div className="table-operation">
                         {/*  */}
                         <Button type="primary" onClick={() => editRow(record.id)}>编辑</Button>
                         <Button type="primary" danger onClick={() => deleteClick(record.id, "config")}>删除</Button>
                         {/* onClick={() => deleteClick(record.id)} */}
                         {/*  */}
-                    </Form.Item>
                 </div>
             }
         }
@@ -124,7 +132,7 @@ const EnvironmentPage = (props: any) => {
  */
     const getConfigTable = (_currentEnvironment: any) => {
         setloading(true);
-        setCurrentEnvironment(_currentEnvironment?.id);
+        setCurrentEnvironment(_currentEnvironment);
         _currentEnvironment.id && _environmentService.getConfigListForEnvironmentId(_currentEnvironment.id).then(x => {
             if (x.success) {
                 setTableData(x.result);

@@ -9,6 +9,7 @@ import { IApplicationService } from "@/domain/applications/iapplication-service"
 import { IocTypes } from "@/shared/config/ioc-types";
 import Operation from "./operation";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
+import { right } from "@antv/x6/lib/registry/port-layout/line";
 import { useHistory } from "react-router-dom"
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
@@ -74,13 +75,10 @@ const ApplicationPage = () => {
             dataIndex: "id",
             key: "id",
             render: (text: any, record: any) => {
-                return <div>
-                    <Form.Item {...tailLayout} >
+                return <div className="table-operation">
                         <Button type="primary" onClick={() => editRow(record.id)}>编辑</Button>
                         <Button type="primary" onClick={()=>goToConfig(record.id)}>应用配置</Button>
                         <Button type="primary" danger onClick={() => deleteRow(record.id)}>删除</Button>
-                    </Form.Item>
-
                 </div>
             }
         }
