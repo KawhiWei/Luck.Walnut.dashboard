@@ -56,7 +56,7 @@ const ConfigOperation = (props: IProp) => {
             case OperationTypeEnum.add:
                 onAdd(param);
                 break;
-            case OperationTypeEnum.edit:
+                case OperationTypeEnum.edit:
                 onAdd(param);
                 break;
         }
@@ -112,41 +112,53 @@ const ConfigOperation = (props: IProp) => {
             footer={null}
         >
             <Form form={formData}
-                // {...formItemLayout}
-                labelCol={{ span: 4 }}
-                wrapperCol={{ span: 20 }}
+                {...formItemLayout}
                 labelAlign={"right"}
                 name="nest-messages"
                 onFinish={onFinish}
                 validateMessages={validateMessages}
             >
-                <Form.Item
-                    name="key"
-                    label="Key"
-                    rules={[{ required: true }]}
-                >
-                    <Input />
-                </Form.Item>
-                <Form.Item
-                    name="type"
-                    label="配置值格式">
-                    <Input />
-                </Form.Item>
+                <Row>
+                    <Col span={12}>
+                        <Form.Item
+                            name="key"
+                            label="Key"
+                            rules={[{ required: true }]}
+                        >
+                            <Input />
+                        </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                        <Form.Item
+                            name="type"
+                            label="配置值格式">
+                            <Input />
+                        </Form.Item>
+                    </Col>
 
-                <Form.Item
-                    name="isOpen"
-                    label="是否公开"
-                // rules={[{ required: true }]}
-                >
-                    <Switch />
-                </Form.Item>
-                <Form.Item
-                    name="value"
-                    label="配置项Value"
-                    rules={[{ required: true }]}
-                >
-                    <TextArea rows={14} />
-                </Form.Item>
+                </Row>
+                <Row>
+                    <Col span={12}>
+                        <Form.Item
+                            name="isOpen"
+                            label="是否公开"
+                        // rules={[{ required: true }]}
+                        >
+                             <Switch />
+                        </Form.Item>
+                    </Col>
+                </Row>
+                <Row>
+                <Col span="24" style={{ textAlign: 'right' }}>
+                        <Form.Item
+                            name="value"
+                            label="配置项Value"
+                            rules={[{ required: true }]}
+                        >
+                            <TextArea rows={4} />
+                        </Form.Item>
+                        </Col>
+                </Row>
                 <Row>
                     <Col span="24" style={{ textAlign: 'right' }}>
                         <Form.Item {...tailLayout}>
