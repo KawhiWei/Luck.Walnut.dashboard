@@ -71,6 +71,10 @@ const EnvironmentPage = (props: any) => {
             dataIndex: "type",
             key: "type",
         }, {
+            title: "组",
+            dataIndex: "group",
+            key: "group",
+        },{
             title: "是否公开",
             dataIndex: "isOpen",
             key: "id",

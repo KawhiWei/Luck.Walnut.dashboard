@@ -141,6 +141,13 @@ const ConfigOperation = (props: IProp) => {
                     <Switch />
                 </Form.Item>
                 <Form.Item
+                    name="group"
+                    label="组"
+                // rules={[{ required: true }]}
+                >
+                    <Input />
+                </Form.Item>
+                <Form.Item
                     name="value"
                     label="配置项Value"
                     rules={[{ required: true }]}
