@@ -77,17 +77,17 @@ const ApplicationPage = () => {
             render: (text: any, record: any) => {
                 return <div className="table-operation">
                         <Button type="primary" onClick={() => editRow(record.id)}>编辑</Button>
-                        <Button type="primary" onClick={()=>goToConfig(record.id)}>应用配置</Button>
+                        <Button type="primary" onClick={()=>goToConfig(record.appId)}>应用配置</Button>
                         <Button type="primary" danger onClick={() => deleteRow(record.id)}>删除</Button>
                 </div>
             }
         }
     ];
-    const goToConfig = (_id: string) => {
+    const goToConfig = (_appId: string) => {
         history.push({
             pathname: "environment",
             state:{
-                id:_id
+                appId:_appId
             }
         });
     }

@@ -20,7 +20,7 @@ const EnvironmentPage = (props: any) => {
     const [paginationConfig, setPaginationConfig] = useState<initPaginationConfig>(new initPaginationConfig());
     const [tableData, setTableData] = useState<Array<any>>([]);
     const [listData, setListData] = useState<Array<any>>([]);
-    const [applicationId, setApplicationId] = useState<string>();
+    const [appId, setAppId] = useState<string>();
     const [applicationData, setApplicationData] = useState<IApplication>();
 
     const [loading, setloading] = useState<boolean>(false);
@@ -116,9 +116,9 @@ const EnvironmentPage = (props: any) => {
      * 获取列表信息
      */
     const getEnvironmentList = () => {
-        if (props.location.state.id) {
-            setApplicationId(props.location.state.id)
-            _environmentService.getEnvironmentList(props.location.state.id).then((x) => {
+        if (props.location.state.appId) {
+            setAppId(props.location.state.appId)
+            _environmentService.getEnvironmentList(props.location.state.appId).then((x) => {
                 if (x.success) {
                     if (x.result.environmentLists.length > 0) {
                         getConfigTable(x.result.environmentLists[0]);
@@ -200,7 +200,7 @@ const EnvironmentPage = (props: any) => {
     }
 
     const addChange = () => {
-        setOperationElement(<Operation id={applicationId} onCallbackEvent={clearsubAllocationRoleElement} operationType={OperationTypeEnum.add} />)
+        setOperationElement(<Operation appId={appId} onCallbackEvent={clearsubAllocationRoleElement} operationType={OperationTypeEnum.add} />)
     }
 
     const clearsubAllocationRoleElement = () => {

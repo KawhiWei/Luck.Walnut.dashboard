@@ -16,7 +16,7 @@ interface IProp {
     /**
      * Id
      */
-    id?: string;
+    appId?: string;
     /**
      * 操作类型
      */
@@ -75,7 +75,7 @@ const Operation = (props: IProp) => {
         let field = formData.getFieldsValue();        
         let param={
             environmentName:field.environmentName,
-            applicationId:props.id
+            appId:props.appId
         }
         console.log(param)
         
