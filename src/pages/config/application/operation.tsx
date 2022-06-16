@@ -23,9 +23,6 @@ interface IProp {
     operationType: OperationTypeEnum
 }
 
-
-
-
 const validateMessages = {
     required: "${label} 不可为空",
     types: {
@@ -40,6 +37,7 @@ const validateMessages = {
 const Operation = (props: IProp) => {
 
     const _applicationService: IApplicationService = useHookProvider(IocTypes.ApplicationService);
+    const [loading, setLoading] = useState<boolean>(false);
 
     const [operationState, setOperationState] = useState<IOperationConfig>({ visible: false })
     const [formData] = Form.useForm();
@@ -82,6 +80,9 @@ const Operation = (props: IProp) => {
                         formData.setFieldsValue(rep.result);
                         editOperationState(true, "修改")
                     }
+                    else{
+                        message.error(rep.errorMessage, 3)
+                    }
                 })
                 break;
         }
@@ -108,10 +109,9 @@ const Operation = (props: IProp) => {
                 onUpdate(param);
                 break;
         }
-        editOperationState(false, "修改")
-
     }
     const onAdd = (_param: any) => {
+        setLoading(true)
         _applicationService.addApplication(_param).then(rep => {
             if (!rep.success) {
                 message.error(rep.errorMessage, 3)
@@ -128,7 +128,6 @@ const Operation = (props: IProp) => {
                 message.error(rep.errorMessage, 3)
             }
             else {
-                debugger
                 props.onCallbackEvent && props.onCallbackEvent();
             }
         })
@@ -147,6 +146,15 @@ const Operation = (props: IProp) => {
                     validateMessages={validateMessages}
                 >
                     <Row>
+                    <Col span="12">
+                            <Form.Item
+                                name="appId"
+                                label="应用标识"
+                                rules={[{ required: true }]}
+                            >
+                                <Input  disabled={props.operationType === OperationTypeEnum.edit} />
+                            </Form.Item>
+                        </Col>
                         <Col span="12">
                             <Form.Item
                                 name="englishName"
@@ -156,21 +164,13 @@ const Operation = (props: IProp) => {
                                 <Input />
                             </Form.Item>
                         </Col>
-                        <Col span="12">
+                        
+                    </Row>
+                    <Row>
+                    <Col span="12">
                             <Form.Item
                                 name="chinessName"
                                 label="应用中文名"
-                                rules={[{ required: true }]}
-                            >
-                                <Input />
-                            </Form.Item>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col span="12">
-                            <Form.Item
-                                name="appId"
-                                label="应用标识"
                                 rules={[{ required: true }]}
                             >
                                 <Input />
@@ -211,7 +211,7 @@ const Operation = (props: IProp) => {
                         <Col span="24" style={{ textAlign: 'right' }}>
                             <Form.Item {...tailLayout}>
                                 <Button onClick={() => onCancel()}>取消</Button>
-                                <Button style={{ margin: '0 8px' }} type="primary" htmlType="submit">保存</Button>
+                                <Button style={{ margin: '0 8px' }} type="primary" loading={loading} htmlType="submit">保存</Button>
                             </Form.Item>
                         </Col>
                     </Row>

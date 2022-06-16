@@ -107,13 +107,14 @@ const ApplicationPage = () => {
      * @param _id 
      */
     const editRow = (_id: any) => {
-        setOperationElement(<Operation onCallbackEvent={getTable} operationType={OperationTypeEnum.edit} id={_id} />)
+        setOperationElement(<Operation onCallbackEvent={clearElement} operationType={OperationTypeEnum.edit} id={_id} />)
     }
 
     /**
      * 页面初始化获取数据
      */
     const getTable = () => {
+        setloading(true);
         _applicationService.gettable().then((x) => {
             if (x.success) {
                 // setPaginationConfig((Pagination) => {
@@ -131,7 +132,7 @@ const ApplicationPage = () => {
 
     };
 
-    const clearsubAllocationRoleElement = () => {
+    const clearElement = () => {
         setOperationElement(null);
         getTable();
     }
@@ -148,7 +149,7 @@ const ApplicationPage = () => {
     };
 
     const addChange = () => {
-        setOperationElement(<Operation onCallbackEvent={clearsubAllocationRoleElement} operationType={OperationTypeEnum.add} />)
+        setOperationElement(<Operation onCallbackEvent={clearElement} operationType={OperationTypeEnum.add} />)
     }
 
     return (<div>
@@ -161,7 +162,7 @@ const ApplicationPage = () => {
                     label="应用标识">
                     <Input />
                 </Form.Item>
-                <Button type="primary" htmlType="submit" >查询</Button>
+                <Button type="primary" htmlType="submit" onClick={() => { getTable() }}>查询</Button>
             </Form>
         </Row>
         <Row>

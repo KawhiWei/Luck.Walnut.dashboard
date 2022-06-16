@@ -48,6 +48,7 @@ const ConfigOperation = (props: IProp) => {
     */
     useEffect(() => {
         onGetLoad()
+        console.log()
     }, [formData]);
 
     const onFinish = () => {

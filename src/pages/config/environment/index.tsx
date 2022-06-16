@@ -136,6 +136,7 @@ const EnvironmentPage = (props: any) => {
  */
     const getConfigTable = (_currentEnvironment: any) => {
         setloading(true);
+        console.log(_currentEnvironment)
         setCurrentEnvironment(_currentEnvironment);
         _currentEnvironment.id && _environmentService.getConfigListForEnvironmentId(_currentEnvironment.id).then(x => {
             if (x.success) {
@@ -200,6 +201,8 @@ const EnvironmentPage = (props: any) => {
     }
 
     const addChange = () => {
+
+        
         setOperationElement(<Operation appId={appId} onCallbackEvent={clearsubAllocationRoleElement} operationType={OperationTypeEnum.add} />)
     }
 
