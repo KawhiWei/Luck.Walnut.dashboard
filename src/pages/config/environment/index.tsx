@@ -1,4 +1,4 @@
-import { Button, Card, Col, Descriptions, Form, Input, Layout, List, Modal, PaginationProps, Row, Table, Tag, message } from "antd";
+import { Button, Card, Col, Descriptions, Form, Input, Layout, List, Modal, PaginationProps, Row, Spin, Table, Tag, message } from "antd";
 import { DeleteTwoTone, FileAddTwoTone, LeftOutlined } from '@ant-design/icons';
 import { formItemLayout, tailLayout } from "@/constans/layout/optionlayout";
 import { initPaginationConfig, tacitPagingProps } from "../../../shared/ajax/request"
@@ -24,6 +24,9 @@ const EnvironmentPage = (props: any) => {
     const [applicationData, setApplicationData] = useState<IApplication>();
 
     const [loading, setloading] = useState<boolean>(false);
+    const [globalLoading, setGlobalLoading] = useState<boolean>(false);
+    
+
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [rowId, setRowId] = useState(null);
     const [subOperationElement, setOperationElement] = useState<any>(null);
@@ -118,6 +121,7 @@ const EnvironmentPage = (props: any) => {
     const getEnvironmentList = () => {
         if (props.location.state.appId) {
             setAppId(props.location.state.appId)
+            setGlobalLoading(true);
             _environmentService.getEnvironmentList(props.location.state.appId).then((x) => {
                 if (x.success) {
                     if (x.result.environmentLists.length > 0) {
@@ -125,6 +129,7 @@ const EnvironmentPage = (props: any) => {
                     }
                     setListData(x.result.environmentLists);
                     setApplicationData(x.result.application)
+                    setGlobalLoading(false);
                 }
             })
         }
@@ -136,7 +141,6 @@ const EnvironmentPage = (props: any) => {
  */
     const getConfigTable = (_currentEnvironment: any) => {
         setloading(true);
-        console.log(_currentEnvironment)
         setCurrentEnvironment(_currentEnvironment);
         _currentEnvironment.id && _environmentService.getConfigListForEnvironmentId(_currentEnvironment.id).then(x => {
             if (x.success) {
@@ -241,6 +245,7 @@ const EnvironmentPage = (props: any) => {
 
     return (
         <>
+        <Spin spinning={globalLoading}>
             <Layout>
                 <Sider theme="light" className="" >
                     <Card size="small" title="应用环境列表" >
@@ -295,6 +300,7 @@ const EnvironmentPage = (props: any) => {
                 {subOperationElement}
                 {configOperationElement}
             </Layout>
+            </Spin>
         </>)
 }
 
