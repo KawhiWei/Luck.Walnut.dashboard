@@ -27,9 +27,22 @@ const ApplicationPage = () => {
         current: paginationConfig.current,
         pageSize: paginationConfig.pageSize,
         onShowSizeChange: (current: number, pageSize: number) => {
+            setPaginationConfig((Pagination) => {
+                Pagination.pageSize = pageSize;
+                Pagination.current = current;
+                if(pageSize){
+                    Pagination.pageSize = pageSize;
+                }
+                if(current){
+                    Pagination.current = current;
+                }
+                return Pagination;
+            });
+            getTable();
 
         },
         onChange: (page: number, pageSize?: number) => {
+            
             setPaginationConfig((Pagination) => {
                 Pagination.current = page;
                 if (pageSize) {
@@ -37,6 +50,7 @@ const ApplicationPage = () => {
                 }
                 return Pagination;
             });
+            getTable();
         }
     };
     const columns = [
@@ -115,17 +129,20 @@ const ApplicationPage = () => {
      */
     const getTable = () => {
         setloading(true);
-        _applicationService.gettable().then((x) => {
+        
+        _applicationService.gettable({pageSize: paginationConfig.pageSize, pageCount : paginationConfig.current}).then((x) => {
             if (x.success) {
-                // setPaginationConfig((Pagination) => {
-                //     Pagination.total = x.data.total;
-                //     return Pagination;
-                // });
+                setPaginationConfig((Pagination) => {
+                    Pagination.total = x.result.total;
+                    return Pagination;
+                });
                 // x.data.data.map((item: any, index: number) => {
                 //     item.key = item.id;
                 //     return item;
                 // });
-                setTableData(x.result);
+                setTableData(x.result.data);
+                
+
                 setloading(false);
             }
         });
