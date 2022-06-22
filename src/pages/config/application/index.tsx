@@ -27,15 +27,10 @@ const ApplicationPage = () => {
         current: paginationConfig.current,
         pageSize: paginationConfig.pageSize,
         onShowSizeChange: (current: number, pageSize: number) => {
+            
             setPaginationConfig((Pagination) => {
                 Pagination.pageSize = pageSize;
                 Pagination.current = current;
-                if(pageSize){
-                    Pagination.pageSize = pageSize;
-                }
-                if(current){
-                    Pagination.current = current;
-                }
                 return Pagination;
             });
             getTable();
@@ -129,7 +124,7 @@ const ApplicationPage = () => {
      */
     const getTable = () => {
         setloading(true);
-        
+        console.log(pagination.pageSize,pagination.current )
         _applicationService.gettable({pageSize: paginationConfig.pageSize, pageCount : paginationConfig.current}).then((x) => {
             if (x.success) {
                 setPaginationConfig((Pagination) => {

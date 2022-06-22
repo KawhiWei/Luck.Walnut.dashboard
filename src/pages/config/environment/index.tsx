@@ -44,8 +44,16 @@ const EnvironmentPage = (props: any) => {
         current: paginationConfig.current,
         pageSize: paginationConfig.pageSize,
         onShowSizeChange: (current: number, pageSize: number) => {
+            debugger
+            setPaginationConfig((Pagination) => {
+                Pagination.current = current;
+                Pagination.pageSize = pageSize;
+                return Pagination;
+            });
+            getConfigTable(currentEnvironment);
         },
         onChange: (page: number, pageSize?: number) => {
+            debugger
             setPaginationConfig((Pagination) => {
                 Pagination.current = page;
                 if (pageSize) {
@@ -53,6 +61,7 @@ const EnvironmentPage = (props: any) => {
                 }
                 return Pagination;
             });
+            getConfigTable(currentEnvironment);
         }
     };
     
@@ -136,11 +145,15 @@ const EnvironmentPage = (props: any) => {
  */
     const getConfigTable = (_currentEnvironment: any) => {
         setloading(true);
-        console.log(_currentEnvironment)
         setCurrentEnvironment(_currentEnvironment);
-        _currentEnvironment.id && _environmentService.getConfigListForEnvironmentId(_currentEnvironment.id).then(x => {
+        _currentEnvironment.id && _environmentService.getConfigListForEnvironmentId(_currentEnvironment.id, {pageSize: paginationConfig.pageSize,pageCount:paginationConfig.current}).then(x => {
             if (x.success) {
-                setTableData(x.result);
+                
+                setPaginationConfig((Pagination) => {
+                    Pagination.total = x.result.total;
+                    return Pagination;
+                });
+                setTableData(x.result.data);
                 setloading(false);
             }
         })

@@ -16,8 +16,8 @@ export class EnvironmentService extends BaseService implements IEnvironmentServi
     addEnvironment(_param: any): Promise<IServerPageReturn<any>>{
         return this.dataRequest.postRequest(`${EnvironmentApi.application}`,_param);
     }
-    getConfigListForEnvironmentId(_id: string):Promise<IServerPageReturn<any>>{
-        return this.dataRequest.getRequest(`${EnvironmentApi.application}/${_id}/configlist`);
+    getConfigListForEnvironmentId(_id: string, _param:any):Promise<IServerPageReturn<any>>{
+        return this.dataRequest.postRequest(`${EnvironmentApi.application}/${_id}/configlist`,_param);
     }
 
     addAppConfiguration(_id: string, _param: any):Promise<IServerPageReturn<any>>{
