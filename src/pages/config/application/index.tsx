@@ -1,6 +1,6 @@
 import "../table.less"
 
-import { Button, Col, Form, Input, PaginationProps, Row, Table, message } from "antd";
+import { Button, Col, Form, Input, PaginationProps, Row, Spin, Table, message } from "antd";
 import { formItemLayout, tailLayout } from "@/constans/layout/optionlayout";
 import { initPaginationConfig, tacitPagingProps } from "../../../shared/ajax/request"
 import { useEffect, useState } from "react";
@@ -48,6 +48,7 @@ const ApplicationPage = () => {
             getTable();
         }
     };
+    const [globalLoading, setGlobalLoading] = useState<boolean>(false);
     const columns = [
         {
             title: "应用英文名",
@@ -124,7 +125,7 @@ const ApplicationPage = () => {
      */
     const getTable = () => {
         setloading(true);
-        console.log(pagination.pageSize,pagination.current )
+        setGlobalLoading(true);
         _applicationService.gettable({pageSize: paginationConfig.pageSize, pageCount : paginationConfig.current}).then((x) => {
             if (x.success) {
                 setPaginationConfig((Pagination) => {
@@ -136,9 +137,8 @@ const ApplicationPage = () => {
                 //     return item;
                 // });
                 setTableData(x.result.data);
-                
-
                 setloading(false);
+                setGlobalLoading(false);
             }
         });
 
@@ -165,6 +165,7 @@ const ApplicationPage = () => {
     }
 
     return (<div>
+        <Spin spinning={globalLoading}>
         <Row >
             <Form form={formData}
                 name="horizontal_login" layout="inline"
@@ -186,6 +187,7 @@ const ApplicationPage = () => {
             <Col span={24}><Table bordered columns={columns} dataSource={tableData} loading={loading} pagination={pagination} /></Col>
         </Row>
         {subOperationElement}
+        </Spin>
     </div>)
 
 }
