@@ -5,6 +5,7 @@ import { initPaginationConfig, tacitPagingProps } from "../../../shared/ajax/req
 import { useEffect, useState } from "react";
 
 import ConfigOperation from "./configOperation";
+import ConfigRelease from "./configRelease";
 import { IApplication } from "@/domain/applications/application";
 import { IEnvironmentService } from "@/domain/environment/ienvironment-service";
 import { IocTypes } from "@/shared/config/ioc-types";
@@ -31,6 +32,7 @@ const EnvironmentPage = (props: any) => {
     const [rowId, setRowId] = useState(null);
     const [subOperationElement, setOperationElement] = useState<any>(null);
     const [configOperationElement, setconfigOperationElement] = useState<any>(null);
+    const [configRelease, setConfigRelease] = useState<any>(null);
 
     const [currentEnvironment, setCurrentEnvironment] = useState<any>(null);
 
@@ -237,6 +239,13 @@ const EnvironmentPage = (props: any) => {
         getConfigTable(currentEnvironment);
     }
 
+    const releaseConfig = () => {
+        setConfigRelease(<ConfigRelease onCallbackEvent={claerConfigRelease} operationType={OperationTypeEnum.add} envId={currentEnvironment.id}></ConfigRelease>)
+    }
+    const claerConfigRelease = () => {
+        setConfigRelease(null);
+    }
+
     
     /**
      * 删除
@@ -297,10 +306,9 @@ const EnvironmentPage = (props: any) => {
                         <Col span="24" style={{ textAlign: 'right' }}>
                             <Button onClick={() => { backApplicationPage() }} ><LeftOutlined/>返回应用列表</Button>
                             <Button type="primary" style={{ margin: '8px 8px' }} onClick={() => { addChangeConfig() }}>添加</Button>
-
+                            <Button type="primary" style={{ margin: '8px 8px '}} onClick={() => { releaseConfig() }}>发布环境</Button>
                         </Col>
                     </Row>
-
                     <Row>
                         <Col span={24}><Table bordered columns={columns} dataSource={tableData} loading={loading} pagination={pagination} /></Col>
                     </Row>
@@ -313,6 +321,7 @@ const EnvironmentPage = (props: any) => {
                 </Modal>
                 {subOperationElement}
                 {configOperationElement}
+                {configRelease}
             </Layout>
             </Spin>
         </>)
