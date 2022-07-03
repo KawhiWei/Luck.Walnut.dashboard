@@ -50,4 +50,17 @@ export interface IEnvironmentService{
      * @param _id 
      */
     getConfigDetail(_id:string):Promise<IServerPageReturn<any>>;
+
+    /**
+     * 获取待发布配置
+     * @param _id 
+     * @param _param 
+     */
+    getConfigRelease(_id: string, _param:any):Promise<IServerPageReturn<any>>;
+
+    /**
+     * 发布接口
+     * @param _param 
+     */
+    releasePublish(_id:string,_param:any):Promise<IServerPageReturn<any>>;
 }
