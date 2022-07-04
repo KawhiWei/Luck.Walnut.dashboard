@@ -96,19 +96,6 @@ const ConfigRelease = (props: IProp) => {
                     {record.isPublish?<Tag color="cyan">是</Tag>:<Tag color="orange">否</Tag>}
                 </div>
             }
-        }, {
-            title: "操作",
-            dataIndex: "id",
-            key: "id",
-            render: (text: any, record: any) => {
-                return <div className="table-operation">
-                        {/*  */}
-                        {/* <Button type="primary" onClick={() => editRow(record.id)}>编辑</Button>
-                        <Button type="primary" danger onClick={() => deleteClick(record.id, "config")}>删除</Button> */}
-                        {/* onClick={() => deleteClick(record.id)} */}
-                        {/*  */}
-                </div>
-            }
         }
     ]
 
@@ -117,11 +104,8 @@ const ConfigRelease = (props: IProp) => {
     }, [])
 
     const onGetLoad = () => {
-        switch (props.operationType){
-            case OperationTypeEnum.add:
-                editOperationState(true, "添加")
-                break;
-        }
+        editOperationState(true, "发布配置")
+        getTable();
     }
 
     /**
@@ -129,13 +113,19 @@ const ConfigRelease = (props: IProp) => {
      */
     const getTable = () => {
         setloading(true);
-        props.envId && _environmentService.getConfigRelease(props.envId, {pageSize: paginationConfig.pageSize,pageCount:paginationConfig.current}).then((x) => {
+        let param = {pageSize: paginationConfig.pageSize,pageIndex:paginationConfig.current};
+        props.envId && _environmentService.getConfigRelease(props.envId, param).then((x) => {
             if(x.success){
                 setPaginationConfig((Pagination) => {
                     Pagination.total = x.result.total;
                     return Pagination;
                 });
+                // x.result.data.map((item: any, index: number) => {
+                //     item.key = item.id;
+                //     return item;
+                // });
                 setTableData(x.result.data);
+
                 setloading(false);
             }
         })
@@ -156,7 +146,6 @@ const ConfigRelease = (props: IProp) => {
     }
 
     const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-        console.log('selectedRowKeys changed: ', selectedRowKeys);
         setSelectedRowKeys(newSelectedRowKeys);
     };
 
@@ -167,13 +156,20 @@ const ConfigRelease = (props: IProp) => {
 
     const release = () =>  {
         setloading(true);
-        props.envId && _environmentService.releasePublish(props.envId,selectedRowKeys).then((rep) => {
+        let param:Array<string> = [];
+        selectedRowKeys.map(key => {
+            param.push(key.toString());
+        });
+        props.envId && _environmentService.releasePublish(props.envId, param ).then((rep) => {
             if (!rep.success) {
                 message.error(rep.errorMessage, 3)
             } else {
+                message.success("发布成功")
+                // debugger
                 props.onCallbackEvent && props.onCallbackEvent();
             }
         })
+        setloading(false);
     }
 
     return (<div>
@@ -183,7 +179,14 @@ const ConfigRelease = (props: IProp) => {
             closable={false}
             maskClosable={false}
             getContainer={false}
-            onCancel = {onCancel}
+            footer={
+            <Row>
+                <Col span="24" style={{ textAlign: 'right' }}>
+                <Button type="primary" style={{ margin: '8px 8px '}} onClick={() => { release() }}>发布配置</Button>
+                <Button type="primary" style={{ margin: '8px 8px '}}  onClick={() => {onCancel()}}>取消</Button>
+                </Col>
+            </Row>
+            }
         >
             <Form layout="inline" name="horizontal_login">
                 <Form.Item name="environmentName">
@@ -191,14 +194,20 @@ const ConfigRelease = (props: IProp) => {
                 </Form.Item>
                 <Button type="primary" htmlType="submit" >查询</Button>
             </Form>
-            <Row>
+            {/* <Row>
                 <Col span="24" style={{ textAlign: 'right' }}>
                 <Button type="primary" style={{ margin: '8px 8px '}} onClick={() => { release() }}>发布环境</Button>
+                <Button type="primary" style={{ margin: '8px 8px '}}  onClick={() => {onCancel()}}>取消</Button>
                 </Col>
-            </Row>
-            <Table bordered columns={columns} rowSelection={rowSelection} dataSource={tableData}>
+            </Row> */}
+            <Table bordered columns={columns}  dataSource={tableData} loading={loading} 
+                pagination={pagination}
+                rowSelection={rowSelection}
+                rowKey={"id"}
+            >
 
             </Table>
+
         </Modal>
     </div>)
 }

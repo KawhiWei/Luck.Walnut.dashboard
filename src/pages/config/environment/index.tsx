@@ -153,7 +153,8 @@ const EnvironmentPage = (props: any) => {
     const getConfigTable = (_currentEnvironment: any) => {
         setloading(true);
         setCurrentEnvironment(_currentEnvironment);
-        _currentEnvironment.id && _environmentService.getConfigListForEnvironmentId(_currentEnvironment.id, {pageSize: paginationConfig.pageSize,pageCount:paginationConfig.current}).then(x => {
+        let param = {pageSize: paginationConfig.pageSize,pageIndex:paginationConfig.current}
+        _currentEnvironment.id && _environmentService.getConfigListForEnvironmentId(_currentEnvironment.id, param).then(x => {
             if (x.success) {
                 
                 setPaginationConfig((Pagination) => {
@@ -244,6 +245,7 @@ const EnvironmentPage = (props: any) => {
     }
     const claerConfigRelease = () => {
         setConfigRelease(null);
+        getConfigTable(currentEnvironment);
     }
 
     
@@ -306,7 +308,7 @@ const EnvironmentPage = (props: any) => {
                         <Col span="24" style={{ textAlign: 'right' }}>
                             <Button onClick={() => { backApplicationPage() }} ><LeftOutlined/>返回应用列表</Button>
                             <Button type="primary" style={{ margin: '8px 8px' }} onClick={() => { addChangeConfig() }}>添加</Button>
-                            <Button type="primary" style={{ margin: '8px 8px '}} onClick={() => { releaseConfig() }}>发布环境</Button>
+                            <Button type="primary" style={{ margin: '8px 8px '}} onClick={() => { releaseConfig() }}>发布配置</Button>
                         </Col>
                     </Row>
                     <Row>

@@ -17,7 +17,7 @@ export class EnvironmentService extends BaseService implements IEnvironmentServi
         return this.dataRequest.postRequest(`${EnvironmentApi.application}`,_param);
     }
     getConfigListForEnvironmentId(_id: string, _param:any):Promise<IServerPageReturn<any>>{
-        return this.dataRequest.postRequest(`${EnvironmentApi.application}/${_id}/configlist`,_param);
+        return this.dataRequest.getRequest(`${EnvironmentApi.application}/${_id}/configlist`,_param);
     }
 
     addAppConfiguration(_id: string, _param: any):Promise<IServerPageReturn<any>>{
@@ -32,9 +32,9 @@ export class EnvironmentService extends BaseService implements IEnvironmentServi
         return this.dataRequest.getRequest(`${EnvironmentApi.application}/${_id}/config`)
     }
     getConfigRelease(_id: string, _param:any):Promise<IServerPageReturn<any>>{
-        return this.dataRequest.postRequest(`${EnvironmentApi.application}/ToBeReleasConfiguration`,_param);
+        return this.dataRequest.getRequest(`${EnvironmentApi.application}/${_id}/getdontpublishconfiglist`,_param);
     }
     releasePublish(_id:string,_param:any):Promise<IServerPageReturn<any>>{
-        return this.dataRequest.postRequest(`${EnvironmentApi.application}/${_id}/publish`,_param)
+        return this.dataRequest.putRequest(`${EnvironmentApi.application}/${_id}/publish`,_param)
     }
 }
