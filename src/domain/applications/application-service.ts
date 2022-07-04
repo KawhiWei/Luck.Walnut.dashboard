@@ -14,7 +14,7 @@ export class ApplicationService extends BaseService implements IApplicationServi
         return this.dataRequest.postRequest(`${ApplicationApi.application}`,_param)
     }
     gettable(_param: any): Promise<IServerPageReturn<any>> {
-        return this.dataRequest.postRequest(`${ApplicationApi.application}/Page`,_param)
+        return this.dataRequest.getRequest(`${ApplicationApi.application}/Page`,_param)
     }
 
     delete(_id: string): Promise<IServerPageReturn<any>> {

@@ -126,7 +126,8 @@ const ApplicationPage = () => {
     const getTable = () => {
         setloading(true);
         setGlobalLoading(true);
-        _applicationService.gettable({pageSize: paginationConfig.pageSize, pageCount : paginationConfig.current}).then((x) => {
+        let param={pageSize: paginationConfig.pageSize, pageIndex : paginationConfig.current}
+        _applicationService.gettable(param).then((x) => {
             if (x.success) {
                 setPaginationConfig((Pagination) => {
                     Pagination.total = x.result.total;
