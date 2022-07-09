@@ -4,6 +4,9 @@ import { IEnvironmentService } from "./ienvironment-service";
 import { IServerPageReturn } from "@/shared/entity";
 
 export class EnvironmentService extends BaseService implements IEnvironmentService{
+    updateAppConfiguration(_environmentId: string, _id: string, _param: any): Promise<IServerPageReturn<any>> {
+        return this.dataRequest.putRequest(`${EnvironmentApi.application}/${_environmentId}/${_id}/config`,_param)
+    }
     getEnvironmentList(_applicationId:string): Promise<IServerPageReturn<any>> {
         return this.dataRequest.getRequest(`${EnvironmentApi.application}/${_applicationId}/list`)
     }

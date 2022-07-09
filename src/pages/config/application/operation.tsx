@@ -117,6 +117,7 @@ const Operation = (props: IProp) => {
                 message.error(rep.errorMessage, 3)
             }
             else {
+                message.success("保存成功",3)
                 props.onCallbackEvent && props.onCallbackEvent();
             }
         })
@@ -128,6 +129,7 @@ const Operation = (props: IProp) => {
                 message.error(rep.errorMessage, 3)
             }
             else {
+                message.success("保存成功",3)
                 props.onCallbackEvent && props.onCallbackEvent();
             }
         })

@@ -48,7 +48,7 @@ const ConfigOperation = (props: IProp) => {
     */
     useEffect(() => {
         onGetLoad()
-        console.log()
+        console.log(props)
     }, [formData]);
 
     const onFinish = () => {
@@ -58,7 +58,7 @@ const ConfigOperation = (props: IProp) => {
                 onAdd(param);
                 break;
             case OperationTypeEnum.edit:
-                onAdd(param);
+                onUpdate(param);
                 break;
         }
     }
@@ -68,11 +68,22 @@ const ConfigOperation = (props: IProp) => {
             if (!rep.success) {
                 message.error(rep.errorMessage, 3)
             } else {
+                message.success("保存成功",3)
                 props.onCallbackEvent && props.onCallbackEvent();
             }
         })
     }
 
+    const onUpdate = (_param: any) => {
+        props.id && _environmentService.updateAppConfiguration(props.envId,props.id, _param).then(rep => {
+            if (!rep.success) {
+                message.error(rep.errorMessage, 3)
+            } else {
+                message.success("保存成功",3)
+                onCancel();
+            }
+        })
+    }
     const editOperationState = (_visible: boolean, _title?: string) => {
         setOperationState({ visible: _visible, title: _title });
     }

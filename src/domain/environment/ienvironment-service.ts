@@ -40,6 +40,13 @@ export interface IEnvironmentService{
     addAppConfiguration(_id: string, _param: any):Promise<IServerPageReturn<any>>;
 
     /**
+     * 环境添加配置
+     * @param _id 
+     * @param _param 
+     */
+     updateAppConfiguration(_environmentId: string,_id: string, _param: any):Promise<IServerPageReturn<any>>;
+    
+    /**
      * 删除配置项
      * @param _id 
      */
