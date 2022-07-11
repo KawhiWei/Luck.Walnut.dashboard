@@ -1,5 +1,5 @@
-import { Button, Card, Col, Descriptions, Form, Input, Layout, List, Modal, PaginationProps, Row, Spin, Table, Tag, message } from "antd";
-import { DeleteTwoTone, FileAddTwoTone, LeftOutlined } from '@ant-design/icons';
+import { Button, Card, Col, Descriptions, Form, Input, Layout, List, Modal, PaginationProps, Row, Spin, Table, Tag, message, Tooltip,Popconfirm } from "antd";
+import { DeleteOutlined, DeleteTwoTone, FileAddTwoTone, LeftOutlined, WarningOutlined } from '@ant-design/icons';
 import { formItemLayout, tailLayout } from "@/constans/layout/optionlayout";
 import { initPaginationConfig, tacitPagingProps } from "../../../shared/ajax/request"
 import { useEffect, useState } from "react";
@@ -112,11 +112,20 @@ const EnvironmentPage = (props: any) => {
             key: "id",
             render: (text: any, record: any) => {
                 return <div className="table-operation">
-                        {/*  */}
-                        <Button type="primary" onClick={() => editRow(record.id)}>编辑</Button>
-                        <Button type="primary" danger onClick={() => deleteClick(record.id, "config")}>删除</Button>
-                        {/* onClick={() => deleteClick(record.id)} */}
-                        {/*  */}
+                    {/*  */}
+                    <Button type="primary" onClick={() => editRow(record.id)}>编辑
+                    </Button>
+
+                    <Tooltip placement="bottom" title="删除">
+                        <Popconfirm placement="top" title="确认删除?" onConfirm={() => delConfigClick(currentEnvironment.id, record.id)} icon={<WarningOutlined />}>
+                            <Button type="primary" danger>删除</Button>
+                        </Popconfirm>
+                    </Tooltip>
+
+                    {/* <Button type="primary" danger onClick={() => deleteClick(record.id, "config")}>删除</Button> */}
+
+                    {/* onClick={() => deleteClick(record.id)} */}
+                    {/*  */}
                 </div>
             }
         }
@@ -125,6 +134,9 @@ const EnvironmentPage = (props: any) => {
     useEffect(() => {
         getEnvironmentList();
     }, [paginationConfig])
+    useEffect(() => {
+        console.log("configid写入成功")
+    }, [configid])
 
     /**
      * 获取列表信息
@@ -182,7 +194,7 @@ const EnvironmentPage = (props: any) => {
         })
     }
 
-    const deleteClick = (_id: any, type: any) => {
+    const deleteClick = async (_id: any, type: any) => {
         switch (deltype) {
             case "env":
                 setRowId(_id);
@@ -204,7 +216,8 @@ const EnvironmentPage = (props: any) => {
                 deleteRow(rowId);
                 break;
             case "config":
-                // currentEnvironment && delConfigClick(currentEnvironment.id,);
+                console.log(deltype,configid)
+                currentEnvironment && delConfigClick(currentEnvironment.id,configid);
                 break;
         }
 
@@ -265,7 +278,7 @@ const EnvironmentPage = (props: any) => {
     }
 
     const editRow = (_id: any) => {
-        setOperationElement(<ConfigOperation onCallbackEvent={claerConfigOperation} operationType={OperationTypeEnum.edit} id={_id} envId={currentEnvironment.id} />)
+        setOperationElement(<ConfigOperation onCallbackEvent={() => getConfigTable(currentEnvironment)} operationType={OperationTypeEnum.edit} id={_id} envId={currentEnvironment.id} />)
     }
 
     return (
