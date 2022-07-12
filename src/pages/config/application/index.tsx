@@ -1,6 +1,7 @@
 import "../table.less"
 
-import { Button, Col, Form, Input, PaginationProps, Row, Spin, Table, message } from "antd";
+import { Button, Col, Form, Input, PaginationProps, Popconfirm, Row, Spin, Table, Tooltip, message } from "antd";
+import { DeleteOutlined, EditOutlined, FundViewOutlined, SettingOutlined, WarningOutlined } from "@ant-design/icons";
 import { formItemLayout, tailLayout } from "@/constans/layout/optionlayout";
 import { initPaginationConfig, tacitPagingProps } from "../../../shared/ajax/request"
 import { useEffect, useState } from "react";
@@ -27,7 +28,7 @@ const ApplicationPage = () => {
         current: paginationConfig.current,
         pageSize: paginationConfig.pageSize,
         onShowSizeChange: (current: number, pageSize: number) => {
-            
+
             setPaginationConfig((Pagination) => {
                 Pagination.pageSize = pageSize;
                 Pagination.current = current;
@@ -37,7 +38,7 @@ const ApplicationPage = () => {
 
         },
         onChange: (page: number, pageSize?: number) => {
-            
+
             setPaginationConfig((Pagination) => {
                 Pagination.current = page;
                 if (pageSize) {
@@ -86,9 +87,19 @@ const ApplicationPage = () => {
             key: "id",
             render: (text: any, record: any) => {
                 return <div className="table-operation">
-                        <Button type="primary" onClick={() => editRow(record.id)}>编辑</Button>
-                        <Button type="primary" onClick={()=>goToConfig(record.appId)}>应用配置</Button>
-                        <Button type="primary" danger onClick={() => deleteRow(record.id)}>删除</Button>
+                    <Tooltip placement="top" title="应用配置">
+                        <SettingOutlined style={{ color: '#108ee9', marginRight: 10, fontSize: 16 }} onClick={() => goToConfig(record.appId)} />
+                    </Tooltip>
+                    <Tooltip placement="top" title="编辑">
+                        <EditOutlined style={{ color: 'orange', marginRight: 10, fontSize: 16 }} onClick={() => editRow(record.id)} />
+                    </Tooltip>
+
+
+                    <Tooltip placement="top" title="删除">
+                        <Popconfirm placement="top" title="确认删除?" onConfirm={() => deleteRow(record.id)} icon={<WarningOutlined />}>
+                            <DeleteOutlined style={{ color: 'red', fontSize: 16 }} />
+                        </Popconfirm>
+                    </Tooltip>
                 </div>
             }
         }
@@ -96,8 +107,8 @@ const ApplicationPage = () => {
     const goToConfig = (_appId: string) => {
         history.push({
             pathname: "environment",
-            state:{
-                appId:_appId
+            state: {
+                appId: _appId
             }
         });
     }
@@ -126,7 +137,7 @@ const ApplicationPage = () => {
     const getTable = () => {
         setloading(true);
         setGlobalLoading(true);
-        let param={pageSize: paginationConfig.pageSize, pageIndex : paginationConfig.current}
+        let param = { pageSize: paginationConfig.pageSize, pageIndex: paginationConfig.current }
         _applicationService.gettable(param).then((x) => {
             if (x.success) {
                 setPaginationConfig((Pagination) => {
@@ -167,30 +178,28 @@ const ApplicationPage = () => {
 
     return (<div>
         <Spin spinning={globalLoading}>
-        <Row >
-            <Form form={formData}
-                name="horizontal_login" layout="inline"
-                onFinish={onSearch}>
-                <Form.Item
-                    name="appId"
-                    label="应用标识">
-                    <Input />
-                </Form.Item>
-                <Button type="primary" htmlType="submit" onClick={() => { getTable() }}>查询</Button>
-            </Form>
-        </Row>
-        <Row>
-            <Col span="24" style={{ textAlign: 'right' }}>
-                <Button type="primary" style={{ margin: '8px 8px' }} onClick={() => { addChange() }}>添加</Button>
-            </Col>
-        </Row>
-        <Row>
-            <Col span={24}><Table bordered columns={columns} dataSource={tableData} loading={loading} pagination={pagination} /></Col>
-        </Row>
-        {subOperationElement}
+            <Row >
+                <Form form={formData}
+                    name="horizontal_login" layout="inline"
+                    onFinish={onSearch}>
+                    <Form.Item
+                        name="appId"
+                        label="应用标识">
+                        <Input />
+                    </Form.Item>
+                    <Button type="primary" htmlType="submit" onClick={() => { getTable() }}>查询</Button>
+                </Form>
+            </Row>
+            <Row>
+                <Col span="24" style={{ textAlign: 'right' }}>
+                    <Button type="primary" style={{ margin: '8px 8px' }} onClick={() => { addChange() }}>添加</Button>
+                </Col>
+            </Row>
+            <Row>
+                <Col span={24}><Table bordered columns={columns} dataSource={tableData} loading={loading} pagination={pagination} /></Col>
+            </Row>
+            {subOperationElement}
         </Spin>
     </div>)
-
 }
-
 export default ApplicationPage;

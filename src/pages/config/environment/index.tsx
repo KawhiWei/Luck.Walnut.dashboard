@@ -1,5 +1,5 @@
-import { Button, Card, Col, Descriptions, Form, Input, Layout, List, Modal, PaginationProps, Row, Spin, Table, Tag, message, Tooltip,Popconfirm } from "antd";
-import { DeleteOutlined, DeleteTwoTone, FileAddTwoTone, LeftOutlined, WarningOutlined } from '@ant-design/icons';
+import { Button, Card, Col, Descriptions, Form, Input, Layout, List, Modal, PaginationProps, Popconfirm, Row, Spin, Table, Tag, Tooltip, message } from "antd";
+import { DeleteOutlined, DeleteTwoTone, EditOutlined, FileAddTwoTone, LeftOutlined, WarningOutlined } from '@ant-design/icons';
 import { formItemLayout, tailLayout } from "@/constans/layout/optionlayout";
 import { initPaginationConfig, tacitPagingProps } from "../../../shared/ajax/request"
 import { useEffect, useState } from "react";
@@ -26,7 +26,7 @@ const EnvironmentPage = (props: any) => {
 
     const [loading, setloading] = useState<boolean>(false);
     const [globalLoading, setGlobalLoading] = useState<boolean>(false);
-    
+
 
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [rowId, setRowId] = useState(null);
@@ -69,7 +69,7 @@ const EnvironmentPage = (props: any) => {
             getConfigTable(currentEnvironment);
         }
     };
-    
+
     const columns = [
         {
             title: "配置项key",
@@ -88,13 +88,13 @@ const EnvironmentPage = (props: any) => {
             title: "组",
             dataIndex: "group",
             key: "group",
-        },{
+        }, {
             title: "是否公开",
             dataIndex: "isOpen",
             key: "id",
             render: (text: any, record: any) => {
                 return <div>
-                    {record.isOpen?<Tag color="cyan">是</Tag>:<Tag color="orange">否</Tag>}
+                    {record.isOpen ? <Tag color="cyan">是</Tag> : <Tag color="orange">否</Tag>}
                 </div>
             }
         }, {
@@ -103,7 +103,7 @@ const EnvironmentPage = (props: any) => {
             key: "id",
             render: (text: any, record: any) => {
                 return <div>
-                    {record.isPublish?<Tag color="cyan">是</Tag>:<Tag color="orange">否</Tag>}
+                    {record.isPublish ? <Tag color="cyan">是</Tag> : <Tag color="orange">否</Tag>}
                 </div>
             }
         }, {
@@ -112,13 +112,14 @@ const EnvironmentPage = (props: any) => {
             key: "id",
             render: (text: any, record: any) => {
                 return <div className="table-operation">
-                    {/*  */}
-                    <Button type="primary" onClick={() => editRow(record.id)}>编辑
-                    </Button>
-
-                    <Tooltip placement="bottom" title="删除">
+                    
+                    <Tooltip placement="top" title="编辑">
+                        <EditOutlined style={{ color: 'orange', marginRight: 10, fontSize: 16 }} onClick={() => editRow(record.id)} />
+                    </Tooltip>
+                    
+                    <Tooltip placement="top" title="删除">
                         <Popconfirm placement="top" title="确认删除?" onConfirm={() => delConfigClick(currentEnvironment.id, record.id)} icon={<WarningOutlined />}>
-                            <Button type="primary" danger>删除</Button>
+                            <DeleteOutlined style={{ color: 'red', fontSize: 16 }} />
                         </Popconfirm>
                     </Tooltip>
 
@@ -165,10 +166,10 @@ const EnvironmentPage = (props: any) => {
     const getConfigTable = (_currentEnvironment: any) => {
         setloading(true);
         setCurrentEnvironment(_currentEnvironment);
-        let param = {pageSize: paginationConfig.pageSize,pageIndex:paginationConfig.current}
+        let param = { pageSize: paginationConfig.pageSize, pageIndex: paginationConfig.current }
         _currentEnvironment.id && _environmentService.getConfigListForEnvironmentId(_currentEnvironment.id, param).then(x => {
             if (x.success) {
-                
+
                 setPaginationConfig((Pagination) => {
                     Pagination.total = x.result.total;
                     return Pagination;
@@ -216,18 +217,18 @@ const EnvironmentPage = (props: any) => {
                 deleteRow(rowId);
                 break;
             case "config":
-                console.log(deltype,configid)
-                currentEnvironment && delConfigClick(currentEnvironment.id,configid);
+                console.log(deltype, configid)
+                currentEnvironment && delConfigClick(currentEnvironment.id, configid);
                 break;
         }
 
     }
 
-    const backApplicationPage=()=>{
+    const backApplicationPage = () => {
         history.push({
             pathname: "application",
         });
-        
+
     }
 
     const handleCancel = () => {
@@ -236,7 +237,7 @@ const EnvironmentPage = (props: any) => {
 
     const addChange = () => {
 
-        
+
         setOperationElement(<Operation appId={appId} onCallbackEvent={clearsubAllocationRoleElement} operationType={OperationTypeEnum.add} />)
     }
 
@@ -261,12 +262,12 @@ const EnvironmentPage = (props: any) => {
         getConfigTable(currentEnvironment);
     }
 
-    
+
     /**
      * 删除
      * @param id 
      */
-    const delConfigClick = (_currentEnvironmentId:any,_configid:string) => {
+    const delConfigClick = (_currentEnvironmentId: any, _configid: string) => {
         currentEnvironment && _environmentService.deleteAppConfiguration(_currentEnvironmentId, _configid).then(p => {
             if (p.success) {
                 message.success('删除成功');
@@ -283,61 +284,61 @@ const EnvironmentPage = (props: any) => {
 
     return (
         <>
-        <Spin spinning={globalLoading}>
-            <Layout>
-                <Sider theme="light" className="" >
-                    <Card size="small" title="应用环境列表" >
-                        <Button type="primary" onClick={() => { addChange() }} block>添加环境</Button>
-                        {
-                            listData.map(x => {
-                                return <div>
-                                    <Button style={{ marginTop: '10px' }} block onClick={p => getConfigTable(x)}>{x.environmentName}</Button>
-                                    {/* <Button type="primary" shape="circle">A</Button> */}
-                                </div>
-                            })
-                        }
-                    </Card>
-                    <div style={{ marginTop: '10px' }}>
-                        <Card size="small" title="应用信息" >
-                            <p>唯一标识：{applicationData?.appId}</p>
-                            <p>应用名称：{applicationData?.appId}</p>
-                            <p>中文名称：{applicationData?.chinessName}</p>
-                            <p>英文名称：{applicationData?.englishName}</p>
-                            <p>负责人{applicationData?.linkMan}</p>
-                            <p>状态：{applicationData?.status}</p>
+            <Spin spinning={globalLoading}>
+                <Layout>
+                    <Sider theme="light" className="" >
+                        <Card size="small" title="应用环境列表" >
+                            <Button type="primary" onClick={() => { addChange() }} block>添加环境</Button>
+                            {
+                                listData.map(x => {
+                                    return <div>
+                                        <Button style={{ marginTop: '10px' }} block onClick={p => getConfigTable(x)}>{x.environmentName}</Button>
+                                        {/* <Button type="primary" shape="circle">A</Button> */}
+                                    </div>
+                                })
+                            }
                         </Card>
-                    </div>
-                </Sider>
-                <Content>
-                    <Card title={"选择环境："+currentEnvironment?.environmentName} >
-                        <Form layout="inline" name="horizontal_login">
-                            <Form.Item name="environmentName">
-                                <Input placeholder="查找key" />
-                            </Form.Item>
-                            <Button type="primary" htmlType="submit" >查询</Button>
-                        </Form>
-                    </Card>
-                    <Row>
-                        <Col span="24" style={{ textAlign: 'right' }}>
-                            <Button onClick={() => { backApplicationPage() }} ><LeftOutlined/>返回应用列表</Button>
-                            <Button type="primary" style={{ margin: '8px 8px' }} onClick={() => { addChangeConfig() }}>添加</Button>
-                            <Button type="primary" style={{ margin: '8px 8px '}} onClick={() => { releaseConfig() }}>发布配置</Button>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col span={24}><Table bordered columns={columns} dataSource={tableData} loading={loading} pagination={pagination} /></Col>
-                    </Row>
-                </Content>
-                <Modal title="提示" visible={isModalVisible} onOk={handleOk}
-                    onCancel={handleCancel}
-                    okText="确认"
-                    cancelText="取消">
-                    <p>是否确认删除?</p>
-                </Modal>
-                {subOperationElement}
-                {configOperationElement}
-                {configRelease}
-            </Layout>
+                        <div style={{ marginTop: '10px' }}>
+                            <Card size="small" title="应用信息" >
+                                <p>唯一标识：{applicationData?.appId}</p>
+                                <p>应用名称：{applicationData?.appId}</p>
+                                <p>中文名称：{applicationData?.chinessName}</p>
+                                <p>英文名称：{applicationData?.englishName}</p>
+                                <p>负责人{applicationData?.linkMan}</p>
+                                <p>状态：{applicationData?.status}</p>
+                            </Card>
+                        </div>
+                    </Sider>
+                    <Content>
+                        <Card title={"选择环境：" + currentEnvironment?.environmentName} >
+                            <Form layout="inline" name="horizontal_login">
+                                <Form.Item name="environmentName">
+                                    <Input placeholder="查找key" />
+                                </Form.Item>
+                                <Button type="primary" htmlType="submit" >查询</Button>
+                            </Form>
+                        </Card>
+                        <Row>
+                            <Col span="24" style={{ textAlign: 'right' }}>
+                                <Button onClick={() => { backApplicationPage() }} ><LeftOutlined />返回应用列表</Button>
+                                <Button type="primary" style={{ margin: '8px 8px' }} onClick={() => { addChangeConfig() }}>添加</Button>
+                                <Button type="primary" style={{ margin: '8px 8px ' }} onClick={() => { releaseConfig() }}>发布配置</Button>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={24}><Table bordered columns={columns} dataSource={tableData} loading={loading} pagination={pagination} /></Col>
+                        </Row>
+                    </Content>
+                    <Modal title="提示" visible={isModalVisible} onOk={handleOk}
+                        onCancel={handleCancel}
+                        okText="确认"
+                        cancelText="取消">
+                        <p>是否确认删除?</p>
+                    </Modal>
+                    {subOperationElement}
+                    {configOperationElement}
+                    {configRelease}
+                </Layout>
             </Spin>
         </>)
 }
