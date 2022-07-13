@@ -42,13 +42,12 @@ const ConfigOperation = (props: IProp) => {
     const [formData] = Form.useForm();
     const [operationState, setOperationState] = useState<IOperationConfig>({ visible: false })
     const _environmentService: IEnvironmentService = useHookProvider(IocTypes.EnvironmentService);
-
+    const [loading, setLoading] = useState<boolean>(false);
     /**
     * 页面初始化事件
     */
     useEffect(() => {
         onGetLoad()
-        console.log(props)
     }, [formData]);
 
     const onFinish = () => {
@@ -61,9 +60,11 @@ const ConfigOperation = (props: IProp) => {
                 onUpdate(param);
                 break;
         }
+        setLoading(false);
     }
 
     const onAdd = (_param: any) => {
+        setLoading(true)
         _environmentService.addAppConfiguration(props.envId, _param).then(rep => {
             if (!rep.success) {
                 message.error(rep.errorMessage, 3)
@@ -75,6 +76,7 @@ const ConfigOperation = (props: IProp) => {
     }
 
     const onUpdate = (_param: any) => {
+        setLoading(true)
         props.id && _environmentService.updateAppConfiguration(props.envId,props.id, _param).then(rep => {
             if (!rep.success) {
                 message.error(rep.errorMessage, 3)
@@ -170,7 +172,7 @@ const ConfigOperation = (props: IProp) => {
                     <Col span="24" style={{ textAlign: 'right' }}>
                         <Form.Item {...tailLayout}>
                             <Button onClick={() => onCancel()}>取消</Button>
-                            <Button style={{ margin: '0 8px' }} type="primary" htmlType="submit">保存</Button>
+                            <Button style={{ margin: '0 8px' }} type="primary" loading={loading} htmlType="submit">保存</Button>
                         </Form.Item>
                     </Col>
                 </Row>

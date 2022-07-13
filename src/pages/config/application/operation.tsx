@@ -109,6 +109,7 @@ const Operation = (props: IProp) => {
                 onUpdate(param);
                 break;
         }
+        setLoading(false)
     }
     const onAdd = (_param: any) => {
         setLoading(true)

@@ -76,9 +76,7 @@ const Operation = (props: IProp) => {
         let param={
             environmentName:field.environmentName,
             appId:props.appId
-        }
-        console.log(param)
-        
+        }        
         switch (props.operationType) {
             case OperationTypeEnum.add:
                 onAdd(param);
