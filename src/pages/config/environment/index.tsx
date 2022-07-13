@@ -27,8 +27,6 @@ const EnvironmentPage = (props: any) => {
     const [loading, setloading] = useState<boolean>(false);
     const [globalLoading, setGlobalLoading] = useState<boolean>(false);
 
-
-    const [isModalVisible, setIsModalVisible] = useState(false);
     const [rowId, setRowId] = useState(null);
     const [subOperationElement, setOperationElement] = useState<any>(null);
     const [configOperationElement, setconfigOperationElement] = useState<any>(null);
@@ -116,17 +114,11 @@ const EnvironmentPage = (props: any) => {
                     <Tooltip placement="top" title="编辑">
                         <EditOutlined style={{ color: 'orange', marginRight: 10, fontSize: 16 }} onClick={() => editRow(record.id)} />
                     </Tooltip>
-                    
                     <Tooltip placement="top" title="删除">
                         <Popconfirm placement="top" title="确认删除?" onConfirm={() => delConfigClick(currentEnvironment.id, record.id)} icon={<WarningOutlined />}>
                             <DeleteOutlined style={{ color: 'red', fontSize: 16 }} />
                         </Popconfirm>
                     </Tooltip>
-
-                    {/* <Button type="primary" danger onClick={() => deleteClick(record.id, "config")}>删除</Button> */}
-
-                    {/* onClick={() => deleteClick(record.id)} */}
-                    {/*  */}
                 </div>
             }
         }
@@ -135,10 +127,6 @@ const EnvironmentPage = (props: any) => {
     useEffect(() => {
         getEnvironmentList();
     }, [paginationConfig])
-    useEffect(() => {
-        console.log("configid写入成功")
-    }, [configid])
-
     /**
      * 获取列表信息
      */
@@ -194,36 +182,6 @@ const EnvironmentPage = (props: any) => {
             }
         })
     }
-
-    const deleteClick = async (_id: any, type: any) => {
-        switch (deltype) {
-            case "env":
-                setRowId(_id);
-                break;
-            case "config":
-                console.log(_id)
-                setconfigid(_id);
-                break;
-        }
-        setDelType(type)
-        setIsModalVisible(true);
-
-    }
-
-    const handleOk = () => {
-        setIsModalVisible(false);
-        switch (deltype) {
-            case "env":
-                deleteRow(rowId);
-                break;
-            case "config":
-                console.log(deltype, configid)
-                currentEnvironment && delConfigClick(currentEnvironment.id, configid);
-                break;
-        }
-
-    }
-
     const backApplicationPage = () => {
         history.push({
             pathname: "application",
@@ -231,13 +189,7 @@ const EnvironmentPage = (props: any) => {
 
     }
 
-    const handleCancel = () => {
-        setIsModalVisible(false);
-    }
-
     const addChange = () => {
-
-
         setOperationElement(<Operation appId={appId} onCallbackEvent={clearsubAllocationRoleElement} operationType={OperationTypeEnum.add} />)
     }
 
@@ -326,15 +278,11 @@ const EnvironmentPage = (props: any) => {
                             </Col>
                         </Row>
                         <Row>
-                            <Col span={24}><Table bordered columns={columns} dataSource={tableData} loading={loading} pagination={pagination} /></Col>
+                            <Col span={24}>
+                                <Table bordered columns={columns} dataSource={tableData} loading={loading} pagination={pagination}  scroll={{ y: 600 }}/>
+                                </Col>
                         </Row>
                     </Content>
-                    <Modal title="提示" visible={isModalVisible} onOk={handleOk}
-                        onCancel={handleCancel}
-                        okText="确认"
-                        cancelText="取消">
-                        <p>是否确认删除?</p>
-                    </Modal>
                     {subOperationElement}
                     {configOperationElement}
                     {configRelease}
