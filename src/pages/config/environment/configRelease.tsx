@@ -1,11 +1,12 @@
-import { Button, Form, Modal, Table, Row,Input, Tag, PaginationProps,Col,message } from "antd";
-import { OperationTypeEnum } from "@/shared/operation/operationType";
-import { useEffect, useState } from "react";
-import { IOperationConfig } from "@/shared/operation/operationConfig";
-import { IEnvironmentService } from "@/domain/environment/ienvironment-service";
-import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
-import { IocTypes } from "@/shared/config/ioc-types";
+import { Button, Col, Form, Input, Modal, PaginationProps, Row, Table, Tag, message } from "antd";
 import { initPaginationConfig, tacitPagingProps } from "../../../shared/ajax/request"
+import { useEffect, useState } from "react";
+
+import { IEnvironmentService } from "@/domain/environment/ienvironment-service";
+import { IOperationConfig } from "@/shared/operation/operationConfig";
+import { IocTypes } from "@/shared/config/ioc-types";
+import { OperationTypeEnum } from "@/shared/operation/operationType";
+import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
 interface IProp {
     /**
@@ -165,7 +166,6 @@ const ConfigRelease = (props: IProp) => {
                 message.error(rep.errorMessage, 3)
             } else {
                 message.success("发布成功")
-                // debugger
                 props.onCallbackEvent && props.onCallbackEvent();
             }
         })

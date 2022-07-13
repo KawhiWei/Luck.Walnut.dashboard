@@ -75,7 +75,6 @@ const Operation = (props: IProp) => {
                 break;
             case OperationTypeEnum.edit:
                 props.id && _applicationService.getDetail(props.id).then(rep => {
-                    console.log(rep)
                     if (rep.success) {
                         formData.setFieldsValue(rep.result);
                         editOperationState(true, "修改")

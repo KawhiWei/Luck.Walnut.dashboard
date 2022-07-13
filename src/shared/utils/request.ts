@@ -47,7 +47,6 @@ service.interceptors.response.use(
     return response.data;
   },
   (error) => {
-    debugger
     // Do something with response error
     const response = error.response;
     const errorText = codeMessage[response.status] || response.data.msg;
