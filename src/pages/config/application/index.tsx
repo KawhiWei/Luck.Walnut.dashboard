@@ -197,7 +197,7 @@ const ApplicationPage = () => {
             </Row>
             <Row>
                 <Col span={24}>
-                    <Table bordered columns={columns} dataSource={tableData} loading={loading} pagination={pagination} scroll={{ y: 700 }} />
+                    <Table bordered columns={columns} dataSource={tableData} loading={loading} pagination={pagination} scroll={{ y: 600 }} />
                     </Col>
             </Row>
             {subOperationElement}
