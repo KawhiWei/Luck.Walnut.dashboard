@@ -2,7 +2,7 @@ import { IMenuOutput } from "@/shared/menu/IMenu";
 
 export const menuList: IMenuOutput[] = [
   {
-    id: "13245",
+    id: "1000",
     name: "首页",
     path: "/home",
     component: "pages/home/home",
@@ -20,7 +20,7 @@ export const menuList: IMenuOutput[] = [
     children: [],
   },
   {
-    id: "132445765",
+    id: "1001",
     name: "系统管理",
     path: "/systemsetting",
     component: "pages/test-page/test-page",
@@ -37,7 +37,7 @@ export const menuList: IMenuOutput[] = [
     type: 0,
     children: [
     {
-      id: "asda",
+      id: "1001-1",
       name: "测试页面",
       path: "/test",
       component: "pages/test-page/test-page",
@@ -55,7 +55,7 @@ export const menuList: IMenuOutput[] = [
       children: [],
     },
     {
-      id: "12122212",
+      id: "1001-2",
       name: "应用信息",
       path: "/application",
       component: "pages/config/application/index",
@@ -73,7 +73,7 @@ export const menuList: IMenuOutput[] = [
       children: [],
     },
     {
-      id: "1001",
+      id: "1001-3",
       name: "环境信息",
       path: "/environment",
       component: "pages/config/environment/index",
@@ -87,6 +87,42 @@ export const menuList: IMenuOutput[] = [
       componentName: "menu-page",
       sort: 0,
       isShow: false,
+      type: 0,
+      children: [],
+    }],
+  },
+  {
+    id: "1002",
+    name: "系统日志",
+    path: "/systemlog",
+    component: "pages/test-page/test-page",
+    tabs: [],
+    buttonClick: "",
+    buttons: [],
+    parentId: "000",
+    icon: "<DesktopOutlined/>",
+    parentNumber: "",
+    microName: "",
+    componentName: "test-page",
+    sort: 0,
+    isShow: true,
+    type: 0,
+    children: [
+    {
+      id: "1002-1",
+      name: "日志查询",
+      path: "/log",
+      component: "pages/dove-log/index",
+      tabs: [],
+      buttonClick: "",
+      buttons: [],
+      parentId: "000",
+      icon: "",
+      parentNumber: "",
+      microName: "",
+      componentName: "dove-log",
+      sort: 0,
+      isShow: true,
       type: 0,
       children: [],
     }],

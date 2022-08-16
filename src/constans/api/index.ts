@@ -5,3 +5,7 @@ export const ApplicationApi = {
 export const EnvironmentApi = {
   application: "/walnut/api/environment",
 }
+export const DoveApi = {
+  logs: "/dove/api/logs",
+}
+
