@@ -2,15 +2,13 @@ import "../table.less"
 
 import { Button, Col, Form, Input, PaginationProps, Popconfirm, Row, Spin, Table, Tooltip, message } from "antd";
 import { DeleteOutlined, EditOutlined, FundViewOutlined, SettingOutlined, WarningOutlined } from "@ant-design/icons";
-import { formItemLayout, tailLayout } from "@/constans/layout/optionlayout";
-import { initPaginationConfig, tacitPagingProps } from "../../../shared/ajax/request"
+import { initPaginationConfig, tacitPagingProps } from "../../shared/ajax/request"
 import { useEffect, useState } from "react";
 
 import { IApplicationService } from "@/domain/applications/iapplication-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import Operation from "./operation";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
-import { right } from "@antv/x6/lib/registry/port-layout/line";
 import { useHistory } from "react-router-dom"
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
@@ -93,8 +91,6 @@ const ApplicationPage = () => {
                     <Tooltip placement="top" title="编辑">
                         <EditOutlined style={{ color: 'orange', marginRight: 10, fontSize: 16 }} onClick={() => editRow(record.id)} />
                     </Tooltip>
-
-
                     <Tooltip placement="top" title="删除">
                         <Popconfirm placement="top" title="确认删除?" onConfirm={() => deleteRow(record.id)} icon={<WarningOutlined />}>
                             <DeleteOutlined style={{ color: 'red', fontSize: 16 }} />
