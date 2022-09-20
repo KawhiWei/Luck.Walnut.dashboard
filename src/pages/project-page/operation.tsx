@@ -6,7 +6,10 @@ import { IApplicationService } from "@/domain/applications/iapplication-service"
 import { IOperationConfig } from "@/shared/operation/operationConfig";
 import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
+import React from 'react';
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
+
+const { RangePicker } = DatePicker;
 
 interface IProp {
     /**
@@ -141,6 +144,7 @@ const ProjectOperation = (props: IProp) => {
 
     return (
         <div>
+            
             <Modal width={1000} getContainer={false} maskClosable={false} title={operationState.title} closable={false} visible={operationState.visible}
                 footer={null}>
                 <Form form={formData}
@@ -206,7 +210,7 @@ const ProjectOperation = (props: IProp) => {
                                 name="departmentName"
                                 label="项目结束时间"
                             >
-                                {/* <DatePicker /> */}
+                                 {/* <DatePicker /> */}
                             </Form.Item>
                         </Col>
                     </Row>

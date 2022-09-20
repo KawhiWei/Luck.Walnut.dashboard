@@ -1,9 +1,10 @@
-import { Button, Col, Form, Input, PaginationProps, Popconfirm, Row, Spin, Table, Tooltip, message } from "antd";
+import { Button, Col, Form, Input, PaginationProps, Popconfirm, Row, Spin, Table, Tag, Tooltip, message } from "antd";
 import { DeleteOutlined, SettingOutlined, WarningOutlined } from "@ant-design/icons";
 import { initPaginationConfig, tacitPagingProps } from "../../shared/ajax/request"
 import { useEffect, useState } from "react";
 
 import { IMatterService } from "@/domain/matters/imatter-service";
+import { IProjectService } from "@/domain/projects/iproject-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
 import ProjectOperation from "./operation";
@@ -18,8 +19,13 @@ const ProjectPage = () => {
         },
         {
             title: "项目状态",
-            dataIndex: "describe",
-            key: "describe",
+            dataIndex: "id",
+            key: "id",
+            render: (text: any, record: any) => {
+                return <div>
+                    <Tag color="blue">{record.projectStatusName}</Tag>
+                </div>
+            }
         },
         {
             title: "负责人",
@@ -28,8 +34,13 @@ const ProjectPage = () => {
         },
         {
             title: "计划开始-结束时间",
-            dataIndex: "productManagers",
-            key: "productManagers",
+            dataIndex: "id",
+            key: "id",
+            render: (text: any, record: any) => {
+                return <div>
+                    {record.planStartTime}-{record.planEndTime?record.planEndTime:"无限期"}
+                </div>
+            }
         },
         {
             title: "工作完成度",
@@ -68,7 +79,7 @@ const ProjectPage = () => {
     const [subOperationElement, setOperationElement] = useState<any>(null);
 
 
-    const _matterService: IMatterService = useHookProvider(IocTypes.MatterService);
+    const _projectService: IProjectService = useHookProvider(IocTypes.ProjectService);
     const [paginationConfig, setPaginationConfig] = useState<initPaginationConfig>(new initPaginationConfig());
     const [loading, setloading] = useState<boolean>(false);
     const [tableData, setTableData] = useState<Array<any>>([]);
@@ -89,6 +100,7 @@ const ProjectPage = () => {
     useEffect(() => {
         getTable();
     }, [paginationConfig]);
+    
     const pagination: PaginationProps = {
         ...tacitPagingProps,
         total: paginationConfig.total,
@@ -123,7 +135,7 @@ const ProjectPage = () => {
     const getTable = () => {
         setloading(true);
         let param = { pageSize: paginationConfig.pageSize, pageIndex: paginationConfig.current }
-        _matterService.getMatterList(param).then(rep => {
+        _projectService.getPageList(param).then(rep => {
             if (rep.success) {
                 setPaginationConfig((Pagination) => {
                     Pagination.total = rep.result.total;
@@ -133,12 +145,11 @@ const ProjectPage = () => {
                     item.key = item.id;
                     return item;
                 });
-
                 setTableData(rep.result.data)
                 setloading(false);
             }
             else {
-                // setloading(false);
+                setloading(false);
             }
         })
     };

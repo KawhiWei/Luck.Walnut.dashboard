@@ -13,3 +13,8 @@ export const DoveApi = {
 export const MatterApi = {
   matter: "/walnut/api/matters",
 }
+
+
+export const ProjectApi = {
+  project: "/walnut/api/projects",
+}
