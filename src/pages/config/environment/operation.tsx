@@ -1,4 +1,4 @@
-import {Button, Col, Form, Input, Modal, Row, message} from "antd";
+import { Button, Col, Form, Input, Modal, Row, message } from "antd";
 import { formItemLayout, tailLayout } from "@/constans/layout/optionlayout";
 import { useEffect, useState } from "react";
 
@@ -46,7 +46,7 @@ const Operation = (props: IProp) => {
         onGetLoad()
     }, [formData]);
 
-    const onGetLoad=()=>{
+    const onGetLoad = () => {
         switch (props.operationType) {
             case OperationTypeEnum.add:
                 editOperationState(true, "添加")
@@ -71,11 +71,11 @@ const Operation = (props: IProp) => {
     }
 
     const onFinish = () => {
-        let field = formData.getFieldsValue();        
-        let param={
-            environmentName:field.environmentName,
-            appId:props.appId
-        }        
+        let field = formData.getFieldsValue();
+        let param = {
+            environmentName: field.environmentName,
+            appId: props.appId
+        }
         switch (props.operationType) {
             case OperationTypeEnum.add:
                 onAdd(param);
@@ -86,13 +86,13 @@ const Operation = (props: IProp) => {
         }
     };
 
-    const onAdd=(_param: any) => {
+    const onAdd = (_param: any) => {
         _environmentService.addEnvironment(_param).then(res => {
             if (!res.success) {
                 message.error(res.errorMessage, 3)
             }
             else {
-                message.success("保存成功",3)
+                message.success("保存成功", 3)
                 props.onCallbackEvent && props.onCallbackEvent();
             }
         })
@@ -106,10 +106,10 @@ const Operation = (props: IProp) => {
         props.onCallbackEvent && props.onCallbackEvent()
     };
     return (<div>
-        <Modal width={500} getContainer={false} 
-            maskClosable={false} 
+        <Modal width={500} getContainer={false}
+            maskClosable={false}
             title={operationState.title}
-            closable={false} 
+            closable={false}
             visible={operationState.visible}
             footer={null}
         >
@@ -123,16 +123,16 @@ const Operation = (props: IProp) => {
                     name="environmentName"
                     label="环境名称"
                     rules={[{ required: true }]}
-                    style={{ textAlign:'left'}}
+                    style={{ textAlign: 'left' }}
                 >
-                    <Input></Input>
+                    <Input style={{ borderRadius: 6 }} />
                 </Form.Item>
                 <Form.Item
                     {...tailLayout}
-                    style={{ textAlign:'right'}}
+                    style={{ textAlign: 'right' }}
                 >
-                    <Button onClick={() => onCancel()}>取消</Button>
-                    <Button style={{ margin: '0 8px' }} type="primary" htmlType="submit">保存</Button>
+                    <Button shape="round" onClick={() => onCancel()}>取消</Button>
+                    <Button shape="round" style={{ margin: '0 8px' }} type="primary" htmlType="submit">保存</Button>
                 </Form.Item>
             </Form>
         </Modal>

@@ -79,7 +79,7 @@ const Operation = (props: IProp) => {
                         formData.setFieldsValue(rep.result);
                         editOperationState(true, "修改")
                     }
-                    else{
+                    else {
                         message.error(rep.errorMessage, 3)
                     }
                 })
@@ -117,7 +117,7 @@ const Operation = (props: IProp) => {
                 message.error(rep.errorMessage, 3)
             }
             else {
-                message.success("保存成功",3)
+                message.success("保存成功", 3)
                 props.onCallbackEvent && props.onCallbackEvent();
             }
         })
@@ -129,7 +129,7 @@ const Operation = (props: IProp) => {
                 message.error(rep.errorMessage, 3)
             }
             else {
-                message.success("保存成功",3)
+                message.success("保存成功", 3)
                 props.onCallbackEvent && props.onCallbackEvent();
             }
         })
@@ -139,7 +139,15 @@ const Operation = (props: IProp) => {
 
     return (
         <div>
-            <Modal width={1000} getContainer={false} maskClosable={false} title={operationState.title} closable={false} visible={operationState.visible}
+            <Modal width={1000} style={{ borderRadius: 6 }} getContainer={false} maskClosable={false} title={
+          <div
+            style={{
+              borderRadius: 10,
+            }}>
+            {operationState.title}
+          </div>
+        }
+         closable={false} visible={operationState.visible}
                 footer={null}>
                 <Form form={formData}
                     {...formItemLayout}
@@ -148,13 +156,13 @@ const Operation = (props: IProp) => {
                     validateMessages={validateMessages}
                 >
                     <Row>
-                    <Col span="12">
+                        <Col span="12">
                             <Form.Item
                                 name="appId"
                                 label="应用标识"
                                 rules={[{ required: true }]}
                             >
-                                <Input  disabled={props.operationType === OperationTypeEnum.edit} />
+                                <Input style={{ borderRadius: 6 }} disabled={props.operationType === OperationTypeEnum.edit} />
                             </Form.Item>
                         </Col>
                         <Col span="12">
@@ -163,19 +171,19 @@ const Operation = (props: IProp) => {
                                 label="应用英文名"
                                 rules={[{ required: true }]}
                             >
-                                <Input />
+                                <Input style={{ borderRadius: 6 }} />
                             </Form.Item>
                         </Col>
-                        
+
                     </Row>
                     <Row>
-                    <Col span="12">
+                        <Col span="12">
                             <Form.Item
                                 name="chinessName"
                                 label="应用中文名"
                                 rules={[{ required: true }]}
                             >
-                                <Input />
+                                <Input style={{ borderRadius: 6 }} />
                             </Form.Item>
                         </Col>
                         <Col span="12">
@@ -184,7 +192,7 @@ const Operation = (props: IProp) => {
                                 label="状态"
                                 rules={[{ required: true }]}
                             >
-                                <Input />
+                                <Input style={{ borderRadius: 6 }} />
                             </Form.Item>
                         </Col>
                     </Row>
@@ -195,7 +203,7 @@ const Operation = (props: IProp) => {
                                 label="所属部门"
                                 rules={[{ required: true }]}
                             >
-                                <Input />
+                                <Input style={{ borderRadius: 6 }} />
                             </Form.Item>
                         </Col>
 
@@ -205,15 +213,15 @@ const Operation = (props: IProp) => {
                                 label="联系人"
                                 rules={[{ required: true }]}
                             >
-                                <Input />
+                                <Input style={{ borderRadius: 6 }} />
                             </Form.Item>
                         </Col>
                     </Row>
                     <Row>
                         <Col span="24" style={{ textAlign: 'right' }}>
                             <Form.Item {...tailLayout}>
-                                <Button onClick={() => onCancel()}>取消</Button>
-                                <Button style={{ margin: '0 8px' }} type="primary" loading={loading} htmlType="submit">保存</Button>
+                                <Button shape="round" onClick={() => onCancel()}>取消</Button>
+                                <Button shape="round" style={{ margin: '0 8px' }} type="primary" loading={loading} htmlType="submit">保存</Button>
                             </Form.Item>
                         </Col>
                     </Row>
