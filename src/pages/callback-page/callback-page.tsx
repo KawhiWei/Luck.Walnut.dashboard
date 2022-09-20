@@ -10,14 +10,14 @@ const CallbackPage = (props: { history: any }) => {
   // const menus: IMenuService = useProvider(IocTypes.MenuService);
   const [loading, setLoad] = useState(true);
   const loginCallbackFn = async () => {
-    
-    
-      localStorage.setItem("token", "asdasdas");
-      // getMenus();
-      props.history.push("/home");
-      setLoad(false);
-      props.history.go();
-    
+
+
+    localStorage.setItem("token", "asdasdas");
+    // getMenus();
+    props.history.push("/home");
+    setLoad(false);
+    props.history.go();
+
   }
 
   const getMenus = async () => {

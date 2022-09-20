@@ -120,7 +120,7 @@ const ApplicationPage = () => {
         _doveLogService.getDoveLogList(param).then((x) => {
             // debugger
             // if (x.success) {
-                
+
             //     setPaginationConfig((Pagination) => {
             //         Pagination.total = x.result.total;
             //         return Pagination;
@@ -130,8 +130,8 @@ const ApplicationPage = () => {
             //     //     return item;
             //     // });
             //     setTableData(x.result.data);
-                 setloading(false);
-                 setGlobalLoading(false);
+            setloading(false);
+            setGlobalLoading(false);
             // }
         });
 
@@ -143,7 +143,7 @@ const ApplicationPage = () => {
     }
 
     const deleteRow = (_id: string) => {
-       
+
     };
 
 
@@ -165,7 +165,7 @@ const ApplicationPage = () => {
             <Row>
                 <Col span={24}>
                     <Table bordered columns={columns} dataSource={tableData} loading={loading} pagination={pagination} scroll={{ y: 700 }} />
-                    </Col>
+                </Col>
             </Row>
             {subOperationElement}
         </Spin>

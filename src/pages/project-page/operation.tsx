@@ -165,7 +165,7 @@ const ProjectOperation = (props: IProp) => {
                                 name="describe"
                                 rules={[{ required: true }]}
                             >
-                                <Input />
+                                <Input  style = {{borderRadius:8 }}/>
                             </Form.Item>
                         </Col>
                         
@@ -177,7 +177,7 @@ const ProjectOperation = (props: IProp) => {
                                 name="projectPrincipal"
                                 rules={[{ required: true }]}
                             >
-                                <Input />
+                                <Input  style = {{borderRadius:8 }}/>
                             </Form.Item>
                         </Col>
                         <Col span="12">
@@ -186,7 +186,7 @@ const ProjectOperation = (props: IProp) => {
                                 label="状态"
                                 rules={[{ required: true }]}
                             >
-                                <Input />
+                                <Input  style = {{borderRadius:8 }}/>
                             </Form.Item>
                         </Col>
                     </Row>
@@ -213,8 +213,8 @@ const ProjectOperation = (props: IProp) => {
                     <Row>
                         <Col span="24" style={{ textAlign: 'right' }}>
                             <Form.Item {...tailLayout}>
-                                <Button onClick={() => onCancel()}>取消</Button>
-                                <Button style={{ margin: '0 8px' }} type="primary" loading={loading} htmlType="submit">保存</Button>
+                                <Button shape="round" onClick={() => onCancel()}>取消</Button>
+                                <Button shape="round" style={{ margin: '0 8px' }} type="primary" loading={loading} htmlType="submit">保存</Button>
                             </Form.Item>
                         </Col>
                     </Row>

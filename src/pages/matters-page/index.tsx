@@ -142,14 +142,14 @@ const MatterPage = () => {
                         label="应用标识">
                         <Input />
                     </Form.Item>
-                    <Button type="primary" htmlType="submit" onClick={() => { getTable() }}>查询</Button>
+                    <Button type="primary" shape="round"  htmlType="submit" onClick={() => { getTable() }}>查询</Button>
                 </Form>
             </Row>
             <Row>
             </Row>
             <Row>
                 <Col span={24}>
-                    <Table bordered columns={columns} dataSource={tableData}  pagination={pagination} scroll={{ y: 700 }} />
+                    <Table size="small" columns={columns} dataSource={tableData}  pagination={pagination} scroll={{ y: 700 }} />
                     </Col>
             </Row>
         </Spin>

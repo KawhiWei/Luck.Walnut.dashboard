@@ -1,11 +1,12 @@
-import { Button, Form, Modal, Table, Row,Input, Tag, PaginationProps,Col,message } from "antd";
-import { OperationTypeEnum } from "@/shared/operation/operationType";
-import { useEffect, useState } from "react";
-import { IOperationConfig } from "@/shared/operation/operationConfig";
-import { IEnvironmentService } from "@/domain/environment/ienvironment-service";
-import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
-import { IocTypes } from "@/shared/config/ioc-types";
+import { Button, Col, Form, Input, Modal, PaginationProps, Row, Table, Tag, message } from "antd";
 import { initPaginationConfig, tacitPagingProps } from "../../../shared/ajax/request"
+import { useEffect, useState } from "react";
+
+import { IEnvironmentService } from "@/domain/environment/ienvironment-service";
+import { IOperationConfig } from "@/shared/operation/operationConfig";
+import { IocTypes } from "@/shared/config/ioc-types";
+import { OperationTypeEnum } from "@/shared/operation/operationType";
+import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
 interface IProp {
     /**
@@ -39,7 +40,7 @@ const ConfigRelease = (props: IProp) => {
         current: paginationConfig.current,
         pageSize: paginationConfig.pageSize,
         onShowSizeChange: (current: number, pageSize: number) => {
-            
+
             setPaginationConfig((Pagination) => {
                 Pagination.current = current;
                 Pagination.pageSize = pageSize;
@@ -78,13 +79,13 @@ const ConfigRelease = (props: IProp) => {
             title: "组",
             dataIndex: "group",
             key: "group",
-        },{
+        }, {
             title: "是否公开",
             dataIndex: "isOpen",
             key: "id",
             render: (text: any, record: any) => {
                 return <div>
-                    {record.isOpen?<Tag color="cyan">是</Tag>:<Tag color="orange">否</Tag>}
+                    {record.isOpen ? <Tag color="cyan">是</Tag> : <Tag color="orange">否</Tag>}
                 </div>
             }
         }, {
@@ -93,7 +94,7 @@ const ConfigRelease = (props: IProp) => {
             key: "id",
             render: (text: any, record: any) => {
                 return <div>
-                    {record.isPublish?<Tag color="cyan">是</Tag>:<Tag color="orange">否</Tag>}
+                    {record.isPublish ? <Tag color="cyan">是</Tag> : <Tag color="orange">否</Tag>}
                 </div>
             }
         }
@@ -113,9 +114,9 @@ const ConfigRelease = (props: IProp) => {
      */
     const getTable = () => {
         setloading(true);
-        let param = {pageSize: paginationConfig.pageSize,pageIndex:paginationConfig.current};
+        let param = { pageSize: paginationConfig.pageSize, pageIndex: paginationConfig.current };
         props.envId && _environmentService.getConfigRelease(props.envId, param).then((x) => {
-            if(x.success){
+            if (x.success) {
                 setPaginationConfig((Pagination) => {
                     Pagination.total = x.result.total;
                     return Pagination;
@@ -131,7 +132,7 @@ const ConfigRelease = (props: IProp) => {
         })
     }
 
-    
+
 
     /**
      * 弹框取消
@@ -154,13 +155,13 @@ const ConfigRelease = (props: IProp) => {
         onChange: onSelectChange,
     };
 
-    const release = () =>  {
+    const release = () => {
         setloading(true);
-        let param:Array<string> = [];
+        let param: Array<string> = [];
         selectedRowKeys.map(key => {
             param.push(key.toString());
         });
-        props.envId && _environmentService.releasePublish(props.envId, param ).then((rep) => {
+        props.envId && _environmentService.releasePublish(props.envId, param).then((rep) => {
             if (!rep.success) {
                 message.error(rep.errorMessage, 3)
             } else {
@@ -180,19 +181,19 @@ const ConfigRelease = (props: IProp) => {
             maskClosable={false}
             getContainer={false}
             footer={
-            <Row>
-                <Col span="24" style={{ textAlign: 'right' }}>
-                <Button type="primary" style={{ margin: '8px 8px '}} onClick={() => { release() }}>发布配置</Button>
-                <Button type="primary" style={{ margin: '8px 8px '}}  onClick={() => {onCancel()}}>取消</Button>
-                </Col>
-            </Row>
+                <Row>
+                    <Col span="24" style={{ textAlign: 'right' }}>
+                        <Button type="primary" shape="round" style={{ margin: '8px 8px ' }} onClick={() => { release() }}>发布配置</Button>
+                        <Button type="primary" shape="round" style={{ margin: '8px 8px ' }} onClick={() => { onCancel() }}>取消</Button>
+                    </Col>
+                </Row>
             }
         >
             <Form layout="inline" name="horizontal_login">
                 <Form.Item name="environmentName">
                     <Input placeholder="查找key" />
                 </Form.Item>
-                <Button type="primary" htmlType="submit" >查询</Button>
+                <Button type="primary" shape="round" htmlType="submit" >查询</Button>
             </Form>
             {/* <Row>
                 <Col span="24" style={{ textAlign: 'right' }}>
@@ -200,7 +201,7 @@ const ConfigRelease = (props: IProp) => {
                 <Button type="primary" style={{ margin: '8px 8px '}}  onClick={() => {onCancel()}}>取消</Button>
                 </Col>
             </Row> */}
-            <Table bordered columns={columns}  dataSource={tableData} loading={loading} 
+            <Table size="small" columns={columns} dataSource={tableData} loading={loading}
                 pagination={pagination}
                 rowSelection={rowSelection}
                 rowKey={"id"}

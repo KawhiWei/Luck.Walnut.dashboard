@@ -110,7 +110,7 @@ const EnvironmentPage = (props: any) => {
             key: "id",
             render: (text: any, record: any) => {
                 return <div className="table-operation">
-                    
+
                     <Tooltip placement="top" title="编辑">
                         <EditOutlined style={{ color: 'orange', marginRight: 10, fontSize: 16 }} onClick={() => editRow(record.id)} />
                     </Tooltip>
@@ -265,9 +265,9 @@ const EnvironmentPage = (props: any) => {
                         <Card title={"选择环境：" + currentEnvironment?.environmentName} >
                             <Form layout="inline" name="horizontal_login">
                                 <Form.Item name="environmentName">
-                                    <Input placeholder="查找key" />
+                                    <Input style={{ borderRadius: 6 }} placeholder="查找key" />
                                 </Form.Item>
-                                <Button type="primary" htmlType="submit" >查询</Button>
+                                <Button type="primary" shape="round" htmlType="submit" >查询</Button>
                             </Form>
                         </Card>
                         <Row>
@@ -279,8 +279,8 @@ const EnvironmentPage = (props: any) => {
                         </Row>
                         <Row>
                             <Col span={24}>
-                                <Table bordered columns={columns} dataSource={tableData} loading={loading} pagination={pagination}  scroll={{ y: 600 }}/>
-                                </Col>
+                                <Table size="small" columns={columns} dataSource={tableData} loading={loading} pagination={pagination} scroll={{ y: 600 }} />
+                            </Col>
                         </Row>
                     </Content>
                     {subOperationElement}

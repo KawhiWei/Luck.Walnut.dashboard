@@ -155,19 +155,19 @@ const ProjectPage = () => {
                     <Form.Item
                         name="name"
                         label="项目名称">
-                        <Input />
+                        <Input  style = {{borderRadius:8 }}/>
                     </Form.Item>
-                    <Button type="primary" htmlType="submit" onClick={() => { getTable() }}>查询</Button>
+                    <Button type="primary" shape="round"  htmlType="submit" onClick={() => { getTable() }}>查询</Button>
                 </Form>
             </Row>
             <Row>
                 <Col span="24" style={{ textAlign: 'right' }}>
-                    <Button type="primary" style={{ margin: '8px 8px' }} onClick={() => { addChange()}}>添加</Button>
+                    <Button type="primary" shape="round" style={{ margin: '8px 8px' }} onClick={() => { addChange()}}>添加</Button>
                 </Col>
             </Row>
             <Row>
                 <Col span={24}>
-                    <Table bordered columns={columns} dataSource={tableData} pagination={pagination} scroll={{ y: 700 }} />
+                    <Table size="small" columns={columns} dataSource={tableData} pagination={pagination} scroll={{ y: 700 }} />
                 </Col>
             </Row>
             {subOperationElement}
