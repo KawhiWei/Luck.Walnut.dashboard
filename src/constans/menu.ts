@@ -146,8 +146,8 @@ export const menuList: IMenuOutput[] = [
     children: [
       {
         id: "1003-1",
-        name: "项目",
-        path: "/project",
+        name: "项目协同",
+        path: "/project/collaboration",
         component: "pages/project-page/index",
         tabs: [],
         buttonClick: "",
@@ -164,9 +164,9 @@ export const menuList: IMenuOutput[] = [
       },
       {
         id: "1003-2",
-        name: "项目协同",
-        path: "/issue",
-        component: "pages/issues-page/index",
+        name: "项目管理",
+        path: "/project/collaboration",
+        component: "pages/project-page/index",
         tabs: [],
         buttonClick: "",
         buttons: [],
@@ -174,7 +174,7 @@ export const menuList: IMenuOutput[] = [
         icon: "",
         parentNumber: "",
         microName: "",
-        componentName: "issue",
+        componentName: "matter",
         sort: 0,
         isShow: true,
         type: 0,
