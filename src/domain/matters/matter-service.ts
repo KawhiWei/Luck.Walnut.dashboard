@@ -19,8 +19,4 @@ export class MatterService extends BaseService implements IMatterService {
     getMatterList(_param: any): Promise<IServerPageReturn<any>> {
         return this.dataRequest.getRequest(`${MatterApi.matter}/pagelist`)
     }
-
-
-
-
 }

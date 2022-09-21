@@ -1,12 +1,16 @@
-import { Button, Col, DatePicker, Form, Input, InputNumber, Modal, Row, Space, message } from "antd";
-import { formItemLayout, tailLayout } from "@/constans/layout/optionlayout";
-import { useEffect, useState } from "react";
+import { BaseEditor, Descendant, createEditor } from 'slate'
+import { Button, Col, DatePicker, Form, Input, InputNumber, Modal, Row, Select, Space, message } from "antd";
+import { Editable, ReactEditor, Slate, withReact } from 'slate-react';
+import { formItemLayout, formItemSingleLayout, tailLayout } from "@/constans/layout/optionlayout";
+import { useEffect, useMemo, useState } from "react";
 
-import { IApplicationService } from "@/domain/applications/iapplication-service";
 import { IOperationConfig } from "@/shared/operation/operationConfig";
+import { IProjectService } from "@/domain/projects/iproject-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
 import React from 'react';
+import TextArea from "antd/lib/input/TextArea";
+import moment from "moment";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
 const { RangePicker } = DatePicker;
@@ -23,7 +27,12 @@ interface IProp {
     /**
      * 操作类型
      */
-    operationType: OperationTypeEnum
+    operationType: OperationTypeEnum,
+
+    /**
+     * 项目状态列表
+     */
+    projectStatusEnumArray: Array<any>;
 }
 
 const validateMessages = {
@@ -38,22 +47,26 @@ const validateMessages = {
 };
 
 const ProjectOperation = (props: IProp) => {
-
-    const _applicationService: IApplicationService = useHookProvider(IocTypes.ApplicationService);
+    
+    const initialValue:Array<Descendant> = [{
+        type: 'paragraph',
+        children: [{ text: 'A line of text in a paragraph.' }],
+      },]
+    
+    const _projectService: IProjectService = useHookProvider(IocTypes.ProjectService);
     const [loading, setLoading] = useState<boolean>(false);
-
+    const editor = useMemo(() => withReact(createEditor()), [])
     const [operationState, setOperationState] = useState<IOperationConfig>({ visible: false })
     const [formData] = Form.useForm();
 
+    const projectStatusEnumArray = props.projectStatusEnumArray;
     /**
          * 页面初始化事件
          */
     useEffect(() => {
         onGetLoad()
     }, [formData]);
-
-
-
+    
     /**
      * 修改弹框属性
      * @param _visible 
@@ -62,7 +75,7 @@ const ProjectOperation = (props: IProp) => {
     const editOperationState = (_visible: boolean, _title?: string) => {
         setOperationState({ visible: _visible, title: _title });
     }
-
+    
     /**
          * 编辑获取一个表单
          * @param _id 
@@ -77,16 +90,16 @@ const ProjectOperation = (props: IProp) => {
                 editOperationState(true, "查看")
                 break;
             case OperationTypeEnum.edit:
-                props.id && _applicationService.getDetail(props.id).then(rep => {
-                    console.log(rep)
-                    if (rep.success) {
-                        formData.setFieldsValue(rep.result);
-                        editOperationState(true, "修改")
-                    }
-                    else{
-                        message.error(rep.errorMessage, 3)
-                    }
-                })
+                // props.id && _applicationService.getPageList(props.id).then(rep => {
+                //     console.log(rep)
+                //     if (rep.success) {
+                //         formData.setFieldsValue(rep.result);
+                //         editOperationState(true, "修改")
+                //     }
+                //     else {
+                //         message.error(rep.errorMessage, 3)
+                //     }
+                // })
                 break;
         }
     }
@@ -99,52 +112,64 @@ const ProjectOperation = (props: IProp) => {
         props.onCallbackEvent && props.onCallbackEvent()
     };
 
-
     /**
          * 底部栏OK事件
          */
-    const onFinish = () => {
-        let param = formData.getFieldsValue();
+    const onFinish = (value: any) => {
+        setLoading(true)
+        value.planStartTime = moment(value.planStartTime).format('yyyy-MM-DD');
+        value.planEndTime = moment(value.planEndTime).format('yyyy-MM-DD');
         switch (props.operationType) {
             case OperationTypeEnum.add:
-                onAdd(param);
+                onCreate(value);
                 break;
             case OperationTypeEnum.edit:
-                onUpdate(param);
+                onUpdate(value);
                 break;
         }
         setLoading(false)
     }
-    const onAdd = (_param: any) => {
-        setLoading(true)
-        _applicationService.addApplication(_param).then(rep => {
+
+    const onCreate = (_param: any) => {
+        console.log(_param)
+        _projectService.create(_param).then(rep => {
             if (!rep.success) {
                 message.error(rep.errorMessage, 3)
             }
             else {
-                message.success("保存成功",3)
+                message.success("保存成功", 3)
                 props.onCallbackEvent && props.onCallbackEvent();
             }
         })
 
     }
+
     const onUpdate = (_param: any) => {
-        props.id && _applicationService.update(props.id, _param).then(rep => {
+        props.id && _projectService.update(props.id, _param).then(rep => {
             if (!rep.success) {
                 message.error(rep.errorMessage, 3)
             }
             else {
-                message.success("保存成功",3)
+                message.success("保存成功", 3)
                 props.onCallbackEvent && props.onCallbackEvent();
             }
         })
-
-
     }
+    
+    const onChange = (value: any, dateString: any) => {
+        console.log('Selected Time: ', value);
+        console.log('Formatted Selected Time: ', dateString);
+    }
+
+    const onOk = (value: any) => {
+        console.log('onOk: ', value);
+        value = moment(value).format('YYYY-MM-DD') //这么解决的
+    }
+
 
     return (
         <div>
-            
+
             <Modal width={1000} getContainer={false} maskClosable={false} title={operationState.title} closable={false} visible={operationState.visible}
                 footer={null}>
                 <Form form={formData}
@@ -154,66 +179,80 @@ const ProjectOperation = (props: IProp) => {
                     validateMessages={validateMessages}
                 >
                     <Row>
-                    <Col span="12">
+                        <Col span="12">
                             <Form.Item
                                 name="name"
                                 label="项目名称"
                                 rules={[{ required: true }]}
                             >
-                                <Input  disabled={props.operationType === OperationTypeEnum.edit} />
+                                <Input style={{ borderRadius: 8 }} disabled={props.operationType === OperationTypeEnum.edit} />
                             </Form.Item>
                         </Col>
                         <Col span="12">
                             <Form.Item
                                 label="项目状态"
-                                name="describe"
+                                name="projectStatus"
                                 rules={[{ required: true }]}
                             >
-                                <Input  style = {{borderRadius:8 }}/>
+                                <Select style={{ width: 180 }} allowClear={true} placeholder="请选择项目状态">
+                                    {projectStatusEnumArray.map((item: any) => {
+                                        return <Select.Option value={item.key}>{item.value}</Select.Option>;
+                                    }
+                                    )}
+                                </Select>
                             </Form.Item>
                         </Col>
-                        
                     </Row>
                     <Row>
-                    <Col span="12">
+                        <Col span="12">
                             <Form.Item
                                 label="负责人"
                                 name="projectPrincipal"
                                 rules={[{ required: true }]}
                             >
-                                <Input  style = {{borderRadius:8 }}/>
-                            </Form.Item>
-                        </Col>
-                        <Col span="12">
-                            <Form.Item
-                                name="projectStatus"
-                                label="状态"
-                                rules={[{ required: true }]}
-                            >
-                                <Input  style = {{borderRadius:8 }}/>
+                                <Input style={{ borderRadius: 8 }} />
                             </Form.Item>
                         </Col>
                     </Row>
                     <Row>
                         <Col span="12">
                             <Form.Item
-                                name="departmentName"
+                                name="planStartTime"
                                 label="项目开始时间"
                                 rules={[{ required: true }]}
                             >
-                                {/* <DatePicker /> */}
+                                <DatePicker />
                             </Form.Item>
                         </Col>
-
                         <Col span="12">
-                        <Form.Item
-                                name="departmentName"
+                            <Form.Item
+                                name="planEndTime"
                                 label="项目结束时间"
                             >
-                                 {/* <DatePicker /> */}
+                                {<DatePicker
+                                    onChange={onChange}
+                                    onOk={onOk} />}
                             </Form.Item>
                         </Col>
                     </Row>
+                    <Row>
+                        <Col span="24">
+                            <Form.Item
+                                name="describe"
+                                label="项目描述"
+                                rules={[{ required: true }]}
+                                {...formItemSingleLayout}
+                            >
+                                <Slate editor={editor} value={initialValue}>
+                                    <Editable onKeyDown={event => {
+                                        console.log(event.key)
+                                    }} />
+                                </Slate>
+                                {/* <TextArea style={{ borderRadius: 8 }} rows={14} /> */}
+                            </Form.Item>
+                        </Col>
+                    </Row>
+
                     <Row>
                         <Col span="24" style={{ textAlign: 'right' }}>
                             <Form.Item {...tailLayout}>

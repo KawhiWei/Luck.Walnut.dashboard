@@ -11,6 +11,18 @@ import ProjectOperation from "./operation";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
 const ProjectPage = () => {
+    const [subOperationElement, setOperationElement] = useState<any>(null);
+    const _projectService: IProjectService = useHookProvider(IocTypes.ProjectService);
+    const [paginationConfig, setPaginationConfig] = useState<initPaginationConfig>(new initPaginationConfig());
+    const [loading, setloading] = useState<boolean>(false);
+    const [tableData, setTableData] = useState<Array<any>>([]);
+    const [formData] = Form.useForm();
+
+    /**
+     * 枚举列表
+     */
+    const [projectStatusEnumArray, setProjectStatusEnumArray] = useState<Array<any>>([]);
+
     const columns = [
         {
             title: "项目名称",
@@ -23,7 +35,9 @@ const ProjectPage = () => {
             key: "id",
             render: (text: any, record: any) => {
                 return <div>
-                    <Tag color="blue">{record.projectStatusName}</Tag>
+
+                    <Tag color={projectStatus(record.projectStatus)}>{record.projectStatusName}</Tag>
+                    {/* <Tag color="blue">{record.projectStatusName}</Tag> */}
                 </div>
             }
         },
@@ -38,7 +52,7 @@ const ProjectPage = () => {
             key: "id",
             render: (text: any, record: any) => {
                 return <div>
-                    {record.planStartTime}-{record.planEndTime?record.planEndTime:"无限期"}
+                    {record.planStartTime}——{record.planEndTime ? record.planEndTime : "无限期"}
                 </div>
             }
         },
@@ -63,7 +77,7 @@ const ProjectPage = () => {
             key: "id",
             render: (text: any, record: any) => {
                 return <div className="table-operation">
-                    <Tooltip placement="top" title="应用配置">
+                    <Tooltip placement="top" title="项目概览">
                         <SettingOutlined style={{ color: '#108ee9', marginRight: 10, fontSize: 16 }} onClick={() => { }} />
                     </Tooltip>
                     <Tooltip placement="top" title="删除">
@@ -76,31 +90,46 @@ const ProjectPage = () => {
         }
     ];
 
-    const [subOperationElement, setOperationElement] = useState<any>(null);
-
-
-    const _projectService: IProjectService = useHookProvider(IocTypes.ProjectService);
-    const [paginationConfig, setPaginationConfig] = useState<initPaginationConfig>(new initPaginationConfig());
-    const [loading, setloading] = useState<boolean>(false);
-    const [tableData, setTableData] = useState<Array<any>>([]);
-    const [formData] = Form.useForm();
 
     const addChange = () => {
-        setOperationElement(<ProjectOperation onCallbackEvent={clearElement} operationType={OperationTypeEnum.add} />)
+        setOperationElement(<ProjectOperation onCallbackEvent={clearElement} operationType={OperationTypeEnum.add} projectStatusEnumArray={projectStatusEnumArray} />)
     }
 
+    /**
+     * 清空弹框
+     */
     const clearElement = () => {
         setOperationElement(null);
-        getTable();
+        getPageList();
     }
 
+    /**
+     * 处理标签
+     * @param _projectStatus 
+     * @returns 
+     */
+    const projectStatus = (_projectStatus: any): string => {
+        switch (_projectStatus) {
+            case "UnStart":
+                return "blue";
+            case "Actity":
+                return "green";
+            case "Suspended":
+                return "green";
+            case "End":
+                return "green";
+            default:
+                return "";
+        }
+    }
     /**
      * 页面初始化事件
      */
     useEffect(() => {
-        getTable();
+        getPageList();
+        getEnumList();
     }, [paginationConfig]);
-    
+
     const pagination: PaginationProps = {
         ...tacitPagingProps,
         total: paginationConfig.total,
@@ -112,7 +141,7 @@ const ProjectPage = () => {
                 Pagination.current = current;
                 return Pagination;
             });
-            getTable();
+            getPageList();
 
         },
         onChange: (page: number, pageSize?: number) => {
@@ -123,16 +152,26 @@ const ProjectPage = () => {
                 }
                 return Pagination;
             });
-            getTable();
+            getPageList();
         }
     };
 
 
+    /**
+     * 获取项目状态列表
+     */
+    const getEnumList = () => {
+        _projectService.getEnumList().then(rep => {
+            if (rep.success) {
+                setProjectStatusEnumArray(rep.result)
+            }
 
+        })
+    }
     /**
      * 页面初始化获取数据
      */
-    const getTable = () => {
+    const getPageList = () => {
         setloading(true);
         let param = { pageSize: paginationConfig.pageSize, pageIndex: paginationConfig.current }
         _projectService.getPageList(param).then(rep => {
@@ -155,7 +194,14 @@ const ProjectPage = () => {
     };
 
     const deleteRow = (_id: string) => {
-
+        _projectService.delete(_id).then(res => {
+            if (!res.success) {
+                message.error(res.errorMessage, 3)
+            }
+            else {
+                getPageList();
+            }
+        });
     };
 
     return (<div>
@@ -166,14 +212,14 @@ const ProjectPage = () => {
                     <Form.Item
                         name="name"
                         label="项目名称">
-                        <Input  style = {{borderRadius:8 }}/>
+                        <Input style={{ borderRadius: 8 }} />
                     </Form.Item>
-                    <Button type="primary" shape="round"  htmlType="submit" onClick={() => { getTable() }}>查询</Button>
+                    <Button type="primary" shape="round" htmlType="submit" onClick={() => { getPageList() }}>查询</Button>
                 </Form>
             </Row>
             <Row>
                 <Col span="24" style={{ textAlign: 'right' }}>
-                    <Button type="primary" shape="round" style={{ margin: '8px 8px' }} onClick={() => { addChange()}}>添加</Button>
+                    <Button type="primary" shape="round" style={{ margin: '8px 8px' }} onClick={() => { addChange() }}>添加</Button>
                 </Col>
             </Row>
             <Row>

@@ -146,9 +146,9 @@ export const menuList: IMenuOutput[] = [
     children: [
       {
         id: "1003-1",
-        name: "项目协同",
-        path: "/project/collaboration",
-        component: "pages/project-page/index",
+        name: "项目仪表盘",
+        path: "/project/dashboard",
+        component: "pages/project-dashboard/index",
         tabs: [],
         buttonClick: "",
         buttons: [],
