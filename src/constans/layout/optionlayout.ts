@@ -3,17 +3,25 @@ export const tailLayout = {
 };
 
 /**
-* form表单布局设置
+* form表单双列布局设置
 */
-export const formItemLayout = {
+export const formItemDoubleRankLayout = {
   labelCol: { span: 6 },
   wrapperCol: { span: 20 },
 };
 
 /**
-* form表单布局设置
+* form表单双列布局设置
 */
-export const formItemSingleLayout = {
+export const searchFormItemDoubleRankLayout = {
+  labelCol: { span: 6 },
+  wrapperCol: { span: 20 },
+};
+
+/**
+* form表单单列布局设置
+*/
+export const formItemSingleRankLayout = {
   labelCol: { span: 3 },
-  wrapperCol: { span: 21 },
+  wrapperCol: { span: 20 },
 };

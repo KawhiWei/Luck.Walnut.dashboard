@@ -1,11 +1,12 @@
-import { Button, Col, Form, Input, InputNumber, Modal, Row, message } from "antd";
-import { formItemLayout, tailLayout } from "@/constans/layout/optionlayout";
+import { Button, Col, Form, Input, InputNumber, Modal, Row, Select, message } from "antd";
+import { formItemDoubleRankLayout, formItemSingleRankLayout, tailLayout } from "@/constans/layout/optionlayout";
 import { useEffect, useState } from "react";
 
 import { IApplicationService } from "@/domain/applications/iapplication-service";
 import { IOperationConfig } from "@/shared/operation/operationConfig";
 import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
+import TextArea from "antd/lib/input/TextArea";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
 interface IProp {
@@ -20,7 +21,11 @@ interface IProp {
     /**
      * 操作类型
      */
-    operationType: OperationTypeEnum
+    operationType: OperationTypeEnum,
+    /**
+     * 项目列表
+     */
+    projectArray: Array<any>;
 }
 
 const validateMessages = {
@@ -35,12 +40,13 @@ const validateMessages = {
 };
 
 const Operation = (props: IProp) => {
-
     const _applicationService: IApplicationService = useHookProvider(IocTypes.ApplicationService);
     const [loading, setLoading] = useState<boolean>(false);
 
     const [operationState, setOperationState] = useState<IOperationConfig>({ visible: false })
     const [formData] = Form.useForm();
+
+    const projectArray = props.projectArray;
 
     /**
          * 页面初始化事件
@@ -141,32 +147,51 @@ const Operation = (props: IProp) => {
     return (
         <div>
             <Modal width={1000} style={{ borderRadius: 6 }} getContainer={false} maskClosable={false} title={
-          <div
-            style={{
-              borderRadius: 10,
-            }}>
-            {operationState.title}
-          </div>
-        }
-         closable={false} visible={operationState.visible}
+                <div
+                    style={{
+                        borderRadius: 10,
+                    }}>
+                    {operationState.title}
+                </div>
+            }
+                closable={false} visible={operationState.visible}
                 footer={null}>
                 <Form form={formData}
-                    {...formItemLayout}
+                    {...formItemSingleRankLayout}
                     name="nest-messages"
+                    layout="horizontal"
                     onFinish={onFinish}
                     validateMessages={validateMessages}
                 >
                     <Row>
-                        <Col span="12">
+                        <Col span="24">
+                            <Form.Item
+                                name="projectId"
+                                label="所属项目："
+                                rules={[{ required: true }]}
+                            >
+                                <Select allowClear={true} placeholder="请选择项目">
+                                    {projectArray.map((item: any) => {
+                                        return <Select.Option value={item.id}>{item.name}</Select.Option>;
+                                    }
+                                    )}
+                                </Select>
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span="24">
                             <Form.Item
                                 name="appId"
-                                label="应用标识"
+                                label="应用唯一标识："
                                 rules={[{ required: true }]}
                             >
                                 <Input style={{ borderRadius: 6 }} disabled={props.operationType === OperationTypeEnum.edit} />
                             </Form.Item>
                         </Col>
-                        <Col span="12">
+                    </Row>
+                    <Row>
+                        <Col span="24">
                             <Form.Item
                                 name="englishName"
                                 label="应用英文名"
@@ -175,22 +200,25 @@ const Operation = (props: IProp) => {
                                 <Input style={{ borderRadius: 6 }} />
                             </Form.Item>
                         </Col>
-
                     </Row>
                     <Row>
-                        <Col span="12">
+                        <Col span="24">
                             <Form.Item
                                 name="chinessName"
-                                label="应用中文名"
+                                label="应用中文名："
                                 rules={[{ required: true }]}
                             >
                                 <Input style={{ borderRadius: 6 }} />
                             </Form.Item>
                         </Col>
-                        <Col span="12">
+
+                    </Row>
+                    <Row>
+
+                        <Col span="24">
                             <Form.Item
-                                name="status"
-                                label="状态"
+                                name="applicationState"
+                                label="应用状态："
                                 rules={[{ required: true }]}
                             >
                                 <Input style={{ borderRadius: 6 }} />
@@ -198,23 +226,34 @@ const Operation = (props: IProp) => {
                         </Col>
                     </Row>
                     <Row>
-                        <Col span="12">
+                        <Col span="24">
                             <Form.Item
                                 name="departmentName"
-                                label="所属部门"
+                                label="所属部门："
                                 rules={[{ required: true }]}
                             >
                                 <Input style={{ borderRadius: 6 }} />
                             </Form.Item>
                         </Col>
-
-                        <Col span="12">
+                    </Row>
+                    <Row>
+                        <Col span="24">
                             <Form.Item
-                                name="linkMan"
-                                label="联系人"
+                                name="principal"
+                                label="负责人："
                                 rules={[{ required: true }]}
                             >
                                 <Input style={{ borderRadius: 6 }} />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span="24">
+                            <Form.Item
+                                name="describe"
+                                label="应用描述："
+                            >
+                                <TextArea style={{ borderRadius: 6 }} rows={14}></TextArea>
                             </Form.Item>
                         </Col>
                     </Row>

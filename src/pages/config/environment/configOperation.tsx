@@ -1,5 +1,5 @@
 import { Button, Col, Form, Input, Modal, Row, Switch, message } from "antd";
-import { formItemLayout, tailLayout } from "@/constans/layout/optionlayout";
+import { formItemDoubleRankLayout, tailLayout } from "@/constans/layout/optionlayout";
 import { useEffect, useState } from "react";
 
 import { IEnvironmentService } from "@/domain/environment/ienvironment-service";

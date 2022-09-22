@@ -36,7 +36,7 @@ const ProjectPage = () => {
             render: (text: any, record: any) => {
                 return <div>
 
-                    <Tag color={projectStatus(record.projectStatus)}>{record.projectStatusName}</Tag>
+                    <Tag color={projectStatusTag(record.projectStatus)}>{record.projectStatusName}</Tag>
                     {/* <Tag color="blue">{record.projectStatusName}</Tag> */}
                 </div>
             }
@@ -50,6 +50,7 @@ const ProjectPage = () => {
             title: "计划开始-结束时间",
             dataIndex: "id",
             key: "id",
+            width: 210,
             render: (text: any, record: any) => {
                 return <div>
                     {record.planStartTime}——{record.planEndTime ? record.planEndTime : "无限期"}
@@ -108,16 +109,16 @@ const ProjectPage = () => {
      * @param _projectStatus 
      * @returns 
      */
-    const projectStatus = (_projectStatus: any): string => {
+    const projectStatusTag = (_projectStatus: any): string => {
         switch (_projectStatus) {
             case "UnStart":
                 return "blue";
             case "Actity":
                 return "green";
             case "Suspended":
-                return "green";
+                return "warning";
             case "End":
-                return "green";
+                return "volcano";
             default:
                 return "";
         }

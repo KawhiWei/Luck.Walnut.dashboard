@@ -1,15 +1,18 @@
 import { BaseEditor, Descendant, createEditor } from 'slate'
-import { Button, Col, DatePicker, Form, Input, InputNumber, Modal, Row, Select, Space, message } from "antd";
+import { Button, Col, DatePicker, Form, Input, InputNumber, Modal, Row, Select, Space, Upload, message } from "antd";
 import { Editable, ReactEditor, Slate, withReact } from 'slate-react';
-import { formItemLayout, formItemSingleLayout, tailLayout } from "@/constans/layout/optionlayout";
-import { useEffect, useMemo, useState } from "react";
+import { formItemDoubleRankLayout, formItemSingleRankLayout, tailLayout } from "@/constans/layout/optionlayout";
+import { useEffect, useMemo, useRef, useState } from "react";
 
+import { Editor } from '@tinymce/tinymce-react';
 import { IOperationConfig } from "@/shared/operation/operationConfig";
 import { IProjectService } from "@/domain/projects/iproject-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
 import React from 'react';
 import TextArea from "antd/lib/input/TextArea";
+import { UploadChangeParam } from 'antd/lib/upload';
+import { UploadOutlined } from '@ant-design/icons';
 import moment from "moment";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
@@ -47,15 +50,24 @@ const validateMessages = {
 };
 
 const ProjectOperation = (props: IProp) => {
-    
-    const initialValue:Array<Descendant> = [{
+
+    const initialValue: Descendant[] = [{
         type: 'paragraph',
         children: [{ text: 'A line of text in a paragraph.' }],
-      },]
-    
+    },]
+    const [editor] = useState(() => withReact(createEditor()));
+    const editorRef = useRef(null);
+    const log = () => {
+        if (editorRef.current) {
+            console.log(editorRef.current);
+        }
+    };
+
     const _projectService: IProjectService = useHookProvider(IocTypes.ProjectService);
     const [loading, setLoading] = useState<boolean>(false);
-    const editor = useMemo(() => withReact(createEditor()), [])
+
+    const [defaultFileList, setDefaultFileList] = useState<Array<any>>();
+
     const [operationState, setOperationState] = useState<IOperationConfig>({ visible: false })
     const [formData] = Form.useForm();
 
@@ -66,7 +78,7 @@ const ProjectOperation = (props: IProp) => {
     useEffect(() => {
         onGetLoad()
     }, [formData]);
-    
+
     /**
      * 修改弹框属性
      * @param _visible 
@@ -75,7 +87,7 @@ const ProjectOperation = (props: IProp) => {
     const editOperationState = (_visible: boolean, _title?: string) => {
         setOperationState({ visible: _visible, title: _title });
     }
-    
+
     /**
          * 编辑获取一个表单
          * @param _id 
@@ -116,7 +128,6 @@ const ProjectOperation = (props: IProp) => {
          * 底部栏OK事件
          */
     const onFinish = (value: any) => {
-        setLoading(true)
         value.planStartTime = moment(value.planStartTime).format('yyyy-MM-DD');
         value.planEndTime = moment(value.planEndTime).format('yyyy-MM-DD');
         switch (props.operationType) {
@@ -131,7 +142,7 @@ const ProjectOperation = (props: IProp) => {
     }
 
     const onCreate = (_param: any) => {
-        console.log(_param)
+        setLoading(true)
         _projectService.create(_param).then(rep => {
             if (!rep.success) {
                 message.error(rep.errorMessage, 3)
@@ -155,10 +166,13 @@ const ProjectOperation = (props: IProp) => {
             }
         })
     }
-    
+
     const onChange = (value: any, dateString: any) => {
         console.log('Selected Time: ', value);
         console.log('Formatted Selected Time: ', dateString);
+    }
+
+    function uploadOnChange({ file, fileList }: UploadChangeParam) {
     }
 
     const onOk = (value: any) => {
@@ -173,13 +187,13 @@ const ProjectOperation = (props: IProp) => {
             <Modal width={1000} getContainer={false} maskClosable={false} title={operationState.title} closable={false} visible={operationState.visible}
                 footer={null}>
                 <Form form={formData}
-                    {...formItemLayout}
+                    {...formItemSingleRankLayout}
                     name="nest-messages"
                     onFinish={onFinish}
                     validateMessages={validateMessages}
                 >
                     <Row>
-                        <Col span="12">
+                        <Col span="24">
                             <Form.Item
                                 name="name"
                                 label="项目名称"
@@ -188,7 +202,20 @@ const ProjectOperation = (props: IProp) => {
                                 <Input style={{ borderRadius: 8 }} disabled={props.operationType === OperationTypeEnum.edit} />
                             </Form.Item>
                         </Col>
-                        <Col span="12">
+                    </Row>
+                    <Row>
+                        <Col span="24">
+                            <Form.Item
+                                label="负责人"
+                                name="projectPrincipal"
+                                rules={[{ required: true }]}
+                            >
+                                <Input style={{ borderRadius: 8 }} />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span="24">
                             <Form.Item
                                 label="项目状态"
                                 name="projectStatus"
@@ -206,20 +233,10 @@ const ProjectOperation = (props: IProp) => {
                     <Row>
                         <Col span="12">
                             <Form.Item
-                                label="负责人"
-                                name="projectPrincipal"
-                                rules={[{ required: true }]}
-                            >
-                                <Input style={{ borderRadius: 8 }} />
-                            </Form.Item>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col span="12">
-                            <Form.Item
                                 name="planStartTime"
                                 label="项目开始时间"
                                 rules={[{ required: true }]}
+                                {...formItemDoubleRankLayout}
                             >
                                 <DatePicker />
                             </Form.Item>
@@ -228,6 +245,7 @@ const ProjectOperation = (props: IProp) => {
                             <Form.Item
                                 name="planEndTime"
                                 label="项目结束时间"
+                                {...formItemDoubleRankLayout}
                             >
                                 {<DatePicker
                                     onChange={onChange}
@@ -240,19 +258,48 @@ const ProjectOperation = (props: IProp) => {
                             <Form.Item
                                 name="describe"
                                 label="项目描述"
-                                rules={[{ required: true }]}
-                                {...formItemSingleLayout}
                             >
-                                <Slate editor={editor} value={initialValue}>
-                                    <Editable onKeyDown={event => {
-                                        console.log(event.key)
-                                    }} />
-                                </Slate>
-                                {/* <TextArea style={{ borderRadius: 8 }} rows={14} /> */}
+                                <TextArea style={{ borderRadius: 6 }} rows={14}></TextArea>
+                                {/* <Editor
+                                    onInit={(evt, editor) => editorRef.current = editor}
+                                    initialValue="<p>This is the initial content of the editor.</p>"
+                                    init={{
+                                        height: 500,
+                                        menubar: false,
+                                        plugins: [
+                                            'advlist autolink lists link image charmap print preview anchor',
+                                            'searchreplace visualblocks code fullscreen',
+                                            'insertdatetime media table paste code help wordcount'
+                                        ],
+                                        toolbar: 'undo redo | formatselect | ' +
+                                            'bold italic backcolor | alignleft aligncenter ' +
+                                            'alignright alignjustify | bullist numlist outdent indent | ' +
+                                            'removeformat | help',
+                                        content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+                                    }}
+                                /> */}
+                                {/* <span>
+                                    <Slate editor={editor} value={initialValue}
+                                    >
+                                        <Editable />
+                                    </Slate>
+                                </span> */}
+
                             </Form.Item>
                         </Col>
                     </Row>
-
+                    <Row>
+                        <Col span="24">
+                            <Form.Item
+                                label="上传附件"
+                                name="projectStatus"
+                            >
+                                <Upload action="" defaultFileList={defaultFileList} onChange={uploadOnChange}>
+                                    <Button icon={<UploadOutlined />}>Upload</Button>
+                                </Upload>
+                            </Form.Item>
+                        </Col>
+                    </Row>
                     <Row>
                         <Col span="24" style={{ textAlign: 'right' }}>
                             <Form.Item {...tailLayout}>

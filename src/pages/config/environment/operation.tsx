@@ -1,5 +1,5 @@
 import { Button, Col, Form, Input, Modal, Row, message } from "antd";
-import { formItemLayout, tailLayout } from "@/constans/layout/optionlayout";
+import { formItemDoubleRankLayout, tailLayout } from "@/constans/layout/optionlayout";
 import { useEffect, useState } from "react";
 
 import { IEnvironmentService } from "@/domain/environment/ienvironment-service";
@@ -115,7 +115,7 @@ const Operation = (props: IProp) => {
             footer={null}
         >
             <Form form={formData}
-                {...formItemLayout}
+                {...formItemDoubleRankLayout}
                 name="nest-messages"
                 onFinish={onFinish}
                 validateMessages={validateMessages}

@@ -1,6 +1,6 @@
 import { Button, Card, Col, Descriptions, Form, Input, Layout, List, Modal, PaginationProps, Popconfirm, Row, Spin, Table, Tag, Tooltip, message } from "antd";
 import { DeleteOutlined, DeleteTwoTone, EditOutlined, FileAddTwoTone, LeftOutlined, WarningOutlined } from '@ant-design/icons';
-import { formItemLayout, tailLayout } from "@/constans/layout/optionlayout";
+import { formItemDoubleRankLayout, tailLayout } from "@/constans/layout/optionlayout";
 import { initPaginationConfig, tacitPagingProps } from "../../../shared/ajax/request"
 import { useEffect, useState } from "react";
 
