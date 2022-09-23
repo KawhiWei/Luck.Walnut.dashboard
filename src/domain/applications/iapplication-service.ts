@@ -29,4 +29,9 @@ export interface IApplicationService {
      * @param _id 
      */
     update(_id: string,_param: any): Promise<IServerPageReturn<any>>;
+
+    /**
+     * 获取应用相关所有枚举
+     */
+    getApplicationEnumList(): Promise<IServerPageReturn<any>>;
 }

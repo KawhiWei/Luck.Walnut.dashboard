@@ -47,7 +47,6 @@ const EnvironmentPage = (props: any) => {
         current: paginationConfig.current,
         pageSize: paginationConfig.pageSize,
         onShowSizeChange: (current: number, pageSize: number) => {
-            debugger
             setPaginationConfig((Pagination) => {
                 Pagination.current = current;
                 Pagination.pageSize = pageSize;
@@ -56,7 +55,6 @@ const EnvironmentPage = (props: any) => {
             getConfigTable(currentEnvironment);
         },
         onChange: (page: number, pageSize?: number) => {
-            debugger
             setPaginationConfig((Pagination) => {
                 Pagination.current = page;
                 if (pageSize) {

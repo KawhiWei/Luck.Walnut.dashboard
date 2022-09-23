@@ -1,7 +1,7 @@
 import "../table.less"
 
 import { Button, Col, Form, Input, PaginationProps, Popconfirm, Row, Select, Spin, Table, Tag, Tooltip, message } from "antd";
-import { DeleteOutlined, EditOutlined, FundViewOutlined, SettingOutlined, WarningOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, EyeOutlined, FundViewOutlined, SettingOutlined, WarningOutlined } from "@ant-design/icons";
 import { formItemDoubleRankLayout, searchFormItemDoubleRankLayout } from "@/constans/layout/optionlayout";
 import { initPaginationConfig, tacitPagingProps } from "../../shared/ajax/request"
 import { useEffect, useState } from "react";
@@ -24,20 +24,23 @@ const ApplicationPage = () => {
     const [subOperationElement, setOperationElement] = useState<any>(null);
     const [formData] = Form.useForm();
     const [projectArray, setProjectArray] = useState<Array<any>>([])
+    const [applicationStateArray, setApplicationState] = useState<Array<any>>([])
 
     const pagination: PaginationProps = {
         ...tacitPagingProps,
         total: paginationConfig.total,
         current: paginationConfig.current,
         pageSize: paginationConfig.pageSize,
+        showTotal: ((total) => {
+            return `共 ${total} 条`;
+        }),
         onShowSizeChange: (current: number, pageSize: number) => {
-
             setPaginationConfig((Pagination) => {
                 Pagination.pageSize = pageSize;
                 Pagination.current = current;
                 return Pagination;
             });
-            getTable();
+            getPageList();
 
         },
         onChange: (page: number, pageSize?: number) => {
@@ -48,7 +51,7 @@ const ApplicationPage = () => {
                 }
                 return Pagination;
             });
-            getTable();
+            getPageList();
         }
     };
     const columns = [
@@ -77,6 +80,7 @@ const ApplicationPage = () => {
             dataIndex: "id",
             key: "id",
             width: 120,
+            // fixed: 'right',
             render: (text: any, record: any) => {
                 return <div>
                     <Tag color={getapplicationStateTag(record.applicationState)}>{record.applicationStateName}</Tag>
@@ -93,11 +97,14 @@ const ApplicationPage = () => {
             title: "操作",
             dataIndex: "id",
             key: "id",
-            render: (text: any, record: any) => {
+            _render: (text: any, record: any) => {
                 return <div className="table-operation">
-                    <Tooltip placement="top" title="应用配置">
-                        <SettingOutlined style={{ color: '#108ee9', marginRight: 10, fontSize: 16 }} onClick={() => goToConfig(record.appId)} />
+                    <Tooltip placement="top" title="应用看板">
+                        <EyeOutlined style={{ color: '#108ee9', marginRight: 10, fontSize: 16 }} onClick={() => goToApplicationDashboard(record.appId)} />
                     </Tooltip>
+                    {/* <Tooltip placement="top" title="应用配置">
+                        <EyeOutlined style={{ color: '#108ee9', marginRight: 10, fontSize: 16 }} onClick={() => goToConfig(record.appId)} />
+                    </Tooltip> */}
                     <Tooltip placement="top" title="编辑">
                         <EditOutlined style={{ color: 'orange', marginRight: 10, fontSize: 16 }} onClick={() => editRow(record.id)} />
                     </Tooltip>
@@ -106,8 +113,14 @@ const ApplicationPage = () => {
                             <DeleteOutlined style={{ color: 'red', fontSize: 16 }} />
                         </Popconfirm>
                     </Tooltip>
-                </div>
-            }
+                </div>;
+            },
+            get render() {
+                return this._render;
+            },
+            set render(value) {
+                this._render = value;
+            },
         }
     ];
 
@@ -141,12 +154,23 @@ const ApplicationPage = () => {
             }
         });
     }
+
+    const goToApplicationDashboard = (_appId: string) => {
+        history.push({
+            pathname: "/application/dashboard",
+            state: {
+                appId: _appId
+            }
+        });
+    }
+
     /**
      * 页面初始化事件
      */
     useEffect(() => {
-        getTable();
+        getPageList();
         onGetProjectList();
+        onApplicationStateList();
     }, [paginationConfig]);
 
 
@@ -159,7 +183,14 @@ const ApplicationPage = () => {
         _projectService.getPageList(param).then(rep => {
             if (rep.success) {
                 setProjectArray(rep.result.data)
-                console.log(rep.result.data)
+            }
+        })
+    }
+
+    const onApplicationStateList = () => {
+        _applicationService.getApplicationEnumList().then(rep => {
+            if (rep.success) {
+                setApplicationState(rep.result)
             }
         })
     }
@@ -168,16 +199,26 @@ const ApplicationPage = () => {
      * @param _id 
      */
     const editRow = (_id: any) => {
-        setOperationElement(<Operation onCallbackEvent={clearElement} operationType={OperationTypeEnum.edit} id={_id} projectArray={projectArray} />)
+        setOperationElement(<Operation onCallbackEvent={clearElement} operationType={OperationTypeEnum.edit} id={_id} applicationStateArray={applicationStateArray} projectArray={projectArray} />)
     }
 
     /**
      * 页面初始化获取数据
      */
-    const getTable = () => {
+    const getPageList = () => {
         setloading(true);
-        let param = { pageSize: paginationConfig.pageSize, pageIndex: paginationConfig.current }
-        _applicationService.gettable(param).then((x) => {
+        let param = formData.getFieldsValue();
+        let _param = {
+            pageSize: paginationConfig.pageSize,
+            pageIndex: paginationConfig.current,
+            projectId: param.projectId,
+            appId: param.appId,
+            englishName: param.englishName,
+            chinessName: param.chinessName,
+            principal: param.principal,
+            applicationState: param.applicationState,
+        }
+        _applicationService.gettable(_param).then((x) => {
             if (x.success) {
                 setPaginationConfig((Pagination) => {
                     Pagination.total = x.result.total;
@@ -192,7 +233,7 @@ const ApplicationPage = () => {
 
     const clearElement = () => {
         setOperationElement(null);
-        getTable();
+        getPageList();
     }
 
     const deleteRow = (_id: string) => {
@@ -201,13 +242,13 @@ const ApplicationPage = () => {
                 message.error(res.errorMessage, 3)
             }
             else {
-                getTable();
+                getPageList();
             }
         });
     };
 
     const addChange = () => {
-        setOperationElement(<Operation onCallbackEvent={clearElement} projectArray={projectArray} operationType={OperationTypeEnum.add} />)
+        setOperationElement(<Operation onCallbackEvent={clearElement} projectArray={projectArray} applicationStateArray={applicationStateArray} operationType={OperationTypeEnum.add} />)
     }
 
     return (<div>
@@ -250,6 +291,7 @@ const ApplicationPage = () => {
                             label="应用中文名称：">
                             <Input style={{ borderRadius: 8 }} placeholder="请请输入应用标识" />
                         </Form.Item>
+                        
                     </Col>
                 </Row>
                 <Row >
@@ -267,15 +309,20 @@ const ApplicationPage = () => {
                     </Col>
                     <Col span="6">
                         <Form.Item
-                            name="applicationStatus"
+                            name="applicationState"
                             label="应用状态：">
-                            <Input style={{ borderRadius: 8 }} placeholder="请请输入应用标识" />
+                            <Select style={{ width: 180 }} allowClear={true} placeholder="请选择应用状态">
+                                {applicationStateArray.map((item: any) => {
+                                    return <Select.Option value={item.key}>{item.value}</Select.Option>;
+                                }
+                                )}
+                            </Select>
                         </Form.Item>
                     </Col>
                 </Row>
                 <Row >
                     <Col span="6" style={{ textAlign: 'center' }}>
-                        <Button type="primary" shape="round" htmlType="submit" onClick={() => { getTable() }}>查询</Button>
+                        <Button type="primary" shape="round" htmlType="submit" onClick={() => { getPageList() }}>查询</Button>
                     </Col>
                 </Row>
             </Form>

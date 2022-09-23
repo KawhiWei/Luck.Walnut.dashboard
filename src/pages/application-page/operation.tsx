@@ -26,6 +26,11 @@ interface IProp {
      * 项目列表
      */
     projectArray: Array<any>;
+
+    /**
+     * 应用状态列表
+     */
+    applicationStateArray: Array<any>;
 }
 
 const validateMessages = {
@@ -48,6 +53,7 @@ const Operation = (props: IProp) => {
 
     const projectArray = props.projectArray;
 
+    const applicationStateArray = props.applicationStateArray;
     /**
          * 页面初始化事件
          */
@@ -115,10 +121,11 @@ const Operation = (props: IProp) => {
                 onUpdate(param);
                 break;
         }
-        setLoading(false)
     }
     const onAdd = (_param: any) => {
         setLoading(true)
+
+        debugger
         _applicationService.addApplication(_param).then(rep => {
             if (!rep.success) {
                 message.error(rep.errorMessage, 3)
@@ -127,6 +134,7 @@ const Operation = (props: IProp) => {
                 message.success("保存成功", 3)
                 props.onCallbackEvent && props.onCallbackEvent();
             }
+            setLoading(false)
         })
 
     }
@@ -163,22 +171,7 @@ const Operation = (props: IProp) => {
                     onFinish={onFinish}
                     validateMessages={validateMessages}
                 >
-                    <Row>
-                        <Col span="24">
-                            <Form.Item
-                                name="projectId"
-                                label="所属项目："
-                                rules={[{ required: true }]}
-                            >
-                                <Select allowClear={true} placeholder="请选择项目">
-                                    {projectArray.map((item: any) => {
-                                        return <Select.Option value={item.id}>{item.name}</Select.Option>;
-                                    }
-                                    )}
-                                </Select>
-                            </Form.Item>
-                        </Col>
-                    </Row>
+
                     <Row>
                         <Col span="24">
                             <Form.Item
@@ -190,6 +183,8 @@ const Operation = (props: IProp) => {
                             </Form.Item>
                         </Col>
                     </Row>
+
+                    
                     <Row>
                         <Col span="24">
                             <Form.Item
@@ -214,6 +209,22 @@ const Operation = (props: IProp) => {
 
                     </Row>
                     <Row>
+                        <Col span="24">
+                            <Form.Item
+                                name="projectId"
+                                label="所属项目："
+                                rules={[{ required: true }]}
+                            >
+                                <Select allowClear={true} placeholder="请选择项目">
+                                    {projectArray.map((item: any) => {
+                                        return <Select.Option value={item.id}>{item.name}</Select.Option>;
+                                    }
+                                    )}
+                                </Select>
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row>
 
                         <Col span="24">
                             <Form.Item
@@ -221,7 +232,12 @@ const Operation = (props: IProp) => {
                                 label="应用状态："
                                 rules={[{ required: true }]}
                             >
-                                <Input style={{ borderRadius: 6 }} />
+                                <Select style={{ width: 180 }} allowClear={true} placeholder="请选择应用状态">
+                                    {applicationStateArray.map((item: any) => {
+                                        return <Select.Option value={item.key}>{item.value}</Select.Option>;
+                                    }
+                                    )}
+                                </Select>
                             </Form.Item>
                         </Col>
                     </Row>
@@ -260,7 +276,7 @@ const Operation = (props: IProp) => {
                     <Row>
                         <Col span="24" style={{ textAlign: 'right' }}>
                             <Form.Item {...tailLayout}>
-                                <Button shape="round" onClick={() => onCancel()}>取消</Button>
+                                <Button shape="round" disabled={loading} onClick={() => onCancel()}>取消</Button>
                                 <Button shape="round" style={{ margin: '0 8px' }} type="primary" loading={loading} htmlType="submit">保存</Button>
                             </Form.Item>
                         </Col>
