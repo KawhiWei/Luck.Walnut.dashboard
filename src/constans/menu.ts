@@ -56,7 +56,7 @@ export const menuList: IMenuOutput[] = [
       },
       {
         id: "1001-2",
-        name: "应用看板",
+        name: "应用仪表盘",
         path: "/application/dashboard",
         component: "pages/application-page/application-dashboard",
         tabs: [],
@@ -68,7 +68,7 @@ export const menuList: IMenuOutput[] = [
         microName: "",
         componentName: "menu-page",
         sort: 0,
-        isShow: true,
+        isShow: false,
         type: 0,
         children: [],
       },

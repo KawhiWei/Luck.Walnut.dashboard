@@ -4,6 +4,11 @@ import { IApplicationService } from "./iapplication-service";
 import { IServerPageReturn } from "@/shared/entity";
 
 export class ApplicationService extends BaseService implements IApplicationService {
+    
+    
+    getApplicationDashboardDetail(_appId: string): Promise<IServerPageReturn<any>> {
+        return this.dataRequest.getRequest(`${ApplicationApi.application}/${_appId}/dashboard`)
+    }
     update(_id: string, _param: any): Promise<IServerPageReturn<any>> {
         return this.dataRequest.putRequest(`${ApplicationApi.application}/${_id}`, _param)
     }

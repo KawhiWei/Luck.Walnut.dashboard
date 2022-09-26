@@ -6,6 +6,7 @@ import { formItemDoubleRankLayout, searchFormItemDoubleRankLayout } from "@/cons
 import { initPaginationConfig, tacitPagingProps } from "../../shared/ajax/request"
 import { useEffect, useState } from "react";
 
+import ApplicationStateTag from "./applicationStateTag";
 import { IApplicationService } from "@/domain/applications/iapplication-service";
 import { IProjectService } from "@/domain/projects/iproject-service";
 import { IocTypes } from "@/shared/config/ioc-types";
@@ -83,8 +84,7 @@ const ApplicationPage = () => {
             // fixed: 'right',
             render: (text: any, record: any) => {
                 return <div>
-                    <Tag color={getapplicationStateTag(record.applicationState)}>{record.applicationStateName}</Tag>
-                    {/* <Tag color="blue">{record.projectStatusName}</Tag> */}
+                    <ApplicationStateTag applicationState={record.applicationState} applicationStateName={record.applicationStateName} />
                 </div>
             }
         },
@@ -123,37 +123,6 @@ const ApplicationPage = () => {
             },
         }
     ];
-
-    /**
-         * 处理标签
-         * @param _projectStatus 
-         * @returns 
-         */
-    const getapplicationStateTag = (_applicationState: any): string => {
-        switch (_applicationState) {
-            case "NotStart":
-                return "orange";
-            case "UnderDevelopment":
-                return "processing";
-            case "NotOnline":
-                return "magenta";
-            case "OnlineRunning":
-                return "success";
-            case "Offline":
-                return "error";
-            default:
-                return "";
-        }
-    }
-
-    const goToConfig = (_appId: string) => {
-        history.push({
-            pathname: "environment",
-            state: {
-                appId: _appId
-            }
-        });
-    }
 
     const goToApplicationDashboard = (_appId: string) => {
         history.push({
@@ -291,7 +260,7 @@ const ApplicationPage = () => {
                             label="应用中文名称：">
                             <Input style={{ borderRadius: 8 }} placeholder="请请输入应用标识" />
                         </Form.Item>
-                        
+
                     </Col>
                 </Row>
                 <Row >

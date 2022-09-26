@@ -34,4 +34,10 @@ export interface IApplicationService {
      * 获取应用相关所有枚举
      */
     getApplicationEnumList(): Promise<IServerPageReturn<any>>;
+
+    /**
+     * 应用仪表盘明细
+     * @param _appId 
+     */
+    getApplicationDashboardDetail(_appId:string): Promise<IServerPageReturn<any>>;
 }

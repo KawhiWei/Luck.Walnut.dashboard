@@ -266,6 +266,16 @@ const Operation = (props: IProp) => {
                     <Row>
                         <Col span="24">
                             <Form.Item
+                                name="codeWarehouseAddress"
+                                label="代码仓库地址："
+                            >
+                                <Input style={{ borderRadius: 6 }} />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span="24">
+                            <Form.Item
                                 name="describe"
                                 label="应用描述："
                             >
@@ -273,6 +283,7 @@ const Operation = (props: IProp) => {
                             </Form.Item>
                         </Col>
                     </Row>
+                    
                     <Row>
                         <Col span="24" style={{ textAlign: 'right' }}>
                             <Form.Item {...tailLayout}>

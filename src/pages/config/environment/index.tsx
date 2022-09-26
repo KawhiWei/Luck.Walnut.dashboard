@@ -254,8 +254,8 @@ const EnvironmentPage = (props: any) => {
                                 <p>应用名称：{applicationData?.appId}</p>
                                 <p>中文名称：{applicationData?.chinessName}</p>
                                 <p>英文名称：{applicationData?.englishName}</p>
-                                <p>负责人{applicationData?.linkMan}</p>
-                                <p>状态：{applicationData?.status}</p>
+                                <p>负责人{applicationData?.principal}</p>
+                                <p>状态：{applicationData?.applicationState}</p>
                             </Card>
                         </div>
                     </Sider>

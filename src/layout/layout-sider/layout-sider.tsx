@@ -15,7 +15,7 @@ const LayoutSider = (props: { menus: IMenuOutput[],defaultpath:any }) => {
   
   return (
     <Layout.Sider collapsible collapsed={collapsed} onCollapse={onCollapse}>
-      <div className="logo">asdasdasdasasda</div>
+      <div className="logo">胡桃木PaaS平台</div>
       <Menus defaultpath={props.defaultpath} menus={props.menus} />
     </Layout.Sider>
   )
