@@ -184,7 +184,7 @@ const Operation = (props: IProp) => {
                         </Col>
                     </Row>
 
-                    
+
                     <Row>
                         <Col span="24">
                             <Form.Item
@@ -283,7 +283,7 @@ const Operation = (props: IProp) => {
                             </Form.Item>
                         </Col>
                     </Row>
-                    
+
                     <Row>
                         <Col span="24" style={{ textAlign: 'right' }}>
                             <Form.Item {...tailLayout}>

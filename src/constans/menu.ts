@@ -74,9 +74,9 @@ export const menuList: IMenuOutput[] = [
       },
       {
         id: "1001-2",
-        name: "环境信息",
-        path: "/environment",
-        component: "pages/config/environment/index",
+        name: "配置中心",
+        path: "/application/configcenter",
+        component: "pages/config/index",
         tabs: [],
         buttonClick: "",
         buttons: [],

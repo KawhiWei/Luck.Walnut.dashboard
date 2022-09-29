@@ -1,8 +1,7 @@
 import "../table.less"
 
 import { Button, Col, Form, Input, PaginationProps, Popconfirm, Row, Select, Spin, Table, Tag, Tooltip, message } from "antd";
-import { DeleteOutlined, EditOutlined, EyeOutlined, FundViewOutlined, SettingOutlined, WarningOutlined } from "@ant-design/icons";
-import { formItemDoubleRankLayout, searchFormItemDoubleRankLayout } from "@/constans/layout/optionlayout";
+import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined, SearchOutlined, SettingTwoTone, WarningOutlined } from "@ant-design/icons";
 import { initPaginationConfig, tacitPagingProps } from "../../shared/ajax/request"
 import { useEffect, useState } from "react";
 
@@ -12,6 +11,7 @@ import { IProjectService } from "@/domain/projects/iproject-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import Operation from "./operation";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
+import { searchFormItemDoubleRankLayout } from "@/constans/layout/optionlayout";
 import { useHistory } from "react-router-dom"
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
@@ -72,6 +72,11 @@ const ApplicationPage = () => {
             key: "appId",
         },
         {
+            title: "所属项目",
+            dataIndex: "projectName",
+            key: "projectName",
+        },
+        {
             title: "所属部门",
             dataIndex: "departmentName",
             key: "departmentName",
@@ -102,9 +107,9 @@ const ApplicationPage = () => {
                     <Tooltip placement="top" title="应用看板">
                         <EyeOutlined style={{ color: '#108ee9', marginRight: 10, fontSize: 16 }} onClick={() => goToApplicationDashboard(record.appId)} />
                     </Tooltip>
-                    {/* <Tooltip placement="top" title="应用配置">
-                        <EyeOutlined style={{ color: '#108ee9', marginRight: 10, fontSize: 16 }} onClick={() => goToConfig(record.appId)} />
-                    </Tooltip> */}
+                    <Tooltip placement="top" title="配置管理">
+                        <SettingTwoTone style={{ marginRight: 10, fontSize: 16 }} onClick={() => goToConfig(record.appId)} />
+                    </Tooltip>
                     <Tooltip placement="top" title="编辑">
                         <EditOutlined style={{ color: 'orange', marginRight: 10, fontSize: 16 }} onClick={() => editRow(record.id)} />
                     </Tooltip>
@@ -124,6 +129,18 @@ const ApplicationPage = () => {
         }
     ];
 
+    /**
+     * 跳转到配置中心
+     * @param _appId 
+     */
+    const goToConfig = (_appId: string) => {
+        history.push({
+            pathname: "/application/configcenter",
+            state: {
+                appId: _appId
+            }
+        });
+    }
     const goToApplicationDashboard = (_appId: string) => {
         history.push({
             pathname: "/application/dashboard",
@@ -291,18 +308,18 @@ const ApplicationPage = () => {
                 </Row>
                 <Row >
                     <Col span="6" style={{ textAlign: 'center' }}>
-                        <Button type="primary" shape="round" htmlType="submit" onClick={() => { getPageList() }}>查询</Button>
+                        <Button type="primary"   shape="round" htmlType="submit" onClick={() => { getPageList() }}><SearchOutlined />查询</Button>
                     </Col>
                 </Row>
             </Form>
             <Row>
                 <Col span="24" style={{ textAlign: 'right' }}>
-                    <Button shape="round" type="primary" style={{ margin: '8px 8px' }} onClick={() => { addChange() }}>添加</Button>
+                    <Button shape="round"   type="primary" style={{ margin: '8px 8px' }} onClick={() => { addChange() }}><PlusOutlined />添加</Button>
                 </Col>
             </Row>
             <Row>
                 <Col span={24}>
-                    <Table size="small" columns={columns} dataSource={tableData} pagination={pagination} scroll={{ y: 700 }} />
+                    <Table   columns={columns} dataSource={tableData} pagination={pagination} scroll={{ y: 700 }} />
                 </Col>
             </Row>
             {subOperationElement}

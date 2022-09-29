@@ -1,5 +1,5 @@
 import { Button, Col, Form, Input, Modal, PaginationProps, Row, Table, Tag, message } from "antd";
-import { initPaginationConfig, tacitPagingProps } from "../../../shared/ajax/request"
+import { initPaginationConfig, tacitPagingProps } from "../../shared/ajax/request"
 import { useEffect, useState } from "react";
 
 import { IEnvironmentService } from "@/domain/environment/ienvironment-service";
@@ -195,18 +195,17 @@ const ConfigRelease = (props: IProp) => {
                 </Form.Item>
                 <Button type="primary" shape="round" htmlType="submit" >查询</Button>
             </Form>
-            {/* <Row>
+            <Row>
                 <Col span="24" style={{ textAlign: 'right' }}>
-                <Button type="primary" style={{ margin: '8px 8px '}} onClick={() => { release() }}>发布环境</Button>
+                <Button type="primary" style={{ margin: '8px 8px '}} onClick={() => { release() }}>发布配置</Button>
                 <Button type="primary" style={{ margin: '8px 8px '}}  onClick={() => {onCancel()}}>取消</Button>
                 </Col>
-            </Row> */}
-            <Table size="small" columns={columns} dataSource={tableData} loading={loading}
+            </Row>
+            <Table  columns={columns} dataSource={tableData} loading={loading}
                 pagination={pagination}
                 rowSelection={rowSelection}
                 rowKey={"id"}
             >
-
             </Table>
 
         </Modal>

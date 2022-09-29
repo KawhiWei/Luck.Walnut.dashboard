@@ -1,5 +1,5 @@
 import { Button, Col, Form, Input, PaginationProps, Popconfirm, Row, Spin, Table, Tag, Tooltip, message } from "antd";
-import { DeleteOutlined, SettingOutlined, WarningOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined, SearchOutlined, SettingOutlined, WarningOutlined } from "@ant-design/icons";
 import { initPaginationConfig, tacitPagingProps } from "../../shared/ajax/request"
 import { useEffect, useState } from "react";
 
@@ -50,7 +50,7 @@ const ProjectPage = () => {
             title: "计划开始-结束时间",
             dataIndex: "id",
             key: "id",
-            width: 210,
+            width: 240,
             render: (text: any, record: any) => {
                 return <div>
                     {record.planStartTime}——{record.planEndTime ? record.planEndTime : "无限期"}
@@ -215,17 +215,17 @@ const ProjectPage = () => {
                         label="项目名称">
                         <Input style={{ borderRadius: 8 }} />
                     </Form.Item>
-                    <Button type="primary" shape="round" htmlType="submit" onClick={() => { getPageList() }}>查询</Button>
+                    <Button type="primary"  shape="round" htmlType="submit" onClick={() => { getPageList() }}><SearchOutlined />查询</Button>
                 </Form>
             </Row>
             <Row>
                 <Col span="24" style={{ textAlign: 'right' }}>
-                    <Button type="primary" shape="round" style={{ margin: '8px 8px' }} onClick={() => { addChange() }}>添加</Button>
+                    <Button type="primary"  shape="round" style={{ margin: '8px 8px' }} onClick={() => { addChange() }}><PlusOutlined />添加</Button>
                 </Col>
             </Row>
             <Row>
                 <Col span={24}>
-                    <Table size="small" columns={columns} dataSource={tableData} pagination={pagination} scroll={{ y: 700 }} />
+                    <Table   columns={columns} dataSource={tableData} pagination={pagination} scroll={{ y: 700 }} />
                 </Col>
             </Row>
             {subOperationElement}

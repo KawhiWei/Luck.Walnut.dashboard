@@ -149,7 +149,7 @@ const MatterPage = () => {
             </Row>
             <Row>
                 <Col span={24}>
-                    <Table size="small" columns={columns} dataSource={tableData}  pagination={pagination} scroll={{ y: 700 }} />
+                    <Table  columns={columns} dataSource={tableData}  pagination={pagination} scroll={{ y: 700 }} />
                     </Col>
             </Row>
         </Spin>

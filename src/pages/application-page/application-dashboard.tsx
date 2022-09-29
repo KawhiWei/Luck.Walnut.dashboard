@@ -2,11 +2,12 @@ import { Card, Col, Form, Input, List, Row, Select, Spin, Tabs, Tag } from "antd
 import { useEffect, useState } from "react";
 
 import ApplicationStateTag from "./applicationStateTag"
+import EnvironmentPage from "../environment/index"
 import { IApplication } from "@/domain/applications/application";
 import { IApplicationService } from "@/domain/applications/iapplication-service";
+import { IEnvironmentService } from "@/domain/environment/ienvironment-service";
 import { IProjectService } from "@/domain/projects/iproject-service";
 import { IocTypes } from "@/shared/config/ioc-types";
-import { searchFormItemDoubleRankLayout } from "@/constans/layout/optionlayout";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
 /**
@@ -27,7 +28,10 @@ const ApplicationDashboard = (props: any) => {
     const [formData] = Form.useForm();
     const [applicationData, setApplicationData] = useState<IApplication>();
     const [applicationStateTagComponent, SetapplicationStateTagComponent] = useState<any>();
-
+    const _environmentService: IEnvironmentService = useHookProvider(IocTypes.EnvironmentService);
+    const [environmentTableData, setEnvironmentTableData] = useState<Array<any>>([]);
+    const [environmentPage, setEnvironmentPage] = useState<any>();
+    const [tabsLoading, setTabsLoading] = useState<boolean>(false);
     const onGetProjectList = () => {
         let param = { pageSize: 1000, pageIndex: 1 }
         _projectService.getPageList(param).then(rep => {
@@ -43,7 +47,6 @@ const ApplicationDashboard = (props: any) => {
             setloading(true);
             _applicationService.getApplicationDashboardDetail(props.location.state.appId).then(rep => {
                 if (rep.success) {
-                    console.log(rep)
                     setApplicationData(rep.result.application)
                     SetapplicationStateTagComponent(<ApplicationStateTag applicationState={rep.result.application.applicationState} applicationStateName={rep.result.application.applicationStateName} />)
                     setloading(false);
@@ -72,14 +75,35 @@ const ApplicationDashboard = (props: any) => {
                 return "";
         }
     }
+    const tabsOnChange = (activeKey: string) => {
+        switch (activeKey) {
+            case "2":
+                setEnvironmentPage(<EnvironmentPage appId={appId} environmentDataArray={environmentTableData} />)
+                break;
+            default:
+                break;
+        }
+    }
+    /**
+         * 获取列表信息
+         */
+    const getEnvironmentList = () => {
+        setTabsLoading(true);
+        applicationData && console.log(applicationData.appId)
+        applicationData && _environmentService.getEnvironmentList(applicationData.appId).then((x) => {
+            if (x.success) {
+                setEnvironmentTableData(x.result);
+                setTabsLoading(false);
+            }
+        })
+    }
 
     return (<div>
-
         <Spin spinning={loading}>
             <Row gutter={12} style={{ textAlign: 'left', marginTop: 10 }}>
                 <Col span="8" >
-                    <Card size="small" title="应用简介" extra={<a href="#">More</a>} >
-                        <Form size="small">
+                    <Card  title="应用简介" extra={<a href="#">More</a>} >
+                        <Form >
                             <Form.Item
                                 label="AppId：">{applicationData?.appId}
                             </Form.Item>
@@ -108,29 +132,26 @@ const ApplicationDashboard = (props: any) => {
             </Row>
             <Row gutter={12} style={{ textAlign: 'left', marginTop: 10 }}>
                 <Col span="24" >
-                    <Card size="small" >
-                        <Tabs defaultActiveKey="1">
-                            <Tabs.TabPane tab="配置中心" key="1">
-                                <Spin spinning={loading}>
-                                    <Row gutter={12} style={{ textAlign: 'left', marginTop: 10 }}>
-                                        <Col span="24" >
-                                            配置中心
-                                        </Col>
-                                    </Row>
-                                </Spin>
-                            </Tabs.TabPane>
-                            <Tabs.TabPane tab="环境列表" key="2">
-                                环境列表
-                            </Tabs.TabPane>
-                            <Tabs.TabPane tab="实例列表" key="3">
-                                实例列表
-                            </Tabs.TabPane>
-                            <Tabs.TabPane tab="应用监控" key="4">
-                                应用监控
-                            </Tabs.TabPane>
-                            <Tabs.TabPane tab="应用日志" key="5">
-                                应用日志
-                            </Tabs.TabPane>
+                    <Card  >
+                        <Tabs defaultActiveKey="1" onChange={tabsOnChange}
+                            items={[
+                                {
+                                    label: `Tab 1`,
+                                    key: '1',
+                                    children: `Content of Tab Pane 1`,
+                                },
+                                {
+                                    label: `Tab 2`,
+                                    key: '2',
+                                    children: ({ environmentPage }),
+                                },
+                                {
+                                    label: `Tab 3`,
+                                    key: '3',
+                                    children: `Content of Tab Pane 3`,
+                                },
+                            ]}
+                        >
                         </Tabs>
                     </Card>
                 </Col>
