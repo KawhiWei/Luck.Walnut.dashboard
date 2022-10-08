@@ -1,16 +1,13 @@
-import { Button, Card, Col, Empty, Form, Input, PaginationProps, Popconfirm, Row, Select, Spin, Table, Tag, Tooltip, message } from "antd";
-import { PlusOutlined, SendOutlined } from "@ant-design/icons";
+import { Button, Card, Col, Empty, PaginationProps, Row, Spin, Table, Tag } from "antd";
+import { PlusOutlined, RollbackOutlined, SendOutlined } from "@ant-design/icons";
 import { initPaginationConfig, tacitPagingProps } from "../../shared/ajax/request"
 import { useEffect, useState } from "react";
 
 import ConfigOperation from "./operation";
 import ConfigRelease from "./configRelease";
-import { IApplicationService } from "@/domain/applications/iapplication-service";
 import { IEnvironmentService } from "@/domain/environment/ienvironment-service";
-import { IProjectService } from "@/domain/projects/iproject-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
-import { useHistory } from "react-router-dom"
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
 const ConfigPage = (props: any) => {
@@ -182,7 +179,8 @@ const ConfigPage = (props: any) => {
                     currentEnvironmentId ? <><Row>
                         <Col span="24" style={{ textAlign: 'right' }}>
                             <Button type="primary" shape="round" style={{ margin: '8px 8px' }} onClick={() => { addChangeConfig() }}><PlusOutlined />添加</Button>
-                            <Button type="primary" shape="round" style={{ margin: '8px 8px ' }} onClick={() => { publishConfig() }}><SendOutlined />发布</Button>
+                            <Button type="primary" shape="round" style={{ margin: '8px 8px ' }} onClick={() => { publishConfig() }}><SendOutlined rotate={-40}/>发布</Button>
+                            <Button type="primary" shape="round" style={{ margin: '8px 8px ' }} onClick={() => { publishConfig() }}><RollbackOutlined />返回应用列表</Button>
                         </Col>
                     </Row>
                         <Row>
