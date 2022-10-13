@@ -33,7 +33,6 @@ interface IProp {
 }
 
 const EnvironmentPage = (props: IProp) => {
-    const [operation, setOperation] = useState<any>(null);
     const columns = [
         {
             title: "AppId",
@@ -59,18 +58,17 @@ const EnvironmentPage = (props: IProp) => {
     });
 
     return (
-        <>
+        <div>
             <Row>
                 <Col span={24}>
-                    {/* <Table  columns={columns} dataSource={props.environmentTableData} scroll={{ y: 600 }} /> */}
-                    <Tabs defaultActiveKey="1"
+                    {/* <Table  columns={columns} dataSource={props.environmentDataArray} scroll={{ y: 600 }} /> */}
+                    {/* <Tabs defaultActiveKey="1"
                         items={environmentDataArray}
                     >
-                    </Tabs>
+                    </Tabs> */}
                 </Col>
             </Row>
-            {operation}
-        </>)
+        </div>)
 }
 
 export default EnvironmentPage;

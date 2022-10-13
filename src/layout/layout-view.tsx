@@ -19,7 +19,6 @@ interface IProp {
 
 const LayoutView = (props: IProp) => {
     const [routes] = useState(props.route.children);
-    console.log(props);
     return (
         <Layout className="sukt-layout">
             <BrowserRouter>

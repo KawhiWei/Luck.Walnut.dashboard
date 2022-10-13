@@ -8,14 +8,14 @@ export class ProjectService extends BaseService implements IProjectService {
      * 获取分页列表
      */
     getPageList(_param: any): Promise<IServerPageReturn<any>> {
-        return this.dataRequest.getRequest(`${ProjectApi.project}/pagelist`, _param)
+        return this.dataRequest.getRequest(`${ProjectApi.project}/page/list`, _param)
     }
 
     /**
      * 获取枚举列表
      */
     getEnumList(): Promise<IServerPageReturn<any>> {
-        return this.dataRequest.getRequest(`${ProjectApi.project}/enumlist`)
+        return this.dataRequest.getRequest(`${ProjectApi.project}/enum/list`)
     }
 
     /**

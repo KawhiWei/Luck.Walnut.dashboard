@@ -28,6 +28,10 @@ export class ApplicationService extends BaseService implements IApplicationServi
     }
 
     getApplicationEnumList(): Promise<IServerPageReturn<any>> {
-        return this.dataRequest.getRequest(`${ApplicationApi.application}/enumlist`, )
+        return this.dataRequest.getRequest(`${ApplicationApi.application}/enum/list`, )
+    }
+
+    getLanguageList(): Promise<IServerPageReturn<any>> {
+        return this.dataRequest.getRequest(`${ApplicationApi.application}/language/list`, )
     }
 }

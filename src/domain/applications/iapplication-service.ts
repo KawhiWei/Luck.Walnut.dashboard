@@ -40,4 +40,6 @@ export interface IApplicationService {
      * @param _appId 
      */
     getApplicationDashboardDetail(_appId:string): Promise<IServerPageReturn<any>>;
+
+    getLanguageList(): Promise<IServerPageReturn<any>>;
 }

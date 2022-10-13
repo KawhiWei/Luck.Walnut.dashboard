@@ -54,11 +54,13 @@ const Operation = (props: IProp) => {
     const projectArray = props.projectArray;
 
     const applicationStateArray = props.applicationStateArray;
+    const [languageArray, setLanguageArray] = useState<Array<any>>([]);
     /**
          * 页面初始化事件
          */
     useEffect(() => {
-        onGetLoad()
+        onGetLoad();
+        getLanguageList();
     }, [formData]);
 
 
@@ -70,6 +72,13 @@ const Operation = (props: IProp) => {
      */
     const editOperationState = (_visible: boolean, _title?: string) => {
         setOperationState({ visible: _visible, title: _title });
+    }
+    const getLanguageList = () => {
+        _applicationService.getLanguageList().then(rep => {
+            if (rep.success) {
+                setLanguageArray(rep.result)
+            }
+        })
     }
 
     /**
@@ -225,7 +234,6 @@ const Operation = (props: IProp) => {
                         </Col>
                     </Row>
                     <Row>
-
                         <Col span="24">
                             <Form.Item
                                 name="applicationState"
@@ -235,6 +243,20 @@ const Operation = (props: IProp) => {
                                 <Select style={{ width: 180 }} allowClear={true} placeholder="请选择应用状态">
                                     {applicationStateArray.map((item: any) => {
                                         return <Select.Option value={item.key}>{item.value}</Select.Option>;
+                                    }
+                                    )}
+                                </Select>
+                            </Form.Item>
+                        </Col>
+                        <Col span="24">
+                            <Form.Item
+                                name="applicationLevel"
+                                label="应用开发语言："
+                                rules={[{ required: true }]}
+                            >
+                                <Select style={{ width: 180 }} allowClear={true} placeholder="请选择应用开发语言">
+                                    {languageArray.map((item: any) => {
+                                        return <Select.Option value={item.id}>{item.name}</Select.Option>;
                                     }
                                     )}
                                 </Select>

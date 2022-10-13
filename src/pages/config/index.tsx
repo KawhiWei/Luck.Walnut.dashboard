@@ -8,9 +8,11 @@ import ConfigRelease from "./configRelease";
 import { IEnvironmentService } from "@/domain/environment/ienvironment-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
+import { useHistory } from "react-router-dom";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
 const ConfigPage = (props: any) => {
+    const history = useHistory();
     const [paginationConfig, setPaginationConfig] = useState<initPaginationConfig>(new initPaginationConfig());
     const _environmentService: IEnvironmentService = useHookProvider(IocTypes.EnvironmentService);
     const [loading, setLoading] = useState<boolean>(false);
@@ -120,7 +122,6 @@ const ConfigPage = (props: any) => {
             pageSize: paginationConfig.pageSize,
             pageIndex: paginationConfig.current,
         }
-        console.log(_environmentId)
         setCurrentEnvironmentId(_environmentId)
         _environmentService.getConfigListForEnvironmentId(_environmentId, _param).then(rep => {
             if (rep.success) {
@@ -155,7 +156,15 @@ const ConfigPage = (props: any) => {
         setConfigRelease(<ConfigRelease onCallbackEvent={claerConfigRelease} operationType={OperationTypeEnum.view} envId={currentEnvironmentId}></ConfigRelease>)
     }
 
-
+    /**
+     * 跳转到配置中心
+     * @param _appId 
+     */
+    const backToApplicationList = () => {
+        history.push({
+            pathname: "/application/list"
+        });
+    }
     const claerConfigRelease = () => {
         setConfigRelease(null);
     }
@@ -180,7 +189,7 @@ const ConfigPage = (props: any) => {
                         <Col span="24" style={{ textAlign: 'right' }}>
                             <Button type="primary" shape="round" style={{ margin: '8px 8px' }} onClick={() => { addChangeConfig() }}><PlusOutlined />添加</Button>
                             <Button type="primary" shape="round" style={{ margin: '8px 8px ' }} onClick={() => { publishConfig() }}><SendOutlined rotate={-40}/>发布</Button>
-                            <Button type="primary" shape="round" style={{ margin: '8px 8px ' }} onClick={() => { publishConfig() }}><RollbackOutlined />返回应用列表</Button>
+                            <Button type="primary" shape="round" style={{ margin: '8px 8px ' }} onClick={() => { backToApplicationList() }}><RollbackOutlined />返回应用列表</Button>
                         </Col>
                     </Row>
                         <Row>
