@@ -25,7 +25,7 @@ interface IProp {
     /**
      * 环境id
      */
-    envId: string;
+    environmentId: string;
 }
 const validateMessages = {
     required: "${label} 不可为空",
@@ -65,7 +65,7 @@ const ConfigOperation = (props: IProp) => {
 
     const onAdd = (_param: any) => {
         setLoading(true)
-        _environmentService.addAppConfiguration(props.envId, _param).then(rep => {
+        _environmentService.addAppConfiguration(props.environmentId, _param).then(rep => {
             if (!rep.success) {
                 message.error(rep.errorMessage, 3)
             } else {
@@ -77,7 +77,7 @@ const ConfigOperation = (props: IProp) => {
 
     const onUpdate = (_param: any) => {
         setLoading(true)
-        props.id && _environmentService.updateAppConfiguration(props.envId, props.id, _param).then(rep => {
+        props.id && _environmentService.updateAppConfiguration(props.environmentId, props.id, _param).then(rep => {
             if (!rep.success) {
                 message.error(rep.errorMessage, 3)
             } else {

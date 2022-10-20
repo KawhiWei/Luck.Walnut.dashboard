@@ -76,7 +76,7 @@ export const menuList: IMenuOutput[] = [
         id: "1001-2",
         name: "配置中心",
         path: "/application/configcenter",
-        component: "pages/config/index",
+        component: "pages/config/indexnew",
         tabs: [],
         buttonClick: "",
         buttons: [],

@@ -1,4 +1,6 @@
+import { IServerReturn } from "../ajax/response";
 import axios from "axios";
+import { er } from "@antv/x6/lib/registry/router/er";
 import { notification } from "antd";
 
 const codeMessage: any = {
@@ -57,7 +59,12 @@ service.interceptors.response.use(
     notification.error({
       message: errorText,
     });
-    return Promise.reject();
+    var data = {
+      success: false,
+      errorMessage: errorText
+    };
+    error.data=data;
+    return error;
   }
 );
 

@@ -25,7 +25,7 @@ interface IProp {
     /**
      * 环境id
      */
-    envId: string;
+    environmentId: string;
 }
 
 const ConfigRelease = (props: IProp) => {
@@ -116,7 +116,7 @@ const ConfigRelease = (props: IProp) => {
     const getTable = () => {
         setloading(true);
         let param = { pageSize: paginationConfig.pageSize, pageIndex: paginationConfig.current };
-        props.envId && _environmentService.getConfigRelease(props.envId, param).then((x) => {
+        props.environmentId && _environmentService.getConfigRelease(props.environmentId, param).then((x) => {
             if (x.success) {
                 setPaginationConfig((Pagination) => {
                     Pagination.total = x.result.total;
@@ -162,7 +162,7 @@ const ConfigRelease = (props: IProp) => {
         selectedRowKeys.map(key => {
             param.push(key.toString());
         });
-        props.envId && _environmentService.releasePublish(props.envId, param).then((rep) => {
+        props.environmentId && _environmentService.releasePublish(props.environmentId, param).then((rep) => {
             if (!rep.success) {
                 message.error(rep.errorMessage, 3)
             } else {

@@ -148,12 +148,12 @@ const ConfigPage = (props: any) => {
      * 添加配置弹框
      */
     const addChangeConfig = () => {
-        setconfigOperationElement(<ConfigOperation onCallbackEvent={claerConfigOperation} operationType={OperationTypeEnum.add} envId={currentEnvironmentId}></ConfigOperation>)
+        setconfigOperationElement(<ConfigOperation onCallbackEvent={claerConfigOperation} operationType={OperationTypeEnum.add} environmentId={currentEnvironmentId}></ConfigOperation>)
     }
 
 
     const publishConfig = () => {
-        setConfigRelease(<ConfigRelease onCallbackEvent={claerConfigRelease} operationType={OperationTypeEnum.view} envId={currentEnvironmentId}></ConfigRelease>)
+        setConfigRelease(<ConfigRelease onCallbackEvent={claerConfigRelease} operationType={OperationTypeEnum.view} environmentId={currentEnvironmentId}></ConfigRelease>)
     }
 
     /**

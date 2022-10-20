@@ -25,7 +25,9 @@ const ApplicationPage = () => {
     const [subOperationElement, setOperationElement] = useState<any>(null);
     const [formData] = Form.useForm();
     const [projectArray, setProjectArray] = useState<Array<any>>([])
-    const [applicationStateArray, setApplicationState] = useState<Array<any>>([])
+    const [applicationStateArray, setApplicationStateArray] = useState<Array<any>>([]);
+    const [applicationLevelArray, setApplicationLevelArray] = useState<Array<any>>([])
+    
 
     const pagination: PaginationProps = {
         ...tacitPagingProps,
@@ -156,7 +158,7 @@ const ApplicationPage = () => {
     useEffect(() => {
         getPageList();
         onGetProjectList();
-        onApplicationStateList();
+        onApplicationEnumList();
     }, [paginationConfig]);
 
 
@@ -173,11 +175,14 @@ const ApplicationPage = () => {
         })
     }
 
-    const onApplicationStateList = () => {
+    const onApplicationEnumList = () => {
         _applicationService.getApplicationEnumList().then(rep => {
             if (rep.success) {
-                setApplicationState(rep.result)
+                setApplicationStateArray(rep.result.applicationStateEnumList)
+                setApplicationLevelArray(rep.result.applicationLevelEnumList)
             }
+        }).catch(c=>{
+            debugger
         })
     }
     /**
@@ -185,7 +190,7 @@ const ApplicationPage = () => {
      * @param _id 
      */
     const editRow = (_id: any) => {
-        setOperationElement(<Operation onCallbackEvent={clearElement} operationType={OperationTypeEnum.edit} id={_id} applicationStateArray={applicationStateArray} projectArray={projectArray} />)
+        setOperationElement(<Operation onCallbackEvent={clearElement} operationType={OperationTypeEnum.edit} id={_id}  applicationLevelArray={applicationLevelArray} applicationStateArray={applicationStateArray} projectArray={projectArray} />)
     }
 
     /**
@@ -234,7 +239,7 @@ const ApplicationPage = () => {
     };
 
     const addChange = () => {
-        setOperationElement(<Operation onCallbackEvent={clearElement} projectArray={projectArray} applicationStateArray={applicationStateArray} operationType={OperationTypeEnum.add} />)
+        setOperationElement(<Operation onCallbackEvent={clearElement} projectArray={projectArray} applicationStateArray={applicationStateArray} applicationLevelArray={applicationLevelArray} operationType={OperationTypeEnum.add} />)
     }
 
     return (<div>

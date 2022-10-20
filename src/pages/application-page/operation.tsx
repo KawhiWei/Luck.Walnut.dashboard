@@ -28,9 +28,14 @@ interface IProp {
     projectArray: Array<any>;
 
     /**
-     * 应用状态列表
+     * 应用状态枚举列表
      */
     applicationStateArray: Array<any>;
+
+    /**
+     * 应用等级枚举列表
+     */
+    applicationLevelArray: Array<any>;
 }
 
 const validateMessages = {
@@ -47,17 +52,13 @@ const validateMessages = {
 const Operation = (props: IProp) => {
     const _applicationService: IApplicationService = useHookProvider(IocTypes.ApplicationService);
     const [loading, setLoading] = useState<boolean>(false);
-
     const [operationState, setOperationState] = useState<IOperationConfig>({ visible: false })
     const [formData] = Form.useForm();
-
     const projectArray = props.projectArray;
-
-    const applicationStateArray = props.applicationStateArray;
     const [languageArray, setLanguageArray] = useState<Array<any>>([]);
     /**
-         * 页面初始化事件
-         */
+     * 页面初始化事件
+     */
     useEffect(() => {
         onGetLoad();
         getLanguageList();
@@ -180,7 +181,6 @@ const Operation = (props: IProp) => {
                     onFinish={onFinish}
                     validateMessages={validateMessages}
                 >
-
                     <Row>
                         <Col span="24">
                             <Form.Item
@@ -192,8 +192,6 @@ const Operation = (props: IProp) => {
                             </Form.Item>
                         </Col>
                     </Row>
-
-
                     <Row>
                         <Col span="24">
                             <Form.Item
@@ -215,7 +213,6 @@ const Operation = (props: IProp) => {
                                 <Input style={{ borderRadius: 6 }} />
                             </Form.Item>
                         </Col>
-
                     </Row>
                     <Row>
                         <Col span="24">
@@ -241,22 +238,41 @@ const Operation = (props: IProp) => {
                                 rules={[{ required: true }]}
                             >
                                 <Select style={{ width: 180 }} allowClear={true} placeholder="请选择应用状态">
-                                    {applicationStateArray.map((item: any) => {
+                                    {props.applicationStateArray.map((item: any) => {
                                         return <Select.Option value={item.key}>{item.value}</Select.Option>;
                                     }
                                     )}
                                 </Select>
                             </Form.Item>
                         </Col>
+                    </Row>
+                    <Row>
+
                         <Col span="24">
                             <Form.Item
-                                name="applicationLevel"
+                                name=""
                                 label="应用开发语言："
                                 rules={[{ required: true }]}
                             >
                                 <Select style={{ width: 180 }} allowClear={true} placeholder="请选择应用开发语言">
                                     {languageArray.map((item: any) => {
                                         return <Select.Option value={item.id}>{item.name}</Select.Option>;
+                                    }
+                                    )}
+                                </Select>
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col span="24">
+                            <Form.Item
+                                name="applicationLevel"
+                                label="应用等级："
+                                rules={[{ required: true }]}
+                            >
+                                <Select style={{ width: 180 }} allowClear={true} placeholder="请选择应用等级">
+                                    {props.applicationLevelArray.map((item: any) => {
+                                        return <Select.Option value={item.key}>{item.value}</Select.Option>;
                                     }
                                     )}
                                 </Select>
