@@ -1,25 +1,15 @@
-import {
-  Card,
-  Col,
-  Form,
-  Input,
-  List,
-  Row,
-  Select,
-  Spin,
-  Tabs,
-  Tag,
-} from "antd";
+import { Button, Card, Col, Form, Row, Spin, Tabs } from "antd";
 import { useEffect, useState } from "react";
 
 import ApplicationInformation from "./application-information";
-import ApplicationStateTag from "./applicationStateTag";
-import EnvironmentPage from "../environment/index";
 import { IApplication } from "@/domain/applications/application";
 import { IApplicationService } from "@/domain/applications/iapplication-service";
 import { IEnvironmentService } from "@/domain/environment/ienvironment-service";
 import { IProjectService } from "@/domain/projects/iproject-service";
 import { IocTypes } from "@/shared/config/ioc-types";
+import NewConfigPage from "../config/indexnew";
+import { RollbackOutlined } from "@ant-design/icons";
+import { useHistory } from "react-router-dom";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
 /**
@@ -28,42 +18,16 @@ import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
  */
 const ApplicationDashboard = (props: any) => {
   useEffect(() => {
-    onGetProjectList();
     DashboardDetail();
   }, []);
+  const history = useHistory();
 
-  const _projectService: IProjectService = useHookProvider(
-    IocTypes.ProjectService
-  );
   const _applicationService: IApplicationService = useHookProvider(
     IocTypes.ApplicationService
   );
   const [appId, setAppId] = useState<string>();
-  const [projectArray, setProjectArray] = useState<Array<any>>([]);
   const [loading, setloading] = useState<boolean>(false);
-  const [formData] = Form.useForm();
   const [applicationData, setApplicationData] = useState<IApplication>();
-
-  const _environmentService: IEnvironmentService = useHookProvider(
-    IocTypes.EnvironmentService
-  );
-  const [environmentTableData, setEnvironmentTableData] = useState<Array<any>>(
-    []
-  );
-
-  const [tabsArray, setTabsArray] = useState<Array<any>>(
-    []
-  );
-  const [environmentPage, setEnvironmentPage] = useState<any>();
-  const [tabsLoading, setTabsLoading] = useState<boolean>(false);
-  const onGetProjectList = () => {
-    let param = { pageSize: 1000, pageIndex: 1 };
-    _projectService.getPageList(param).then((rep) => {
-      if (rep.success) {
-        setProjectArray(rep.result.data);
-      }
-    });
-  };
 
   const DashboardDetail = () => {
     if (props.location.state.appId) {
@@ -81,45 +45,40 @@ const ApplicationDashboard = (props: any) => {
   };
 
   /**
-   * 
-   * @param activeKey 
+   * 跳转到应用列表
+   * @param _appId
    */
-  const tabsOnChange = (activeKey: string) => {
-    switch (activeKey) {
-      case "2":
-        // setEnvironmentPage(<EnvironmentPage appId={appId} environmentDataArray={environmentTableData} />)
-        break;
-      default:
-        break;
-    }
+  const backToApplicationList = () => {
+    history.push({
+      pathname: "/application/list",
+    });
   };
-  /**
-   * 获取列表信息
-   */
-  const getEnvironmentList = () => {
-    setTabsLoading(true);
-    applicationData && console.log(applicationData.appId);
-    applicationData &&
-      _environmentService
-        .getEnvironmentList(applicationData.appId)
-        .then((x) => {
-          if (x.success) {
-            setEnvironmentTableData(x.result);
-            setTabsLoading(false);
-          }
-        });
-  };
+
   return (
     <div>
       <Spin spinning={loading}>
         <Row gutter={12} style={{ textAlign: "left", marginTop: 10 }}>
           <Col span="24">
-            <Card>
+            <Card
+              title="应用监控"
+              extra={
+                <Button
+                  shape="round"
+                  style={{ margin: "8px 8px " }}
+                  onClick={() => {
+                    backToApplicationList();
+                  }}
+                >
+                  <RollbackOutlined />
+                  返回上一层
+                </Button>
+              }
+            >
               <Tabs
                 defaultActiveKey="1"
                 items={[
                   {
-                    label: `应用信息`,
+                    label: `基础信息`,
                     key: "1",
                     children: (
                       <ApplicationInformation
@@ -130,17 +89,9 @@ const ApplicationDashboard = (props: any) => {
                   {
                     label: `配置管理`,
                     key: "2",
-                    children: `Content of Tab Pane 2`,
-                  },
-                  {
-                    label: `应用流水线`,
-                    key: "3",
-                    children: `奥术大师大所多啊实打实打阿萨德ad啊`,
-                  },
-                  {
-                    label: `发布记录`,
-                    key: "4",
-                    children: `实打实的阿打算亲の 32额哇32额ad2312阿萨德俺是3额阿萨德啊`,
+                    children: (
+                      <NewConfigPage applicationData={applicationData} />
+                    ),
                   },
                 ]}
               ></Tabs>

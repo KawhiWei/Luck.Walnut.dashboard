@@ -35,7 +35,7 @@ interface IProp {
 
 const ConfigTablePage = (props: IProp) => {
   /**
-   *
+   * 分页对象
    */
   const [paginationConfig, setPaginationConfig] =
     useState<initPaginationConfig>(new initPaginationConfig());
@@ -75,6 +75,7 @@ const ConfigTablePage = (props: IProp) => {
         Pagination.current = current;
         return Pagination;
       });
+      getConfigList();
     },
     onChange: (page: number, pageSize?: number) => {
       setPaginationConfig((Pagination) => {
@@ -84,6 +85,7 @@ const ConfigTablePage = (props: IProp) => {
         }
         return Pagination;
       });
+      getConfigList();
     },
   };
 
@@ -92,7 +94,7 @@ const ConfigTablePage = (props: IProp) => {
    */
   useEffect(() => {
     getConfigList();
-  }, [paginationConfig]);
+  }, [paginationConfig, loading]);
 
   /**
    * Table表格绑定数据
@@ -178,7 +180,7 @@ const ConfigTablePage = (props: IProp) => {
    */
   const claerConfigOperation = () => {
     setconfigOperationElement(null);
-    getConfigList()
+    getConfigList();
   };
 
   /**

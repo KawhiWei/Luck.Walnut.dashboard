@@ -137,7 +137,7 @@ const ApplicationPage = () => {
      */
     const goToConfig = (_appId: string) => {
         history.push({
-            pathname: "/application/configcenter",
+            pathname: "/application/configcenterold",
             state: {
                 appId: _appId
             }
