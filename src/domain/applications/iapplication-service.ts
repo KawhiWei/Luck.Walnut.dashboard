@@ -4,7 +4,7 @@ export interface IApplicationService {
     /**
     * 获取表格数据
     */
-    gettable(_param: any): Promise<IServerPageReturn<any>>;
+    getPage(_param: any): Promise<IServerPageReturn<any>>;
 
     /**
      * 删除一行数据

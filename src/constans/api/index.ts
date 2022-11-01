@@ -18,3 +18,7 @@ export const MatterApi = {
 export const ProjectApi = {
   project: "/walnut/api/projects",
 }
+
+export const ComponentIntegrationApi = {
+  componentIntegration: "/walnut/api/component/integrations",
+}

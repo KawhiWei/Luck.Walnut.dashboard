@@ -209,7 +209,7 @@ const ApplicationPage = () => {
             principal: param.principal,
             applicationState: param.applicationState,
         }
-        _applicationService.gettable(_param).then((x) => {
+        _applicationService.getPage(_param).then((x) => {
             if (x.success) {
                 setPaginationConfig((Pagination) => {
                     Pagination.total = x.result.total;

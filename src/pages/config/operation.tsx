@@ -119,7 +119,7 @@ const ConfigOperation = (props: IProp) => {
 
     return (<div>
         <Modal width={800} getContainer={false}
-            maskClosable={false}
+            onCancel={onCancel}
             title={operationState.title}
             closable={false}
             visible={operationState.visible}

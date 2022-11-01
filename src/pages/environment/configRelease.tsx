@@ -178,7 +178,7 @@ const ConfigRelease = (props: IProp) => {
             title={operationState.title}
             visible={operationState.visible}
             closable={false}
-            maskClosable={false}
+            onCancel={onCancel}
             getContainer={false}
             footer={
                 <Row>

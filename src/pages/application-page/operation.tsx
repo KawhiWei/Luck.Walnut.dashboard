@@ -1,5 +1,19 @@
-import { Button, Col, Form, Input, InputNumber, Modal, Row, Select, message } from "antd";
-import { formItemDoubleRankLayout, formItemSingleRankLayout, tailLayout } from "@/constans/layout/optionlayout";
+import {
+  Button,
+  Col,
+  Form,
+  Input,
+  InputNumber,
+  Modal,
+  Row,
+  Select,
+  message,
+} from "antd";
+import {
+  formItemDoubleRankLayout,
+  formItemSingleRankLayout,
+  tailLayout,
+} from "@/constans/layout/optionlayout";
 import { useEffect, useState } from "react";
 
 import { IApplicationService } from "@/domain/applications/iapplication-service";
@@ -10,329 +24,364 @@ import TextArea from "antd/lib/input/TextArea";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
 interface IProp {
-    /**
-     * 操作成功回调事件
-     */
-    onCallbackEvent?: any;
-    /**
-     * Id
-     */
-    id?: string;
-    /**
-     * 操作类型
-     */
-    operationType: OperationTypeEnum,
-    /**
-     * 项目列表
-     */
-    projectArray: Array<any>;
+  /**
+   * 操作成功回调事件
+   */
+  onCallbackEvent?: any;
+  /**
+   * Id
+   */
+  id?: string;
+  /**
+   * 操作类型
+   */
+  operationType: OperationTypeEnum;
+  /**
+   * 项目列表
+   */
+  projectArray: Array<any>;
 
-    /**
-     * 应用状态枚举列表
-     */
-    applicationStateArray: Array<any>;
+  /**
+   * 应用状态枚举列表
+   */
+  applicationStateArray: Array<any>;
 
-    /**
-     * 应用等级枚举列表
-     */
-    applicationLevelArray: Array<any>;
+  /**
+   * 应用等级枚举列表
+   */
+  applicationLevelArray: Array<any>;
 }
 
 const validateMessages = {
-    required: "${label} 不可为空",
-    types: {
-        email: "${label} is not a valid email!",
-        number: "${label} is not a valid number!",
-    },
-    number: {
-        range: "${label} must be between ${min} and ${max}",
-    },
+  required: "${label} 不可为空",
+  types: {
+    email: "${label} is not a valid email!",
+    number: "${label} is not a valid number!",
+  },
+  number: {
+    range: "${label} must be between ${min} and ${max}",
+  },
 };
 
 const Operation = (props: IProp) => {
-    const _applicationService: IApplicationService = useHookProvider(IocTypes.ApplicationService);
-    const [loading, setLoading] = useState<boolean>(false);
-    const [operationState, setOperationState] = useState<IOperationConfig>({ visible: false })
-    const [formData] = Form.useForm();
-    const projectArray = props.projectArray;
-    const [languageArray, setLanguageArray] = useState<Array<any>>([]);
-    /**
-     * 页面初始化事件
-     */
-    useEffect(() => {
-        onGetLoad();
-        getLanguageList();
-    }, [formData]);
+  const _applicationService: IApplicationService = useHookProvider(
+    IocTypes.ApplicationService
+  );
+  const [loading, setLoading] = useState<boolean>(false);
+  const [operationState, setOperationState] = useState<IOperationConfig>({
+    visible: false,
+  });
+  const [formData] = Form.useForm();
+  const projectArray = props.projectArray;
+  const [languageArray, setLanguageArray] = useState<Array<any>>([]);
+  /**
+   * 页面初始化事件
+   */
+  useEffect(() => {
+    onGetLoad();
+    getLanguageList();
+  }, [formData]);
 
+  /**
+   * 修改弹框属性
+   * @param _visible
+   * @param _title
+   */
+  const editOperationState = (_visible: boolean, _title?: string) => {
+    setOperationState({ visible: _visible, title: _title });
+  };
+  const getLanguageList = () => {
+    _applicationService.getLanguageList().then((rep) => {
+      if (rep.success) {
+        setLanguageArray(rep.result);
+      }
+    });
+  };
 
-
-    /**
-     * 修改弹框属性
-     * @param _visible 
-     * @param _title 
-     */
-    const editOperationState = (_visible: boolean, _title?: string) => {
-        setOperationState({ visible: _visible, title: _title });
-    }
-    const getLanguageList = () => {
-        _applicationService.getLanguageList().then(rep => {
+  /**
+   * 编辑获取一个表单
+   * @param _id
+   */
+  const onGetLoad = () => {
+    switch (props.operationType) {
+      case OperationTypeEnum.add:
+        editOperationState(true, "添加");
+        // formData.setFieldsValue(initformData);
+        break;
+      case OperationTypeEnum.view:
+        editOperationState(true, "查看");
+        break;
+      case OperationTypeEnum.edit:
+        props.id &&
+          _applicationService.getDetail(props.id).then((rep) => {
+            console.log(rep);
             if (rep.success) {
-                setLanguageArray(rep.result)
+              formData.setFieldsValue(rep.result);
+              editOperationState(true, "修改");
+            } else {
+              message.error(rep.errorMessage, 3);
             }
-        })
+          });
+        break;
     }
+  };
 
-    /**
-         * 编辑获取一个表单
-         * @param _id 
-         */
-    const onGetLoad = () => {
-        switch (props.operationType) {
-            case OperationTypeEnum.add:
-                editOperationState(true, "添加")
-                // formData.setFieldsValue(initformData);
-                break;
-            case OperationTypeEnum.view:
-                editOperationState(true, "查看")
-                break;
-            case OperationTypeEnum.edit:
-                props.id && _applicationService.getDetail(props.id).then(rep => {
-                    console.log(rep)
-                    if (rep.success) {
-                        formData.setFieldsValue(rep.result);
-                        editOperationState(true, "修改")
-                    }
-                    else {
-                        message.error(rep.errorMessage, 3)
-                    }
-                })
-                break;
+  /**
+   * 弹框取消事件
+   */
+  const onCancel = () => {
+    editOperationState(false);
+    props.onCallbackEvent && props.onCallbackEvent();
+  };
+
+  /**
+   * 底部栏OK事件
+   */
+  const onFinish = () => {
+    let param = formData.getFieldsValue();
+    switch (props.operationType) {
+      case OperationTypeEnum.add:
+        onAdd(param);
+        break;
+      case OperationTypeEnum.edit:
+        onUpdate(param);
+        break;
+    }
+  };
+  const onAdd = (_param: any) => {
+    setLoading(true);
+    _applicationService.addApplication(_param).then((rep) => {
+      if (!rep.success) {
+        message.error(rep.errorMessage, 3);
+      } else {
+        message.success("保存成功", 3);
+        props.onCallbackEvent && props.onCallbackEvent();
+      }
+      setLoading(false);
+    });
+  };
+  const onUpdate = (_param: any) => {
+    props.id &&
+      _applicationService.update(props.id, _param).then((rep) => {
+        if (!rep.success) {
+          message.error(rep.errorMessage, 3);
+        } else {
+          message.success("保存成功", 3);
+          props.onCallbackEvent && props.onCallbackEvent();
         }
-    }
+      });
+  };
 
-    /**
-     * 弹框取消事件
-     */
-    const onCancel = () => {
-        editOperationState(false)
-        props.onCallbackEvent && props.onCallbackEvent()
-    };
-
-    /**
-         * 底部栏OK事件
-         */
-    const onFinish = () => {
-        let param = formData.getFieldsValue();
-        switch (props.operationType) {
-            case OperationTypeEnum.add:
-                onAdd(param);
-                break;
-            case OperationTypeEnum.edit:
-                onUpdate(param);
-                break;
+  return (
+    <div>
+      <Modal
+        width={1000}
+        style={{ borderRadius: 6 }}
+        getContainer={false}
+        onCancel={onCancel}
+        title={
+          <div
+            style={{
+              borderRadius: 10,
+            }}
+          >
+            {operationState.title}
+          </div>
         }
-    }
-    const onAdd = (_param: any) => {
-        setLoading(true)
-
-        debugger
-        _applicationService.addApplication(_param).then(rep => {
-            if (!rep.success) {
-                message.error(rep.errorMessage, 3)
-            }
-            else {
-                message.success("保存成功", 3)
-                props.onCallbackEvent && props.onCallbackEvent();
-            }
-            setLoading(false)
-        })
-
-    }
-    const onUpdate = (_param: any) => {
-        props.id && _applicationService.update(props.id, _param).then(rep => {
-            if (!rep.success) {
-                message.error(rep.errorMessage, 3)
-            }
-            else {
-                message.success("保存成功", 3)
-                props.onCallbackEvent && props.onCallbackEvent();
-            }
-        })
-
-
-    }
-
-    return (
-        <div>
-            <Modal width={1000} style={{ borderRadius: 6 }} getContainer={false} maskClosable={false} title={
-                <div
-                    style={{
-                        borderRadius: 10,
-                    }}>
-                    {operationState.title}
-                </div>
-            }
-                closable={false} visible={operationState.visible}
-                footer={null}>
-                <Form form={formData}
-                    {...formItemSingleRankLayout}
-                    name="nest-messages"
-                    layout="horizontal"
-                    onFinish={onFinish}
-                    validateMessages={validateMessages}
+        closable={false}
+        visible={operationState.visible}
+        footer={null}
+      >
+        <Form
+          form={formData}
+          {...formItemSingleRankLayout}
+          name="nest-messages"
+          layout="horizontal"
+          onFinish={onFinish}
+          validateMessages={validateMessages}
+        >
+          <Row>
+            <Col span="24">
+              <Form.Item
+                name="appId"
+                label="应用唯一标识："
+                rules={[{ required: true }]}
+              >
+                <Input
+                  style={{ borderRadius: 6 }}
+                  disabled={props.operationType === OperationTypeEnum.edit}
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row>
+            <Col span="24">
+              <Form.Item
+                name="englishName"
+                label="应用英文名"
+                rules={[{ required: true }]}
+              >
+                <Input style={{ borderRadius: 6 }} />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row>
+            <Col span="24">
+              <Form.Item
+                name="chinessName"
+                label="应用中文名："
+                rules={[{ required: true }]}
+              >
+                <Input style={{ borderRadius: 6 }} />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row>
+            <Col span="24">
+              <Form.Item
+                name="projectId"
+                label="所属项目："
+                rules={[{ required: true }]}
+              >
+                <Select allowClear={true} placeholder="请选择项目">
+                  {projectArray.map((item: any) => {
+                    return (
+                      <Select.Option value={item.id}>{item.name}</Select.Option>
+                    );
+                  })}
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row>
+            <Col span="24">
+              <Form.Item
+                name="applicationState"
+                label="应用状态："
+                rules={[{ required: true }]}
+              >
+                <Select
+                  style={{ width: 180 }}
+                  allowClear={true}
+                  placeholder="请选择应用状态"
                 >
-                    <Row>
-                        <Col span="24">
-                            <Form.Item
-                                name="appId"
-                                label="应用唯一标识："
-                                rules={[{ required: true }]}
-                            >
-                                <Input style={{ borderRadius: 6 }} disabled={props.operationType === OperationTypeEnum.edit} />
-                            </Form.Item>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col span="24">
-                            <Form.Item
-                                name="englishName"
-                                label="应用英文名"
-                                rules={[{ required: true }]}
-                            >
-                                <Input style={{ borderRadius: 6 }} />
-                            </Form.Item>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col span="24">
-                            <Form.Item
-                                name="chinessName"
-                                label="应用中文名："
-                                rules={[{ required: true }]}
-                            >
-                                <Input style={{ borderRadius: 6 }} />
-                            </Form.Item>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col span="24">
-                            <Form.Item
-                                name="projectId"
-                                label="所属项目："
-                                rules={[{ required: true }]}
-                            >
-                                <Select allowClear={true} placeholder="请选择项目">
-                                    {projectArray.map((item: any) => {
-                                        return <Select.Option value={item.id}>{item.name}</Select.Option>;
-                                    }
-                                    )}
-                                </Select>
-                            </Form.Item>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col span="24">
-                            <Form.Item
-                                name="applicationState"
-                                label="应用状态："
-                                rules={[{ required: true }]}
-                            >
-                                <Select style={{ width: 180 }} allowClear={true} placeholder="请选择应用状态">
-                                    {props.applicationStateArray.map((item: any) => {
-                                        return <Select.Option value={item.key}>{item.value}</Select.Option>;
-                                    }
-                                    )}
-                                </Select>
-                            </Form.Item>
-                        </Col>
-                    </Row>
-                    <Row>
+                  {props.applicationStateArray.map((item: any) => {
+                    return (
+                      <Select.Option value={item.key}>
+                        {item.value}
+                      </Select.Option>
+                    );
+                  })}
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row>
+            <Col span="24">
+              <Form.Item
+                name=""
+                label="应用开发语言："
+                rules={[{ required: true }]}
+              >
+                <Select
+                  style={{ width: 180 }}
+                  allowClear={true}
+                  placeholder="请选择应用开发语言"
+                >
+                  {languageArray.map((item: any) => {
+                    return (
+                      <Select.Option value={item.id}>{item.name}</Select.Option>
+                    );
+                  })}
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row>
+            <Col span="24">
+              <Form.Item
+                name="applicationLevel"
+                label="应用等级："
+                rules={[{ required: true }]}
+              >
+                <Select
+                  style={{ width: 180 }}
+                  allowClear={true}
+                  placeholder="请选择应用等级"
+                >
+                  {props.applicationLevelArray.map((item: any) => {
+                    return (
+                      <Select.Option value={item.key}>
+                        {item.value}
+                      </Select.Option>
+                    );
+                  })}
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row>
+            <Col span="24">
+              <Form.Item
+                name="departmentName"
+                label="所属部门："
+                rules={[{ required: true }]}
+              >
+                <Input style={{ borderRadius: 6 }} />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row>
+            <Col span="24">
+              <Form.Item
+                name="principal"
+                label="负责人："
+                rules={[{ required: true }]}
+              >
+                <Input style={{ borderRadius: 6 }} />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row>
+            <Col span="24">
+              <Form.Item name="codeWarehouseAddress" label="代码仓库地址：">
+                <Input style={{ borderRadius: 6 }} />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row>
+            <Col span="24">
+              <Form.Item name="describe" label="应用描述：">
+                <TextArea style={{ borderRadius: 6 }} rows={14}></TextArea>
+              </Form.Item>
+            </Col>
+          </Row>
 
-                        <Col span="24">
-                            <Form.Item
-                                name=""
-                                label="应用开发语言："
-                                rules={[{ required: true }]}
-                            >
-                                <Select style={{ width: 180 }} allowClear={true} placeholder="请选择应用开发语言">
-                                    {languageArray.map((item: any) => {
-                                        return <Select.Option value={item.id}>{item.name}</Select.Option>;
-                                    }
-                                    )}
-                                </Select>
-                            </Form.Item>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col span="24">
-                            <Form.Item
-                                name="applicationLevel"
-                                label="应用等级："
-                                rules={[{ required: true }]}
-                            >
-                                <Select style={{ width: 180 }} allowClear={true} placeholder="请选择应用等级">
-                                    {props.applicationLevelArray.map((item: any) => {
-                                        return <Select.Option value={item.key}>{item.value}</Select.Option>;
-                                    }
-                                    )}
-                                </Select>
-                            </Form.Item>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col span="24">
-                            <Form.Item
-                                name="departmentName"
-                                label="所属部门："
-                                rules={[{ required: true }]}
-                            >
-                                <Input style={{ borderRadius: 6 }} />
-                            </Form.Item>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col span="24">
-                            <Form.Item
-                                name="principal"
-                                label="负责人："
-                                rules={[{ required: true }]}
-                            >
-                                <Input style={{ borderRadius: 6 }} />
-                            </Form.Item>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col span="24">
-                            <Form.Item
-                                name="codeWarehouseAddress"
-                                label="代码仓库地址："
-                            >
-                                <Input style={{ borderRadius: 6 }} />
-                            </Form.Item>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col span="24">
-                            <Form.Item
-                                name="describe"
-                                label="应用描述："
-                            >
-                                <TextArea style={{ borderRadius: 6 }} rows={14}></TextArea>
-                            </Form.Item>
-                        </Col>
-                    </Row>
-
-                    <Row>
-                        <Col span="24" style={{ textAlign: 'right' }}>
-                            <Form.Item {...tailLayout}>
-                                <Button shape="round" disabled={loading} onClick={() => onCancel()}>取消</Button>
-                                <Button shape="round" style={{ margin: '0 8px' }} type="primary" loading={loading} htmlType="submit">保存</Button>
-                            </Form.Item>
-                        </Col>
-                    </Row>
-                </Form>
-            </Modal>
-        </div>
-    )
-}
+          <Row>
+            <Col span="24" style={{ textAlign: "right" }}>
+              <Form.Item {...tailLayout}>
+                <Button
+                  shape="round"
+                  disabled={loading}
+                  onClick={() => onCancel()}
+                >
+                  取消
+                </Button>
+                <Button
+                  shape="round"
+                  style={{ margin: "0 8px" }}
+                  type="primary"
+                  loading={loading}
+                  htmlType="submit"
+                >
+                  保存
+                </Button>
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form>
+      </Modal>
+    </div>
+  );
+};
 export default Operation;

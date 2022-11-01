@@ -108,7 +108,7 @@ const Operation = (props: IProp) => {
     };
     return (<div>
         <Modal width={500} getContainer={false}
-            maskClosable={false}
+            onCancel={onCancel}
             title={operationState.title}
             closable={false}
             visible={operationState.visible}

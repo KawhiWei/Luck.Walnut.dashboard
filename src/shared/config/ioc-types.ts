@@ -3,6 +3,8 @@ export const IocTypes = {
     EnvironmentService: Symbol("EnvironmentService"),
     DoveLogService: Symbol("DoveLogService"),
     MatterService: Symbol("MatterService"),
-    ProjectService:Symbol("ProjectService"),
-    
+    ProjectService: Symbol("ProjectService"),
+    ComponentIntegrationService: Symbol("ComponentIntegrationService"),
+
+
 };

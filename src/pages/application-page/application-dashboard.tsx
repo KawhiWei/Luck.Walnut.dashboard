@@ -8,6 +8,7 @@ import { IEnvironmentService } from "@/domain/environment/ienvironment-service";
 import { IProjectService } from "@/domain/projects/iproject-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import NewConfigPage from "../config/indexnew";
+import PipelinePage from "../pipeline-page/pipeline-page";
 import { RollbackOutlined } from "@ant-design/icons";
 import { useHistory } from "react-router-dom";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
@@ -91,6 +92,13 @@ const ApplicationDashboard = (props: any) => {
                     key: "2",
                     children: (
                       <NewConfigPage applicationData={applicationData} />
+                    ),
+                  },
+                  {
+                    label: `应用流水线`,
+                    key: "3",
+                    children: (
+                      <PipelinePage applicationData={applicationData} />
                     ),
                   },
                 ]}
