@@ -79,7 +79,6 @@ const StackedLineCharts=() => {
     option && myChart.setOption(option);
     window.onresize = function () {
       //重置容器高宽
-      // debugger
       // console.log(myChart)
       // console.log(myChart);
       myChart.resize();

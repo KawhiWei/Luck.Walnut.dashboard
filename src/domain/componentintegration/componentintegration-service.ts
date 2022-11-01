@@ -35,7 +35,7 @@ export class ComponentIntegrationService extends BaseService implements ICompone
      * @returns 
      */
     update(_id: string, _param: any): Promise<IServerPageReturn<any>> {
-        return this.dataRequest.postRequest(`${ComponentIntegrationApi.componentIntegration}/${_id}`, _param)
+        return this.dataRequest.putRequest(`${ComponentIntegrationApi.componentIntegration}/${_id}`, _param)
     }
 
     /**

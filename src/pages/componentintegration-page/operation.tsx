@@ -88,7 +88,6 @@ const Operation = (props: IProp) => {
           _componentIntegrationService.getDetail(props.id).then((rep) => {
             console.log(rep);
             if (rep.success) {
-              debugger;
               formData.setFieldsValue(rep.result);
               editOperationState(true, "修改");
             }
@@ -101,7 +100,6 @@ const Operation = (props: IProp) => {
    */
   const onFinish = () => {
     let param = formData.getFieldsValue();
-    console.log(param);
     switch (props.operationType) {
       case OperationTypeEnum.add:
         onAdd(param);
@@ -213,7 +211,7 @@ const Operation = (props: IProp) => {
               <Form.Item
                 name="componentLinkUrl"
                 label="链接地址:"
-                rules={[{ required: true }]}
+                rules={[{ required: true }, { type: 'url' }]}
               >
                 <Input style={{ borderRadius: 6 }} />
               </Form.Item>

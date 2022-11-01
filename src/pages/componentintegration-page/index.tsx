@@ -1,9 +1,12 @@
 import {
   Button,
   Col,
+  Form,
+  Input,
   PaginationProps,
   Popconfirm,
   Row,
+  Select,
   Spin,
   Table,
   Tooltip,
@@ -28,6 +31,7 @@ import { IComponentIntegrationService } from "@/domain/componentintegration/icom
 import { IocTypes } from "@/shared/config/ioc-types";
 import Operation from "./operation";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
+import { searchFormItemDoubleRankLayout } from "@/constans/layout/optionlayout";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
 const ComponentIntegrationPage = () => {
@@ -35,6 +39,8 @@ const ComponentIntegrationPage = () => {
     useHookProvider(IocTypes.ComponentIntegrationService);
 
   const [loading, setloading] = useState<boolean>(false);
+
+  const [formData] = Form.useForm();
   /**
    * 配置添加/修改组件
    */
@@ -106,9 +112,12 @@ const ComponentIntegrationPage = () => {
    */
   const getPageList = () => {
     setloading(true);
+    let param = formData.getFieldsValue();
     let _param = {
       pageSize: paginationConfig.pageSize,
       pageIndex: paginationConfig.current,
+      componentLinkType: param.componentLinkType,
+      name: param.name,
     };
 
     _componentIntegrationService.getPage(_param).then((rep) => {
@@ -187,6 +196,14 @@ const ComponentIntegrationPage = () => {
     );
   };
 
+  const onSearch = () => {
+    setPaginationConfig((Pagination) => {
+      Pagination.current = 1;
+      return Pagination;
+    });
+    getPageList();
+  };
+
   const deleteRow = (_id: string) => {
     _componentIntegrationService.delete(_id).then((res) => {
       if (!res.success) {
@@ -200,6 +217,53 @@ const ComponentIntegrationPage = () => {
   return (
     <div>
       <Spin spinning={loading}>
+        <Form
+          form={formData}
+          name="horizontal_login"
+          layout="horizontal"
+          {...searchFormItemDoubleRankLayout}
+          onFinish={onSearch}
+        >
+          <Row>
+            <Col span="6">
+              <Form.Item name="componentLinkType" label="组件类型：">
+                <Select allowClear={true} placeholder="请选择组件类型">
+                  {componentLinkTypeArray.map((item: any) => {
+                    return (
+                      <Select.Option value={item.key}>
+                        {item.value}
+                      </Select.Option>
+                    );
+                  })}
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span="6">
+              <Form.Item name="name" label="集成名称：">
+                <Input
+                  style={{ borderRadius: 8 }}
+                  placeholder="请请输入集成名称"
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row>
+            <Col span="6" style={{ textAlign: "center" }}>
+              <Button
+                type="primary"
+                shape="round"
+                htmlType="submit"
+                onClick={() => {
+                  getPageList();
+                }}
+              >
+                <SearchOutlined />
+                查询
+              </Button>
+            </Col>
+          </Row>
+        </Form>
+
         <Row>
           <Col span="24" style={{ textAlign: "right" }}>
             <Button

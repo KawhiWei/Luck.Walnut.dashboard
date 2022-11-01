@@ -118,7 +118,6 @@ const ApplicationPage = () => {
         setGlobalLoading(true);
         let param = { pageSize: paginationConfig.pageSize, pageIndex: paginationConfig.current }
         _doveLogService.getDoveLogList(param).then((x) => {
-            // debugger
             // if (x.success) {
 
             //     setPaginationConfig((Pagination) => {

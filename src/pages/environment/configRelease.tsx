@@ -166,7 +166,6 @@ const ConfigRelease = (props: IProp) => {
                 message.error(rep.errorMessage, 3)
             } else {
                 message.success("发布成功")
-                // debugger
                 props.onCallbackEvent && props.onCallbackEvent();
             }
         })
