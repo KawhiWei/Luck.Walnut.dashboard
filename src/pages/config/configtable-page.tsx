@@ -94,7 +94,7 @@ const ConfigTablePage = (props: IProp) => {
    */
   useEffect(() => {
     getConfigList();
-  }, [paginationConfig, loading]);
+  }, [paginationConfig]);
 
   /**
    * Table表格绑定数据
@@ -157,6 +157,7 @@ const ConfigTablePage = (props: IProp) => {
    * 获取环境列表信息
    */
   const getConfigList = () => {
+    setLoading(true);
     let _param = {
       pageSize: paginationConfig.pageSize,
       pageIndex: paginationConfig.current,
@@ -170,8 +171,9 @@ const ConfigTablePage = (props: IProp) => {
             return Pagination;
           });
           setTableData(rep.result.data);
-          setLoading(false);
         }
+      }).finally(()=>{
+        setLoading(false);
       });
   };
 

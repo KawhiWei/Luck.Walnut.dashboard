@@ -35,8 +35,9 @@ const ConfigPage = (props: any) => {
         _environmentService.getEnvironmentList(props.location.state.appId).then((x) => {
           if (x.success) {
             setEnvironmentList(x.result);
-            setLoading(false);
           }
+        }).finally(()=>{
+          setLoading(false);
         });
     }
     

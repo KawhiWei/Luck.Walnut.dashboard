@@ -150,26 +150,35 @@ const Operation = (props: IProp) => {
   };
   const onAdd = (_param: any) => {
     setLoading(true);
-    _applicationService.addApplication(_param).then((rep) => {
-      if (!rep.success) {
-        message.error(rep.errorMessage, 3);
-      } else {
-        message.success("保存成功", 3);
-        props.onCallbackEvent && props.onCallbackEvent();
-      }
-      setLoading(false);
-    });
-  };
-  const onUpdate = (_param: any) => {
-    props.id &&
-      _applicationService.update(props.id, _param).then((rep) => {
+    _applicationService
+      .addApplication(_param)
+      .then((rep) => {
         if (!rep.success) {
           message.error(rep.errorMessage, 3);
         } else {
           message.success("保存成功", 3);
           props.onCallbackEvent && props.onCallbackEvent();
         }
+      })
+      .finally(() => {
+        setLoading(false);
       });
+  };
+  const onUpdate = (_param: any) => {
+    props.id &&
+      _applicationService
+        .update(props.id, _param)
+        .then((rep) => {
+          if (!rep.success) {
+            message.error(rep.errorMessage, 3);
+          } else {
+            message.success("保存成功", 3);
+            props.onCallbackEvent && props.onCallbackEvent();
+          }
+        })
+        .finally(() => {
+          setLoading(false);
+        });
   };
 
   return (

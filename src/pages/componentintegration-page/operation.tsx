@@ -112,27 +112,37 @@ const Operation = (props: IProp) => {
 
   const onAdd = (_param: any) => {
     setLoading(true);
-    _componentIntegrationService.add(_param).then((rep) => {
-      if (!rep.success) {
-        message.error(rep.errorMessage, 3);
-      } else {
-        message.success("保存成功", 3);
-        props.onCallbackEvent && props.onCallbackEvent();
-      }
-      setLoading(false);
-    });
-  };
-
-  const onUpdate = (_param: any) => {
-    props.id &&
-      _componentIntegrationService.update(props.id, _param).then((rep) => {
+    _componentIntegrationService
+      .add(_param)
+      .then((rep) => {
         if (!rep.success) {
           message.error(rep.errorMessage, 3);
         } else {
           message.success("保存成功", 3);
           props.onCallbackEvent && props.onCallbackEvent();
         }
+      })
+      .finally(() => {
+        setLoading(false);
       });
+  };
+
+  const onUpdate = (_param: any) => {
+    setLoading(true);
+    props.id &&
+      _componentIntegrationService
+        .update(props.id, _param)
+        .then((rep) => {
+          if (!rep.success) {
+            message.error(rep.errorMessage, 3);
+          } else {
+            message.success("保存成功", 3);
+            props.onCallbackEvent && props.onCallbackEvent();
+          }
+        })
+        .finally(() => {
+          setLoading(false);
+        });
   };
 
   /**
@@ -211,7 +221,7 @@ const Operation = (props: IProp) => {
               <Form.Item
                 name="componentLinkUrl"
                 label="链接地址:"
-                rules={[{ required: true }, { type: 'url' }]}
+                rules={[{ required: true }, { type: "url" }]}
               >
                 <Input style={{ borderRadius: 6 }} />
               </Form.Item>
@@ -223,7 +233,6 @@ const Operation = (props: IProp) => {
               <Form.Item
                 name="userName"
                 label="用户名:"
-                rules={[{ required: true }]}
               >
                 <Input style={{ borderRadius: 6 }} />
               </Form.Item>
@@ -234,7 +243,6 @@ const Operation = (props: IProp) => {
               <Form.Item
                 name="passWord"
                 label="密码："
-                rules={[{ required: true }]}
               >
                 <Input style={{ borderRadius: 6 }} />
               </Form.Item>
@@ -245,7 +253,6 @@ const Operation = (props: IProp) => {
               <Form.Item
                 name="token"
                 label="Token："
-                rules={[{ required: true }]}
               >
                 <Input style={{ borderRadius: 6 }} />
               </Form.Item>

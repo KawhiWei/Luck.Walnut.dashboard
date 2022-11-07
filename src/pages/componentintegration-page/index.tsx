@@ -38,7 +38,7 @@ const ComponentIntegrationPage = () => {
   const _componentIntegrationService: IComponentIntegrationService =
     useHookProvider(IocTypes.ComponentIntegrationService);
 
-  const [loading, setloading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const [formData] = Form.useForm();
   /**
@@ -111,7 +111,7 @@ const ComponentIntegrationPage = () => {
    * 页面初始化获取数据
    */
   const getPageList = () => {
-    setloading(true);
+    setLoading(true);
     let param = formData.getFieldsValue();
     let _param = {
       pageSize: paginationConfig.pageSize,
@@ -120,19 +120,24 @@ const ComponentIntegrationPage = () => {
       name: param.name,
     };
 
-    _componentIntegrationService.getPage(_param).then((rep) => {
-      if (rep.success) {
-        setPaginationConfig((Pagination) => {
-          Pagination.total = rep.result.total;
-          return Pagination;
-        });
-        setTableData(rep.result.data);
-        setloading(false);
-      }
-    });
+    _componentIntegrationService
+      .getPage(_param)
+      .then((rep) => {
+        if (rep.success) {
+          setPaginationConfig((Pagination) => {
+            Pagination.total = rep.result.total;
+            return Pagination;
+          });
+          setTableData(rep.result.data);
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const getEnumList = () => {
+    setLoading(false);
     _componentIntegrationService
       .getEnumList()
       .then((rep) => {
@@ -140,7 +145,9 @@ const ComponentIntegrationPage = () => {
           setComponentLinkTypeArray(rep.result.componentLinkTypeEnumList);
         }
       })
-      .catch((c) => {});
+      .finally(()=>{
+        setLoading(false);
+      });
   };
   const columns = [
     {

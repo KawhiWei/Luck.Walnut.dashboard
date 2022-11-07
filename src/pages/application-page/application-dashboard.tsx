@@ -27,20 +27,22 @@ const ApplicationDashboard = (props: any) => {
     IocTypes.ApplicationService
   );
   const [appId, setAppId] = useState<string>();
-  const [loading, setloading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [applicationData, setApplicationData] = useState<IApplication>();
 
   const DashboardDetail = () => {
     if (props.location.state.appId) {
       setAppId(props.location.state.appId);
-      setloading(true);
+      setLoading(true);
       _applicationService
         .getApplicationDashboardDetail(props.location.state.appId)
         .then((rep) => {
           if (rep.success) {
             setApplicationData(rep.result.application);
-            setloading(false);
           }
+        })
+        .finally(() => {
+          setLoading(false);
         });
     }
   };
@@ -85,13 +87,6 @@ const ApplicationDashboard = (props: any) => {
                       <ApplicationInformation
                         applicationData={applicationData}
                       />
-                    ),
-                  },
-                  {
-                    label: `配置管理`,
-                    key: "2",
-                    children: (
-                      <NewConfigPage applicationData={applicationData} />
                     ),
                   },
                   {

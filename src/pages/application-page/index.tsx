@@ -49,7 +49,7 @@ const ApplicationPage = () => {
     IocTypes.ProjectService
   );
   const [tableData, setTableData] = useState<Array<any>>([]);
-  const [loading, setloading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [paginationConfig, setPaginationConfig] =
     useState<initPaginationConfig>(new initPaginationConfig());
   const [subOperationElement, setOperationElement] = useState<any>(null);
@@ -232,15 +232,12 @@ const ApplicationPage = () => {
   };
 
   const onApplicationEnumList = () => {
-    _applicationService
-      .getApplicationEnumList()
-      .then((rep) => {
-        if (rep.success) {
-          setApplicationStateArray(rep.result.applicationStateEnumList);
-          setApplicationLevelArray(rep.result.applicationLevelEnumList);
-        }
-      })
-      .catch((c) => {});
+    _applicationService.getApplicationEnumList().then((rep) => {
+      if (rep.success) {
+        setApplicationStateArray(rep.result.applicationStateEnumList);
+        setApplicationLevelArray(rep.result.applicationLevelEnumList);
+      }
+    });
   };
   /**
    * 修改任务
@@ -263,7 +260,7 @@ const ApplicationPage = () => {
    * 页面初始化获取数据
    */
   const getPageList = () => {
-    setloading(true);
+    setLoading(true);
     let param = formData.getFieldsValue();
     let _param = {
       pageSize: paginationConfig.pageSize,
@@ -275,16 +272,20 @@ const ApplicationPage = () => {
       principal: param.principal,
       applicationState: param.applicationState,
     };
-    _applicationService.getPage(_param).then((x) => {
-      if (x.success) {
-        setPaginationConfig((Pagination) => {
-          Pagination.total = x.result.total;
-          return Pagination;
-        });
-        setTableData(x.result.data);
-        setloading(false);
-      }
-    });
+    _applicationService
+      .getPage(_param)
+      .then((x) => {
+        if (x.success) {
+          setPaginationConfig((Pagination) => {
+            Pagination.total = x.result.total;
+            return Pagination;
+          });
+          setTableData(x.result.data);
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const clearElement = () => {
