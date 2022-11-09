@@ -1,35 +1,9 @@
-import {
-  Button,
-  Card,
-  Col,
-  Form,
-  PaginationProps,
-  Row,
-  Spin,
-  Table,
-  Tag,
-} from "antd";
-import {
-  EditOutlined,
-  EyeOutlined,
-  PlusOutlined,
-  SearchOutlined,
-  SettingTwoTone,
-  SyncOutlined,
-  WarningOutlined,
-} from "@ant-design/icons";
-import {
-  initPaginationConfig,
-  tacitPagingProps,
-} from "../../shared/ajax/request";
+import { Button, Card, Col, Row, Spin } from "antd";
 import { useEffect, useState } from "react";
 
-import { IApplicationPipelineService } from "@/domain/applicationpipelines/iapplicationpipeline-service";
 import { IStageDto } from "@/domain/applicationpipelines/applicationpipeline-dto";
-import { IocTypes } from "@/shared/config/ioc-types";
 import PipelineStage from "./pipeline-stage";
-import { searchFormItemDoubleRankLayout } from "@/constans/layout/optionlayout";
-import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
+import { PlusOutlined } from "@ant-design/icons";
 
 const { Meta } = Card;
 /***
@@ -141,6 +115,26 @@ const Operation = (props: any) => {
     });
     setStageList((current) => [...current]);
   };
+  /**
+   * 添加阶段
+   */
+  const onRemoveStage = (_stageIndex: number) => {
+    stageList.splice(_stageIndex, 1);
+    setStageList((current) => [...current]);
+  };
+
+  /**
+   * 添加阶段
+   */
+  const onRemoveStep = (_stageIndex: number, _stepIndex: number) => {
+    console.log("onRemove");
+    stageList.filter((item, index) => {
+      if (index === _stageIndex) {
+        item.steps.splice(_stepIndex, 1);
+      }
+    });
+    setStageList((current) => [...current]);
+  };
 
   return (
     <div>
@@ -161,13 +155,15 @@ const Operation = (props: any) => {
           </Col>
         </Row>
         <Row gutter={16} style={{ overflow: "auto" }} wrap={false}>
-          {stageList.map((item: IStageDto, index) => {
+          {stageList.map((stage: IStageDto, index) => {
             return (
               <Col span={4}>
                 <PipelineStage
                   onAddStep={onAddStep}
+                  onRemoveStage={onRemoveStage}
+                  onRemoveStep={onRemoveStep}
                   stageIndex={index}
-                  stage={item}
+                  stage={stage}
                 />
               </Col>
             );

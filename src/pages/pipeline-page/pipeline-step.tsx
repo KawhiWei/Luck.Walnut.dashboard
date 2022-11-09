@@ -1,3 +1,5 @@
+import { CloseOutlined, PlusOutlined } from "@ant-design/icons";
+
 import { Card } from "antd";
 import { CheckCircleFilled } from "@ant-design/icons";
 import { IStepDto } from "@/domain/applicationpipelines/applicationpipeline-dto";
@@ -14,7 +16,7 @@ interface IProp {
  */
 const PipelineStep = (props: IProp) => {
   return (
-    <Card style={{ marginBottom: 10, borderRadius: 0 }}>
+    <Card style={{ marginBottom: 10, borderRadius: 0 }}  >
       <CheckCircleFilled style={{ color: "#87d068", marginRight: 5 }} />
       {props.step.name}
     </Card>
