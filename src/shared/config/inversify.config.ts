@@ -1,8 +1,10 @@
+import { ApplicationPipelineService } from "@/domain/applicationpipelines/applicationpipeline-service";
 import { ApplicationService } from "@/domain/applications/application-service";
 import { ComponentIntegrationService } from "@/domain/componentintegration/componentintegration-service";
 import { Container } from "inversify";
 import { DoveLogService } from "@/domain/logs/dovelog-service";
 import { EnvironmentService } from "@/domain/environment/environment-service";
+import { IApplicationPipelineService } from "@/domain/applicationpipelines/iapplicationpipeline-service";
 import { IApplicationService } from "@/domain/applications/iapplication-service";
 import { IComponentIntegrationService } from "@/domain/componentintegration/icomponentintegration-service";
 import { IDoveLogService } from "@/domain/logs/idovelog-service";
@@ -20,6 +22,7 @@ container.bind<IDoveLogService>(IocTypes.DoveLogService).to(DoveLogService);
 container.bind<IMatterService>(IocTypes.MatterService).to(MatterService);
 container.bind<IProjectService>(IocTypes.ProjectService).to(ProjectService);
 container.bind<IComponentIntegrationService>(IocTypes.ComponentIntegrationService).to(ComponentIntegrationService);
+container.bind<IApplicationPipelineService>(IocTypes.ApplicationPipelineService).to(ApplicationPipelineService);
 
 
 

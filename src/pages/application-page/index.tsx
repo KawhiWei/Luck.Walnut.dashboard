@@ -274,13 +274,13 @@ const ApplicationPage = () => {
     };
     _applicationService
       .getPage(_param)
-      .then((x) => {
-        if (x.success) {
+      .then(rep => {
+        if (rep.success) {
           setPaginationConfig((Pagination) => {
-            Pagination.total = x.result.total;
+            Pagination.total = rep.result.total;
             return Pagination;
           });
-          setTableData(x.result.data);
+          setTableData(rep.result.data);
         }
       })
       .finally(() => {
