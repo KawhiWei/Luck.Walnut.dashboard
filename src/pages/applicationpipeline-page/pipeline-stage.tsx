@@ -67,7 +67,7 @@ const PipelineStage = (props: IProp) => {
               }}
             >
               <Card style={{ marginBottom: 10, borderRadius: 0 }}>
-                <Row>
+                <Row justify="end">
                   <CloseOutlined
                     style={{ marginBottom: 10, textAlign: "right" }}
                     onClick={() => {

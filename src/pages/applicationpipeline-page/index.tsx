@@ -6,17 +6,13 @@ import {
   PaginationProps,
   Row,
   Spin,
-  Table,
   Tag,
 } from "antd";
 import {
   EditOutlined,
-  EyeOutlined,
   PlusOutlined,
   SearchOutlined,
-  SettingTwoTone,
   SyncOutlined,
-  WarningOutlined,
 } from "@ant-design/icons";
 import {
   initPaginationConfig,
@@ -27,11 +23,9 @@ import { useEffect, useState } from "react";
 import { IApplicationPipelineService } from "@/domain/applicationpipelines/iapplicationpipeline-service";
 import { IStageDto } from "@/domain/applicationpipelines/applicationpipeline-dto";
 import { IocTypes } from "@/shared/config/ioc-types";
-import PipelineStage from "./pipeline-stage";
 import { searchFormItemDoubleRankLayout } from "@/constans/layout/optionlayout";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
-const { Meta } = Card;
 /***
  * 应用流水线设计
  */
@@ -278,27 +272,27 @@ const PipelinePage = (props: any) => {
           </Col>
         </Row>
         <Row gutter={[16, 16]}>
-              {tableData.map((item) => {
-                return (
-                  <Col span={4}>
-                    <Card
-                      title={item.name}
-                      actions={[
-                        <EditOutlined key="setting" />,
-                        <EditOutlined key="edit" />,
-                        <EditOutlined key="ellipsis" />,
-                      ]}
-                    >
-                      <div>{item.appEnvironmentId}</div>
-                      <Tag icon={<SyncOutlined spin />} color="processing">
-                        构建中
-                      </Tag>
-                      <div></div>
-                    </Card>
-                  </Col>
-                );
-              })}
-            </Row>
+          {tableData.map((item) => {
+            return (
+              <Col span={4}>
+                <Card
+                  title={item.name}
+                  actions={[
+                    <EditOutlined key="setting" />,
+                    <EditOutlined key="edit" />,
+                    <EditOutlined key="ellipsis" />,
+                  ]}
+                >
+                  <div>{item.appEnvironmentId}</div>
+                  <Tag icon={<SyncOutlined spin />} color="processing">
+                    构建中
+                  </Tag>
+                  <div></div>
+                </Card>
+              </Col>
+            );
+          })}
+        </Row>
       </Spin>
     </div>
   );
