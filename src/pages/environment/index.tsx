@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 
 import ConfigOperation from "../config/operation";
 import ConfigRelease from "./configRelease";
-import { IApplication } from "@/domain/applications/application";
+import { IApplicationBaseDto } from "@/domain/applications/application-dto";
 import { IEnvironmentService } from "@/domain/environment/ienvironment-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import Operation from "./operation";

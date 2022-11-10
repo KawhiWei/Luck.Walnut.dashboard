@@ -1,13 +1,4 @@
-import {
-  Button,
-  Card,
-  Col,
-  Form,
-  PaginationProps,
-  Row,
-  Spin,
-  Tag,
-} from "antd";
+import { Button, Card, Col, Form, PaginationProps, Row, Spin, Tag } from "antd";
 import {
   EditOutlined,
   PlusOutlined,
@@ -38,78 +29,6 @@ const PipelinePage = (props: any) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [formData] = Form.useForm();
   const [tableData, setTableData] = useState<Array<any>>([]);
-  const [stageList, setStageList] = useState<Array<IStageDto>>([
-    {
-      name: "拉取代码",
-      steps: [
-        {
-          name: "拉取代码",
-          stepType: "PullCode",
-          content: "",
-        },
-        {
-          name: "覆盖率检查",
-          stepType: "PullCode",
-          content: "",
-        },
-        {
-          name: "镜像构建",
-          stepType: "PullCode",
-          content: "",
-        },
-      ],
-    },
-    {
-      name: "测试阶段",
-      steps: [
-        {
-          name: "漏洞扫描",
-          stepType: "PullCode",
-          content: "",
-        },
-        {
-          name: "单元测试",
-          stepType: "PullCode",
-          content: "",
-        },
-      ],
-    },
-    {
-      name: "部署阶段",
-      steps: [
-        {
-          name: "环境部署",
-          stepType: "PullCode",
-          content: "",
-        },
-        {
-          name: "代码包上传",
-          stepType: "PullCode",
-          content: "",
-        },
-        {
-          name: "线上准入检查",
-          stepType: "PullCode",
-          content: "",
-        },
-      ],
-    },
-    {
-      name: "发布完成通知",
-      steps: [
-        {
-          name: "企业微信推送",
-          stepType: "PullCode",
-          content: "",
-        },
-        {
-          name: "邮件推送",
-          stepType: "PullCode",
-          content: "",
-        },
-      ],
-    },
-  ]);
   const pagination: PaginationProps = {
     ...tacitPagingProps,
     total: paginationConfig.total,
@@ -184,7 +103,7 @@ const PipelinePage = (props: any) => {
    */
   useEffect(() => {
     getPageList();
-  }, [paginationConfig, stageList]);
+  }, [paginationConfig]);
 
   /**
    * 页面初始化获取数据
@@ -233,7 +152,7 @@ const PipelinePage = (props: any) => {
   return (
     <div>
       <Spin spinning={loading}>
-        <Form
+        {/* <Form
           form={formData}
           name="horizontal_login"
           layout="horizontal"
@@ -255,7 +174,7 @@ const PipelinePage = (props: any) => {
               </Button>
             </Col>
           </Row>
-        </Form>
+        </Form> */}
         <Row>
           <Col span="24" style={{ textAlign: "right" }}>
             <Button

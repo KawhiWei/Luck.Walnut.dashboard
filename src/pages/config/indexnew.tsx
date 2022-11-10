@@ -2,7 +2,7 @@ import { Button, Card, Col, Row, Spin, Tabs } from "antd";
 import { useEffect, useState } from "react";
 
 import ConfigTable from "./configtable-page";
-import { IApplication } from "@/domain/applications/application";
+import { IApplicationBaseDto } from "@/domain/applications/application-dto";
 import { IEnvironmentService } from "@/domain/environment/ienvironment-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import { RollbackOutlined } from "@ant-design/icons";
@@ -14,7 +14,7 @@ interface IProp {
   /**
    * 应用信息
    */
-  applicationData?: IApplication;
+  applicationData?: IApplicationBaseDto;
 }
 
 const NewConfigPage = (props: IProp) => {

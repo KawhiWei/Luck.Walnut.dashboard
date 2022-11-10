@@ -9,6 +9,14 @@ export interface IServerReturn<T> {
   type: number;
 }
 
-export interface IServerPageReturn<T> extends IServerReturn<T> {
+export interface IServerPageReturn<T> {
+  /**
+   * 总行数
+   */
   total: number;
+
+  /**
+   * 数据数组
+   */
+  data: Array<T>
 }

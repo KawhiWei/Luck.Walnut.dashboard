@@ -1,13 +1,13 @@
 import { Descriptions, Tag } from "antd";
 
 import ApplicationStateTag from "./applicationStateTag";
-import { IApplication } from "@/domain/applications/application";
+import { IApplicationBaseDto } from "@/domain/applications/application-dto";
 
 interface IProp {
   /**
    * 应用信息
    */
-  applicationData?: IApplication;
+  applicationData?: IApplicationBaseDto;
 }
 
 /**

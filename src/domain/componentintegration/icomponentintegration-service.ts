@@ -1,4 +1,4 @@
-import { IServerPageReturn } from "@/shared/entity";
+import { IServerPageReturn, IServerReturn } from "@/shared/entity";
 
 export interface IComponentIntegrationService {
 
@@ -7,7 +7,7 @@ export interface IComponentIntegrationService {
      * @param _param 
      * @returns 
      */
-    getPage(_param: any): Promise<IServerPageReturn<any>>;
+    getPage(_param: any): Promise<IServerReturn<IServerPageReturn<any>>>;
 
 
     /**
@@ -15,14 +15,14 @@ export interface IComponentIntegrationService {
      * @param _param 
      * @returns 
      */
-    add(_param: any): Promise<IServerPageReturn<any>>;
+    add(_param: any): Promise<IServerReturn<any>>;
 
     /**
      * 修改组件集成配置
      * @param _param 
      * @returns 
      */
-    update(_id: string, _param: any): Promise<IServerPageReturn<any>>;
+    update(_id: string, _param: any): Promise<IServerReturn<any>>;
 
 
     /**
@@ -30,17 +30,17 @@ export interface IComponentIntegrationService {
      * @param _id 
      * @returns 
      */
-    delete(_id: string): Promise<IServerPageReturn<any>>;
+    delete(_id: string): Promise<IServerReturn<any>>;
 
     /**
      * 获取详细信息
      * @param _id 
      * @returns 
      */
-    getDetail(_id: string): Promise<IServerPageReturn<any>>;
+    getDetail(_id: string): Promise<IServerReturn<any>>;
 
     /**
      * 获取组件集成类型枚举
      */
-    getEnumList(): Promise<IServerPageReturn<any>>;
+    getEnumList(): Promise<IServerReturn<any>>;
 }

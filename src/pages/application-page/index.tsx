@@ -30,7 +30,10 @@ import {
 } from "../../shared/ajax/request";
 import { useEffect, useState } from "react";
 
+import { ApplicationStateEnum } from "@/domain/applications/applicationstate-enum";
+import { ApplicationStateMap } from "@/domain/applications/application-map";
 import ApplicationStateTag from "./applicationStateTag";
+import { IApplicationBaseDto } from "@/domain/applications/application-dto";
 import { IApplicationService } from "@/domain/applications/iapplication-service";
 import { IProjectService } from "@/domain/projects/iproject-service";
 import { IocTypes } from "@/shared/config/ioc-types";
@@ -48,19 +51,13 @@ const ApplicationPage = () => {
   const _projectService: IProjectService = useHookProvider(
     IocTypes.ProjectService
   );
-  const [tableData, setTableData] = useState<Array<any>>([]);
+  const [tableData, setTableData] = useState<Array<IApplicationBaseDto>>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [paginationConfig, setPaginationConfig] =
     useState<initPaginationConfig>(new initPaginationConfig());
   const [subOperationElement, setOperationElement] = useState<any>(null);
   const [formData] = Form.useForm();
   const [projectArray, setProjectArray] = useState<Array<any>>([]);
-  const [applicationStateArray, setApplicationStateArray] = useState<
-    Array<any>
-  >([]);
-  const [applicationLevelArray, setApplicationLevelArray] = useState<
-    Array<any>
-  >([]);
 
   const pagination: PaginationProps = {
     ...tacitPagingProps,
@@ -97,8 +94,8 @@ const ApplicationPage = () => {
     },
     {
       title: "应用中文名",
-      dataIndex: "chinessName",
-      key: "chinessName",
+      dataIndex: "chineseName",
+      key: "chineseName",
     },
     {
       title: "应用标识",
@@ -211,7 +208,6 @@ const ApplicationPage = () => {
   useEffect(() => {
     getPageList();
     onGetProjectList();
-    onApplicationEnumList();
   }, [paginationConfig]);
 
   const onSearch = () => {
@@ -224,21 +220,13 @@ const ApplicationPage = () => {
 
   const onGetProjectList = () => {
     let param = { pageSize: 1000, pageIndex: 1 };
-    _projectService.getPageList(param).then((rep) => {
+    _projectService.getPage(param).then((rep) => {
       if (rep.success) {
         setProjectArray(rep.result.data);
       }
     });
   };
 
-  const onApplicationEnumList = () => {
-    _applicationService.getApplicationEnumList().then((rep) => {
-      if (rep.success) {
-        setApplicationStateArray(rep.result.applicationStateEnumList);
-        setApplicationLevelArray(rep.result.applicationLevelEnumList);
-      }
-    });
-  };
   /**
    * 修改任务
    * @param _id
@@ -249,8 +237,6 @@ const ApplicationPage = () => {
         onCallbackEvent={clearElement}
         operationType={OperationTypeEnum.edit}
         id={_id}
-        applicationLevelArray={applicationLevelArray}
-        applicationStateArray={applicationStateArray}
         projectArray={projectArray}
       />
     );
@@ -268,13 +254,13 @@ const ApplicationPage = () => {
       projectId: param.projectId,
       appId: param.appId,
       englishName: param.englishName,
-      chinessName: param.chinessName,
+      chineseName: param.chineseName,
       principal: param.principal,
       applicationState: param.applicationState,
     };
     _applicationService
       .getPage(_param)
-      .then(rep => {
+      .then((rep) => {
         if (rep.success) {
           setPaginationConfig((Pagination) => {
             Pagination.total = rep.result.total;
@@ -308,8 +294,6 @@ const ApplicationPage = () => {
       <Operation
         onCallbackEvent={clearElement}
         projectArray={projectArray}
-        applicationStateArray={applicationStateArray}
-        applicationLevelArray={applicationLevelArray}
         operationType={OperationTypeEnum.add}
       />
     );
@@ -381,7 +365,7 @@ const ApplicationPage = () => {
                   allowClear={true}
                   placeholder="请选择应用状态"
                 >
-                  {applicationStateArray.map((item: any) => {
+                  {ApplicationStateMap.map((item: any) => {
                     return (
                       <Select.Option value={item.key}>
                         {item.value}

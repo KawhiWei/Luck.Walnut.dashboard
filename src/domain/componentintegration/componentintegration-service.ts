@@ -1,13 +1,14 @@
+import { IServerPageReturn, IServerReturn } from "@/shared/entity";
+
 import BaseService from "@/shared/service/BaseService/BaseService";
 import { ComponentIntegrationApi } from "@/constans/api";
 import { IComponentIntegrationService } from "./icomponentintegration-service";
-import { IServerPageReturn } from "@/shared/entity";
 
 export class ComponentIntegrationService extends BaseService implements IComponentIntegrationService {
-    getDetail(_id: string): Promise<IServerPageReturn<any>> {
+    getDetail(_id: string): Promise<IServerReturn<any>> {
         return this.dataRequest.getRequest(`${ComponentIntegrationApi.componentIntegration}/${_id}`)
     }
-    getEnumList(): Promise<IServerPageReturn<any>> {
+    getEnumList(): Promise<IServerReturn<any>> {
         return this.dataRequest.getRequest(`${ComponentIntegrationApi.componentIntegration}/enum/list`)
     }
 
@@ -16,7 +17,7 @@ export class ComponentIntegrationService extends BaseService implements ICompone
      * @param _param 
      * @returns 
      */
-    getPage(_param: any): Promise<IServerPageReturn<any>> {
+    getPage(_param: any): Promise<IServerReturn<IServerPageReturn<any>>> {
         return this.dataRequest.getRequest(`${ComponentIntegrationApi.componentIntegration}/page`, _param)
     }
 
@@ -25,7 +26,7 @@ export class ComponentIntegrationService extends BaseService implements ICompone
      * @param _param 
      * @returns 
      */
-    add(_param: any): Promise<IServerPageReturn<any>> {
+    add(_param: any): Promise<IServerReturn<any>> {
         return this.dataRequest.postRequest(`${ComponentIntegrationApi.componentIntegration}`, _param)
     }
 
@@ -34,7 +35,7 @@ export class ComponentIntegrationService extends BaseService implements ICompone
      * @param _param 
      * @returns 
      */
-    update(_id: string, _param: any): Promise<IServerPageReturn<any>> {
+    update(_id: string, _param: any): Promise<IServerReturn<any>> {
         return this.dataRequest.putRequest(`${ComponentIntegrationApi.componentIntegration}/${_id}`, _param)
     }
 
@@ -43,7 +44,7 @@ export class ComponentIntegrationService extends BaseService implements ICompone
      * @param _id 
      * @returns 
      */
-    delete(_id: string): Promise<IServerPageReturn<any>> {
+    delete(_id: string): Promise<IServerReturn<any>> {
         return this.dataRequest.deleteRequest(`${ComponentIntegrationApi.componentIntegration}/${_id}`)
     }
 

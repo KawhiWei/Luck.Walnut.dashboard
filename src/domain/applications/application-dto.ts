@@ -1,4 +1,6 @@
-export interface IApplication {
+import { ApplicationLevelEnum, ApplicationStateEnum } from "./applicationstate-enum";
+
+export interface IApplicationBaseDto {
   /***
    * 唯一标识
    */
@@ -12,7 +14,7 @@ export interface IApplication {
   /**
    * 中文名称
    */
-  chinessName: string;
+   chineseName: string;
   
   /**
    * 归属部门
@@ -27,12 +29,17 @@ export interface IApplication {
   /**
    * 应用状态
    */
-  applicationState: string;
+  applicationState: ApplicationStateEnum;
   
   /**
    * 状态名称
    */
   applicationStateName: string,
+
+  /**
+   * 应用级别
+   */
+  applicationLevel :ApplicationLevelEnum
 
   /**
    * 应用级别名称
@@ -42,8 +49,5 @@ export interface IApplication {
    * 应用描述
    */
   describe: string,
-  
-
-  
   
 }

@@ -2,7 +2,7 @@ import { Button, Card, Col, Form, Row, Spin, Tabs } from "antd";
 import { useEffect, useState } from "react";
 
 import ApplicationInformation from "./application-information";
-import { IApplication } from "@/domain/applications/application";
+import { IApplicationBaseDto } from "@/domain/applications/application-dto";
 import { IApplicationService } from "@/domain/applications/iapplication-service";
 import { IEnvironmentService } from "@/domain/environment/ienvironment-service";
 import { IProjectService } from "@/domain/projects/iproject-service";
@@ -28,7 +28,7 @@ const ApplicationDashboard = (props: any) => {
   );
   const [appId, setAppId] = useState<string>();
   const [loading, setLoading] = useState<boolean>(false);
-  const [applicationData, setApplicationData] = useState<IApplication>();
+  const [applicationData, setApplicationData] = useState<IApplicationBaseDto>();
 
   const DashboardDetail = () => {
     if (props.location.state.appId) {

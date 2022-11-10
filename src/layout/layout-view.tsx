@@ -25,10 +25,10 @@ const LayoutView = (props: IProp) => {
                 <LayoutSider menus={menuList} defaultpath="/user"/>
                 <Layout>
                     <Layoutheader />
-                    <Layout.Content>
+                    <Layout.Content style={{ overflow: "auto" }}>
                         {renderRoutes(routes)}
                     </Layout.Content>
-                    <Layout.Footer className="sukt-layout__footer">VV大佬盛情出品</Layout.Footer>
+                    {/* <Layout.Footer className="sukt-layout-footer">VV大佬盛情出品</Layout.Footer> */}
                 </Layout>
             </BrowserRouter>
         </Layout>

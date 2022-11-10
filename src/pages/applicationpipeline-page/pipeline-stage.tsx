@@ -2,6 +2,7 @@ import { Button, Card, Row } from "antd";
 import {
   CheckCircleFilled,
   CloseOutlined,
+  EditFilled,
   PlusOutlined,
 } from "@ant-design/icons";
 
@@ -24,10 +25,18 @@ interface IProp {
   stageIndex: number;
 
   /**
+   * 编辑阶段
+   */
+  onEditStage: any;
+
+  /**
    * 删除步骤事件
    */
   onRemoveStep: any;
 
+  /**
+   * 删除阶段
+   */
   onRemoveStage: any;
 }
 
@@ -35,12 +44,6 @@ interface IProp {
  * 应用流水线设计
  */
 const PipelineStage = (props: IProp) => {
-  /**
-   * 页面初始化事件
-   */
-  useEffect(() => {
-    console.log(props);
-  });
   const onAddStep = () => {
     props.onAddStep(props.stageIndex);
   };
@@ -49,12 +52,20 @@ const PipelineStage = (props: IProp) => {
       <Card
         title={props.stage.name}
         extra={
-          <CloseOutlined
-            style={{ marginBottom: 10, textAlign: "right" }}
-            onClick={() => {
-              props.onRemoveStage(props.stageIndex);
-            }}
-          />
+          <div>
+            <EditFilled
+              style={{ marginRight: 10, textAlign: "right" }}
+              onClick={() => {
+                props.onEditStage(props.stage, props.stageIndex);
+              }}
+            />
+            <CloseOutlined
+              style={{ marginBottom: 10, textAlign: "right" }}
+              onClick={() => {
+                props.onRemoveStage(props.stageIndex);
+              }}
+            />
+          </div>
         }
       >
         {props.stage.steps.map((step, index) => {

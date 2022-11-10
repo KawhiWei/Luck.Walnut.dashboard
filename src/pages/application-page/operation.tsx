@@ -1,4 +1,8 @@
 import {
+  ApplicationLevelMap,
+  ApplicationStateMap,
+} from "@/domain/applications/application-map";
+import {
   Button,
   Col,
   Form,
@@ -40,16 +44,6 @@ interface IProp {
    * 项目列表
    */
   projectArray: Array<any>;
-
-  /**
-   * 应用状态枚举列表
-   */
-  applicationStateArray: Array<any>;
-
-  /**
-   * 应用等级枚举列表
-   */
-  applicationLevelArray: Array<any>;
 }
 
 const validateMessages = {
@@ -237,7 +231,7 @@ const Operation = (props: IProp) => {
           <Row>
             <Col span="24">
               <Form.Item
-                name="chinessName"
+                name="chineseName"
                 label="应用中文名："
                 rules={[{ required: true }]}
               >
@@ -274,7 +268,7 @@ const Operation = (props: IProp) => {
                   allowClear={true}
                   placeholder="请选择应用状态"
                 >
-                  {props.applicationStateArray.map((item: any) => {
+                  {ApplicationStateMap.map((item: any) => {
                     return (
                       <Select.Option value={item.key}>
                         {item.value}
@@ -318,7 +312,7 @@ const Operation = (props: IProp) => {
                   allowClear={true}
                   placeholder="请选择应用等级"
                 >
-                  {props.applicationLevelArray.map((item: any) => {
+                  {ApplicationLevelMap.map((item: any) => {
                     return (
                       <Select.Option value={item.key}>
                         {item.value}
