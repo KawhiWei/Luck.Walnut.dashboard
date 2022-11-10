@@ -18,11 +18,12 @@ import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
  * @returns
  */
 const ApplicationDashboard = (props: any) => {
+  const [defaultActiveKey, setdefaultActiveKey] = useState<string>();
   useEffect(() => {
     DashboardDetail();
-  }, []);
+  }, [defaultActiveKey]);
   const history = useHistory();
-
+  
   const _applicationService: IApplicationService = useHookProvider(
     IocTypes.ApplicationService
   );
@@ -78,7 +79,7 @@ const ApplicationDashboard = (props: any) => {
               }
             >
               <Tabs
-                defaultActiveKey="1"
+                defaultActiveKey={props.location.state.defaultActiveKey}
                 items={[
                   {
                     label: `基础信息`,

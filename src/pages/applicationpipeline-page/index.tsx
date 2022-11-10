@@ -123,13 +123,9 @@ const PipelinePage = (props: IProp) => {
     let _param = {
       pageSize: paginationConfig.pageSize,
       pageIndex: paginationConfig.current,
-      projectId: param.projectId,
-      appId: param.appId,
-      englishName: param.englishName,
-      chinessName: param.chinessName,
-      principal: param.principal,
-      applicationState: param.applicationState,
     };
+
+    
     _applicationPipelineService
       .getPage("luck.walnut", _param)
       .then((rep) => {

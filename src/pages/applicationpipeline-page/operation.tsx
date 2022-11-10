@@ -7,6 +7,10 @@ import PipelineStage from "./pipeline-stage";
 import { PlusOutlined } from "@ant-design/icons";
 import StageOperation from "./stage-operation";
 import { StepTypeEnum } from "@/domain/applicationpipelines/applicationpipeline-enum";
+import { IApplicationPipelineService } from "@/domain/applicationpipelines/iapplicationpipeline-service";
+import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
+import { IocTypes } from "@/shared/config/ioc-types";
+import SaveOperation from "./SaveOperation";
 
 /**
  * 应用流水线设计
@@ -14,6 +18,8 @@ import { StepTypeEnum } from "@/domain/applicationpipelines/applicationpipeline-
 const Operation = (props: any) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [stageOperationElement, setStageOperationElement] = useState<any>(null);
+  const _applicationPipelineService: IApplicationPipelineService =
+    useHookProvider(IocTypes.ApplicationPipelineService);
   const [stageList, setStageList] = useState<Array<IStageDto>>([
     {
       name: "拉取代码",
@@ -86,6 +92,7 @@ const Operation = (props: any) => {
       ],
     },
   ]);
+  const [subOperationElement, setOperationElement] = useState<any>(null);
 
   /**
    * 页面初始化事件
@@ -183,6 +190,34 @@ const Operation = (props: any) => {
     });
     setStageList((current) => [...current]);
   };
+  /**
+   * 保存
+   */
+  const onSave = () => {
+    // var param = {
+    //   appId: "luck.walnut",
+    //   appEnvironmentId: "string",
+    //   name: "string",
+    //   pipelineState: 0,
+    //   pipelineScript: stageList
+    // }
+    // _applicationPipelineService.create(param).then(rep=>{
+    //   console.log(rep);
+    // })
+    console.log(1)
+    setStageOperationElement(
+      <SaveOperation id="" 
+      operationType={OperationTypeEnum.add} 
+      stageList={stageList}
+      onCallbackEvent={clearElement}
+      />
+    )
+
+  };
+  // const clearElement = () => {
+  //   setOperationElement(null);
+  //   getPageList();
+  // };
 
   return (
     <div>
@@ -194,11 +229,11 @@ const Operation = (props: any) => {
               type="primary"
               style={{ margin: "8px 8px" }}
               onClick={() => {
-                onAddStageModal();
+                onSave();
               }}
             >
               <PlusOutlined />
-              添加阶段
+              保存流水线
             </Button>
           </Col>
         </Row>
@@ -217,6 +252,20 @@ const Operation = (props: any) => {
               </Col>
             );
           })}
+          <Col span={4}>
+          <Card style={{ marginBottom: 10, textAlign: "center" }}>
+          <Button
+              shape="round"
+              style={{ margin: "8px 8px" }}
+              onClick={() => {
+                onAddStageModal();
+              }}
+            >
+              <PlusOutlined />
+              添加阶段
+            </Button>
+            </Card>
+              </Col>
         </Row>
         {stageOperationElement}
       </Spin>
