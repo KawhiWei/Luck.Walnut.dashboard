@@ -1,9 +1,11 @@
 import { Button, Card, Col, Form, PaginationProps, Row, Spin, Tag } from "antd";
 import {
+  DeleteOutlined,
+  EditFilled,
   EditOutlined,
   PlusOutlined,
-  SearchOutlined,
   SyncOutlined,
+  UploadOutlined,
 } from "@ant-design/icons";
 import {
   initPaginationConfig,
@@ -125,7 +127,6 @@ const PipelinePage = (props: IProp) => {
       pageIndex: paginationConfig.current,
     };
 
-    
     _applicationPipelineService
       .getPage("luck.walnut", _param)
       .then((rep) => {
@@ -207,18 +208,30 @@ const PipelinePage = (props: IProp) => {
           {tableData.map((item) => {
             return (
               <Col span={4}>
-                <Card
-                  title={item.name}
-                  actions={[
-                    <EditOutlined key="setting" />,
-                    <EditOutlined key="edit" />,
-                    <EditOutlined key="ellipsis" />,
-                  ]}
-                >
-                  <div>{item.appEnvironmentId}</div>
-                  <Tag icon={<SyncOutlined spin />} color="processing">
-                    构建中
-                  </Tag>
+                <Card title={item.name}>
+                  <Row
+                    gutter={[16, 16]}
+                    style={{ marginBottom: 30, textAlign: "center" }}
+                  >
+                    <Tag
+                      icon={<SyncOutlined spin />}
+                      style={{ textAlign: "center" }}
+                      color="processing"
+                    >
+                      构建中
+                    </Tag>
+                  </Row>
+                  <Row gutter={[16, 16]} style={{ marginBottom: 10 }}>
+                    <Col span={8} style={{ textAlign: "center" }}>
+                      <UploadOutlined />
+                    </Col>
+                    <Col span={8} style={{ textAlign: "center",color: "orange",  fontSize: 16  }}>
+                      <EditOutlined />
+                    </Col>
+                    <Col span={8} style={{ textAlign: "center" ,color: "red",  fontSize: 16 }}>
+                      <DeleteOutlined />
+                    </Col>
+                  </Row>
                   <div></div>
                 </Card>
               </Col>
