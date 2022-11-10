@@ -41,7 +41,7 @@ const HomePage = () => {
   return (
     <div>
       {/* <PipelinePage /> */}
-      <Operation />
+      {/* <Operation /> */}
     </div>
   );
 };

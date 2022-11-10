@@ -1,103 +1,108 @@
 import { Button, Card, Col, Row, Spin } from "antd";
 import { useEffect, useState } from "react";
 
+import { IApplicationPipelineService } from "@/domain/applicationpipelines/iapplicationpipeline-service";
 import { IStageDto } from "@/domain/applicationpipelines/applicationpipeline-dto";
+import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
 import PipelineStage from "./pipeline-stage";
 import { PlusOutlined } from "@ant-design/icons";
+import SavePipeLine from "./save-pipeline";
 import StageOperation from "./stage-operation";
 import { StepTypeEnum } from "@/domain/applicationpipelines/applicationpipeline-enum";
-import { IApplicationPipelineService } from "@/domain/applicationpipelines/iapplicationpipeline-service";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
-import { IocTypes } from "@/shared/config/ioc-types";
-import SaveOperation from "./SaveOperation";
 
 /**
  * 应用流水线设计
  */
 const Operation = (props: any) => {
   const [loading, setLoading] = useState<boolean>(false);
+  const [appId, setAppId] = useState<string>();
   const [stageOperationElement, setStageOperationElement] = useState<any>(null);
   const _applicationPipelineService: IApplicationPipelineService =
     useHookProvider(IocTypes.ApplicationPipelineService);
-  const [stageList, setStageList] = useState<Array<IStageDto>>([
-    {
-      name: "拉取代码",
-      steps: [
-        {
-          name: "拉取代码",
-          stepType: StepTypeEnum.pullCode,
-          content: "",
-        },
-        {
-          name: "覆盖率检查",
-          stepType: StepTypeEnum.pullCode,
-          content: "",
-        },
-        {
-          name: "镜像构建",
-          stepType: StepTypeEnum.pullCode,
-          content: "",
-        },
-      ],
-    },
-    {
-      name: "测试阶段",
-      steps: [
-        {
-          name: "漏洞扫描",
-          stepType: StepTypeEnum.pullCode,
-          content: "",
-        },
-        {
-          name: "单元测试",
-          stepType: StepTypeEnum.pullCode,
-          content: "",
-        },
-      ],
-    },
-    {
-      name: "部署阶段",
-      steps: [
-        {
-          name: "环境部署",
-          stepType: StepTypeEnum.pullCode,
-          content: "",
-        },
-        {
-          name: "代码包上传",
-          stepType: StepTypeEnum.pullCode,
-          content: "",
-        },
-        {
-          name: "线上准入检查",
-          stepType: StepTypeEnum.pullCode,
-          content: "",
-        },
-      ],
-    },
-    {
-      name: "发布完成通知",
-      steps: [
-        {
-          name: "企业微信推送",
-          stepType: StepTypeEnum.pullCode,
-          content: "",
-        },
-        {
-          name: "邮件推送",
-          stepType: StepTypeEnum.pullCode,
-          content: "",
-        },
-      ],
-    },
-  ]);
+  const [stageList, setStageList] = useState<Array<IStageDto>>([]);
+
+  // const [stageList, setStageList] = useState<Array<IStageDto>>([
+  //   {
+  //     name: "拉取代码",
+  //     steps: [
+  //       {
+  //         name: "拉取代码",
+  //         stepType: StepTypeEnum.pullCode,
+  //         content: "",
+  //       },
+  //       {
+  //         name: "覆盖率检查",
+  //         stepType: StepTypeEnum.pullCode,
+  //         content: "",
+  //       },
+  //       {
+  //         name: "镜像构建",
+  //         stepType: StepTypeEnum.pullCode,
+  //         content: "",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     name: "测试阶段",
+  //     steps: [
+  //       {
+  //         name: "漏洞扫描",
+  //         stepType: StepTypeEnum.pullCode,
+  //         content: "",
+  //       },
+  //       {
+  //         name: "单元测试",
+  //         stepType: StepTypeEnum.pullCode,
+  //         content: "",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     name: "部署阶段",
+  //     steps: [
+  //       {
+  //         name: "环境部署",
+  //         stepType: StepTypeEnum.pullCode,
+  //         content: "",
+  //       },
+  //       {
+  //         name: "代码包上传",
+  //         stepType: StepTypeEnum.pullCode,
+  //         content: "",
+  //       },
+  //       {
+  //         name: "线上准入检查",
+  //         stepType: StepTypeEnum.pullCode,
+  //         content: "",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     name: "发布完成通知",
+  //     steps: [
+  //       {
+  //         name: "企业微信推送",
+  //         stepType: StepTypeEnum.pullCode,
+  //         content: "",
+  //       },
+  //       {
+  //         name: "邮件推送",
+  //         stepType: StepTypeEnum.pullCode,
+  //         content: "",
+  //       },
+  //     ],
+  //   },
+  // ]);
   const [subOperationElement, setOperationElement] = useState<any>(null);
 
   /**
    * 页面初始化事件
    */
-  useEffect(() => {}, [stageList]);
+  useEffect(() => {
+    onGetLoad();
+  }, [stageList]);
   const onAddStageModal = () => {
     setStageOperationElement(
       <StageOperation
@@ -194,30 +199,23 @@ const Operation = (props: any) => {
    * 保存
    */
   const onSave = () => {
-    // var param = {
-    //   appId: "luck.walnut",
-    //   appEnvironmentId: "string",
-    //   name: "string",
-    //   pipelineState: 0,
-    //   pipelineScript: stageList
-    // }
-    // _applicationPipelineService.create(param).then(rep=>{
-    //   console.log(rep);
-    // })
-    console.log(1)
     setStageOperationElement(
-      <SaveOperation id="" 
-      operationType={OperationTypeEnum.add} 
-      stageList={stageList}
-      onCallbackEvent={clearElement}
+      <SavePipeLine
+        appId={appId}
+        operationType={OperationTypeEnum.add}
+        stageList={stageList}
+        onCallbackEvent={clearElement}
       />
-    )
-
+    );
   };
-  // const clearElement = () => {
-  //   setOperationElement(null);
-  //   getPageList();
-  // };
+  /**
+   *
+   */
+  const onGetLoad = () => {
+    if (props.location.state.appId) {
+      setAppId(props.location.state.appId);
+    }
+  };
 
   return (
     <div>
@@ -253,19 +251,19 @@ const Operation = (props: any) => {
             );
           })}
           <Col span={4}>
-          <Card style={{ marginBottom: 10, textAlign: "center" }}>
-          <Button
-              shape="round"
-              style={{ margin: "8px 8px" }}
-              onClick={() => {
-                onAddStageModal();
-              }}
-            >
-              <PlusOutlined />
-              添加阶段
-            </Button>
+            <Card style={{ marginBottom: 10, textAlign: "center" }}>
+              <Button
+                shape="round"
+                style={{ margin: "8px 8px" }}
+                onClick={() => {
+                  onAddStageModal();
+                }}
+              >
+                <PlusOutlined />
+                添加阶段
+              </Button>
             </Card>
-              </Col>
+          </Col>
         </Row>
         {stageOperationElement}
       </Spin>

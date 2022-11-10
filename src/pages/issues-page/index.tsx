@@ -108,7 +108,7 @@ const MatterPage = () => {
      const getTable = () => {
         setloading(true);
         let param = { pageSize: paginationConfig.pageSize, pageIndex: paginationConfig.current }
-        _matterService.getMatterList(param).then(rep=>{
+        _matterService.getPage(param).then(rep=>{
             if(rep.success){
                 setPaginationConfig((Pagination) => {
                     Pagination.total = rep.result.total;
