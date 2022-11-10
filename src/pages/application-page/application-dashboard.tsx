@@ -91,10 +91,8 @@ const ApplicationDashboard = (props: any) => {
                   },
                   {
                     label: `应用流水线`,
-                    key: "3",
-                    children: (
-                      <PipelinePage applicationData={applicationData} />
-                    ),
+                    key: "2",
+                    children: <PipelinePage appId={applicationData?.appId} />,
                   },
                 ]}
               ></Tabs>

@@ -15,12 +15,21 @@ import { IApplicationPipelineService } from "@/domain/applicationpipelines/iappl
 import { IStageDto } from "@/domain/applicationpipelines/applicationpipeline-dto";
 import { IocTypes } from "@/shared/config/ioc-types";
 import { searchFormItemDoubleRankLayout } from "@/constans/layout/optionlayout";
+import { useHistory } from "react-router-dom";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
+
+interface IProp {
+  /**
+   * 应用Id
+   */
+  appId?: string;
+}
 
 /***
  * 应用流水线设计
  */
-const PipelinePage = (props: any) => {
+const PipelinePage = (props: IProp) => {
+  const history = useHistory();
   const _applicationPipelineService: IApplicationPipelineService =
     useHookProvider(IocTypes.ApplicationPipelineService);
 
@@ -139,7 +148,15 @@ const PipelinePage = (props: any) => {
       });
   };
 
-  const addChange = () => {};
+  const goToAddApplicationPileLineOperation = () => {
+    props.appId &&
+      history.push({
+        pathname: "/application/pipeline/edit",
+        state: {
+          appId: props.appId,
+        },
+      });
+  };
 
   const onSearch = () => {
     setPaginationConfig((Pagination) => {
@@ -182,7 +199,7 @@ const PipelinePage = (props: any) => {
               type="primary"
               style={{ margin: "8px 8px" }}
               onClick={() => {
-                addChange();
+                goToAddApplicationPileLineOperation();
               }}
             >
               <PlusOutlined />
