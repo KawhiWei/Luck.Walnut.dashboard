@@ -21,6 +21,7 @@ import {
 import { useEffect, useState } from "react";
 
 import { IApplicationPipelineService } from "@/domain/applicationpipelines/iapplicationpipeline-service";
+import { IComponentIntegrationService } from "@/domain/componentintegration/icomponentintegration-service";
 import { IOperationConfig } from "@/shared/operation/operationConfig";
 import { IStageDto } from "@/domain/applicationpipelines/applicationpipeline-dto";
 import { IocTypes } from "@/shared/config/ioc-types";
@@ -66,16 +67,22 @@ const validateMessages = {
 };
 
 const SavePipeLine = (props: IProp) => {
+  const _componentIntegrationService: IComponentIntegrationService =
+    useHookProvider(IocTypes.ComponentIntegrationService);
+  const _applicationPipelineService: IApplicationPipelineService =
+    useHookProvider(IocTypes.ApplicationPipelineService);
   const [operationState, setOperationState] = useState<IOperationConfig>({
     visible: false,
   });
-  const _applicationPipelineService: IApplicationPipelineService =
-    useHookProvider(IocTypes.ApplicationPipelineService);
+
+  const [componentIntegrationArray, setComponentIntegrationArray] = useState<
+    Array<any>
+  >([]);
   const [formData] = Form.useForm();
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    onGetLoad();
+    getComponentIntegrationList();
   }, []);
   const onGetLoad = () => {
     switch (props.operationType) {
@@ -83,6 +90,23 @@ const SavePipeLine = (props: IProp) => {
         editOperationState(true, "添加");
         break;
     }
+  };
+
+  const getComponentIntegrationList = () => {
+    let _param = {
+      pageSize: 100,
+      pageIndex: 1,
+    };
+    _componentIntegrationService
+      .getPage(_param)
+      .then((rep) => {
+        if (rep.success) {
+          setComponentIntegrationArray(rep.result.data);
+        }
+      })
+      .finally(() => {
+        onGetLoad();
+      });
   };
 
   const history = useHistory();
@@ -100,19 +124,19 @@ const SavePipeLine = (props: IProp) => {
   };
   const onFinish = () => {
     setLoading(true);
-    let data = formData.getFieldsValue();
+    let form = formData.getFieldsValue();
     if (props.appId) {
       var param = {
         appId: props.appId,
         appEnvironmentId: "string",
-        name: data.Name,
+        name: form.name,
         pipelineState: 0,
         pipelineScript: props.stageList,
+        componentIntegrationId: form.componentIntegrationId,
       };
       _applicationPipelineService
         .create(param)
         .then((rep) => {
-          console.log(rep);
           if (!rep.success) {
             message.error(rep.errorMessage, 3);
           } else {
@@ -162,8 +186,27 @@ const SavePipeLine = (props: IProp) => {
         >
           <Row>
             <Col span="24">
-              <Form.Item name="Name" label="名称" rules={[{ required: true }]}>
+              <Form.Item name="name" label="名称" rules={[{ required: true }]}>
                 <Input style={{ borderRadius: 6 }} />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row>
+            <Col span="24">
+              <Form.Item
+                name="componentIntegrationId"
+                label="选择流水线组件"
+                rules={[{ required: true }]}
+              >
+                <Select allowClear={true} placeholder="请选择组件类型">
+                  {componentIntegrationArray.map((item: any) => {
+                    return (
+                      <Select.Option value={item.id}>
+                        {item.name}——{item.componentLinkTypeName}
+                      </Select.Option>
+                    );
+                  })}
+                </Select>
               </Form.Item>
             </Col>
           </Row>

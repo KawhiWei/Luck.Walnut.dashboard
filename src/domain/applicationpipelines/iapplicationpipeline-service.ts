@@ -30,9 +30,17 @@ export interface IApplicationPipelineService {
      */
     update(_id: string, _param: any): Promise<IServerReturn<any>>;
 
+
     /**
-     * 获取应用相关所有枚举
+     * 发布任务到Jenkins
+     * @param _id 
      */
-    getApplicationEnumList(): Promise<IServerReturn<any>>;
+    publish(_id: string): Promise<IServerReturn<any>>;
+
+    /**
+     * 执行一次任务
+     * @param _id 
+     */
+    executeJob(_id: string): Promise<IServerReturn<any>>;
 
 }

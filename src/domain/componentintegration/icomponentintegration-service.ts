@@ -39,8 +39,4 @@ export interface IComponentIntegrationService {
      */
     getDetail(_id: string): Promise<IServerReturn<any>>;
 
-    /**
-     * 获取组件集成类型枚举
-     */
-    getEnumList(): Promise<IServerReturn<any>>;
 }

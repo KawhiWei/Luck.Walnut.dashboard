@@ -187,7 +187,6 @@ const Operation = (props: any) => {
    * 删除步骤
    */
   const onRemoveStep = (_stageIndex: number, _stepIndex: number) => {
-    console.log("onRemove");
     stageList.filter((item, index) => {
       if (index === _stageIndex) {
         item.steps.splice(_stepIndex, 1);

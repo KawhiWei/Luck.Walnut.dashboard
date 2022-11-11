@@ -117,7 +117,6 @@ const ConfigOperation = (props: IProp) => {
       case OperationTypeEnum.edit:
         props.id &&
           _environmentService.getConfigDetail(props.id).then((rep) => {
-            console.log(rep);
             if (rep.success) {
               formData.setFieldsValue(rep.result);
               editOperationState(true, "修改");

@@ -8,9 +8,6 @@ export class ComponentIntegrationService extends BaseService implements ICompone
     getDetail(_id: string): Promise<IServerReturn<any>> {
         return this.dataRequest.getRequest(`${ComponentIntegrationApi.componentIntegration}/${_id}`)
     }
-    getEnumList(): Promise<IServerReturn<any>> {
-        return this.dataRequest.getRequest(`${ComponentIntegrationApi.componentIntegration}/enum/list`)
-    }
 
     /**
      * 获取分页数据

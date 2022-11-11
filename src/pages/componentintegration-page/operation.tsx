@@ -26,6 +26,7 @@ import {
 } from "@/constans/layout/optionlayout";
 import { useEffect, useState } from "react";
 
+import { ComponentLinkTypeMap } from "@/domain/componentintegration/componentintegration-map";
 import { IComponentIntegrationService } from "@/domain/componentintegration/icomponentintegration-service";
 import { IOperationConfig } from "@/shared/operation/operationConfig";
 import { IocTypes } from "@/shared/config/ioc-types";
@@ -47,10 +48,6 @@ interface IProp {
    * 操作类型
    */
   operationType: OperationTypeEnum;
-  /**
-   * 组件集成类型枚举
-   */
-  componentLinkTypeArray: Array<any>;
 }
 
 const Operation = (props: IProp) => {
@@ -86,7 +83,6 @@ const Operation = (props: IProp) => {
       case OperationTypeEnum.edit:
         props.id &&
           _componentIntegrationService.getDetail(props.id).then((rep) => {
-            console.log(rep);
             if (rep.success) {
               formData.setFieldsValue(rep.result);
               editOperationState(true, "修改");
@@ -209,7 +205,7 @@ const Operation = (props: IProp) => {
                 rules={[{ required: true }]}
               >
                 <Radio.Group>
-                  {props.componentLinkTypeArray.map((item: any) => {
+                  {ComponentLinkTypeMap.map((item: any) => {
                     return <Radio value={item.key}>{item.value}</Radio>;
                   })}
                 </Radio.Group>

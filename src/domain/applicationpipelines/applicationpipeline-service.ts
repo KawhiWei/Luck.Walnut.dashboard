@@ -27,7 +27,14 @@ export class ApplicationPipelineService extends BaseService implements IApplicat
         return this.dataRequest.deleteRequest(`${ApplicationPipelineApi.applicationpipeline}/${_id}`)
     }
 
-    getApplicationEnumList(): Promise<IServerReturn<any>> {
-        return this.dataRequest.getRequest(`${ApplicationPipelineApi.applicationpipeline}/enum/list`,)
+    publish(_id: string): Promise<IServerReturn<any>> {
+
+        return this.dataRequest.putRequest(`${ApplicationPipelineApi.applicationpipeline}/${_id}/publish`, {})
     }
+
+    executeJob(_id: string): Promise<IServerReturn<any>> {
+        return this.dataRequest.postRequest(`${ApplicationPipelineApi.applicationpipeline}/${_id}/execute/job`, {})
+    }
+
+
 }

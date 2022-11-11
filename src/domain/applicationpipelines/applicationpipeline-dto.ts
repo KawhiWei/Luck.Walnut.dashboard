@@ -1,5 +1,7 @@
 import { PipelineStateEnum, StepTypeEnum } from "./applicationpipeline-enum";
 
+import { IEntity } from "@/shared/entity";
+
 /**
  * 流水线Dto模型接口
  */
@@ -40,6 +42,19 @@ export interface IApplicationPipelineBaseDto {
     nextPipelineId: string;
 
 }
+
+
+/**
+ * 流水线Dto模型接口
+ */
+export interface IApplicationPipelineOutputDto extends IApplicationPipelineBaseDto,IEntity<string> {
+    /**
+     * 流水线状态
+     */
+    pipelineStateName: string;
+
+}
+
 
 /**
  * 步骤Dto

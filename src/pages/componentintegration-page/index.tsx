@@ -27,6 +27,7 @@ import {
 } from "../../shared/ajax/request";
 import { useEffect, useState } from "react";
 
+import { ComponentLinkTypeMap } from "@/domain/componentintegration/componentintegration-map";
 import { IComponentIntegrationService } from "@/domain/componentintegration/icomponentintegration-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import Operation from "./operation";
@@ -45,18 +46,12 @@ const ComponentIntegrationPage = () => {
    * 配置添加/修改组件
    */
   const [OperationElement, setOperationElement] = useState<any>(null);
-  /**
-   * 配置添加/修改组件
-   */
-  const [componentLinkTypeArray, setComponentLinkTypeArray] = useState<any>(
-    new Array<any>()
-  );
+
 
   const addChange = () => {
     setOperationElement(
       <Operation
         onCallbackEvent={clearElement}
-        componentLinkTypeArray={componentLinkTypeArray}
         operationType={OperationTypeEnum.add}
       />
     );
@@ -103,7 +98,6 @@ const ComponentIntegrationPage = () => {
    * 页面初始化事件
    */
   useEffect(() => {
-    getEnumList();
     getPageList();
   }, [paginationConfig]);
 
@@ -136,19 +130,6 @@ const ComponentIntegrationPage = () => {
       });
   };
 
-  const getEnumList = () => {
-    setLoading(false);
-    _componentIntegrationService
-      .getEnumList()
-      .then((rep) => {
-        if (rep.success) {
-          setComponentLinkTypeArray(rep.result.componentLinkTypeEnumList);
-        }
-      })
-      .finally(()=>{
-        setLoading(false);
-      });
-  };
   const columns = [
     {
       title: "名称",
@@ -196,7 +177,6 @@ const ComponentIntegrationPage = () => {
     setOperationElement(
       <Operation
         onCallbackEvent={clearElement}
-        componentLinkTypeArray={componentLinkTypeArray}
         operationType={OperationTypeEnum.edit}
         id={_id}
       />
@@ -235,7 +215,7 @@ const ComponentIntegrationPage = () => {
             <Col span="6">
               <Form.Item name="componentLinkType" label="组件类型：">
                 <Select allowClear={true} placeholder="请选择组件类型">
-                  {componentLinkTypeArray.map((item: any) => {
+                  {ComponentLinkTypeMap.map((item: any) => {
                     return (
                       <Select.Option value={item.key}>
                         {item.value}

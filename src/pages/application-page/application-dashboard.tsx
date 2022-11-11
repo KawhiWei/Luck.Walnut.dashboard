@@ -19,11 +19,8 @@ import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
  */
 const ApplicationDashboard = (props: any) => {
   const [defaultActiveKey, setdefaultActiveKey] = useState<string>();
-  useEffect(() => {
-    DashboardDetail();
-  }, [defaultActiveKey]);
   const history = useHistory();
-  
+
   const _applicationService: IApplicationService = useHookProvider(
     IocTypes.ApplicationService
   );
@@ -47,6 +44,9 @@ const ApplicationDashboard = (props: any) => {
         });
     }
   };
+  useEffect(() => {
+    DashboardDetail();
+  }, [appId]);
 
   /**
    * 跳转到应用列表
@@ -93,7 +93,9 @@ const ApplicationDashboard = (props: any) => {
                   {
                     label: `应用流水线`,
                     key: "2",
-                    children: <PipelinePage appId={applicationData?.appId} />,
+                    children: (
+                      <PipelinePage appId={props.location.state.appId} />
+                    ),
                   },
                 ]}
               ></Tabs>

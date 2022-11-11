@@ -1,22 +1,24 @@
-import { Button, Card, Col, Form, PaginationProps, Row, Spin, Tag } from "antd";
+import { Button, Card, Col, Form, Row, Spin, Tag, message } from "antd";
 import {
+  CloudUploadOutlined,
   DeleteOutlined,
-  EditFilled,
   EditOutlined,
+  PlayCircleOutlined,
   PlusOutlined,
   SyncOutlined,
+  UpSquareOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
 import {
-  initPaginationConfig,
-  tacitPagingProps,
-} from "../../shared/ajax/request";
+  IApplicationPipelineBaseDto,
+  IApplicationPipelineOutputDto,
+} from "@/domain/applicationpipelines/applicationpipeline-dto";
 import { useEffect, useState } from "react";
 
 import { IApplicationPipelineService } from "@/domain/applicationpipelines/iapplicationpipeline-service";
-import { IStageDto } from "@/domain/applicationpipelines/applicationpipeline-dto";
 import { IocTypes } from "@/shared/config/ioc-types";
-import { searchFormItemDoubleRankLayout } from "@/constans/layout/optionlayout";
+import Item from "antd/lib/list/Item";
+import { initPaginationConfig } from "../../shared/ajax/request";
 import { useHistory } from "react-router-dom";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
@@ -38,111 +40,94 @@ const PipelinePage = (props: IProp) => {
   const [paginationConfig, setPaginationConfig] =
     useState<initPaginationConfig>(new initPaginationConfig());
   const [loading, setLoading] = useState<boolean>(false);
-  const [formData] = Form.useForm();
-  const [tableData, setTableData] = useState<Array<any>>([]);
-  const pagination: PaginationProps = {
-    ...tacitPagingProps,
-    total: paginationConfig.total,
-    current: paginationConfig.current,
-    pageSize: paginationConfig.pageSize,
-    showTotal: (total) => {
-      return `共 ${total} 条`;
-    },
-    onShowSizeChange: (current: number, pageSize: number) => {
-      setPaginationConfig((Pagination) => {
-        Pagination.pageSize = pageSize;
-        Pagination.current = current;
-        return Pagination;
-      });
-      getPageList();
-    },
-    onChange: (page: number, pageSize?: number) => {
-      setPaginationConfig((Pagination) => {
-        Pagination.current = page;
-        if (pageSize) {
-          Pagination.pageSize = pageSize;
-        }
-        return Pagination;
-      });
-      getPageList();
-    },
-  };
-  const columns = [
-    {
-      title: "应用英文名",
-      dataIndex: "englishName",
-      key: "englishName",
-    },
-    {
-      title: "应用中文名",
-      dataIndex: "chinessName",
-      key: "chinessName",
-    },
-    {
-      title: "应用标识",
-      dataIndex: "appId",
-      key: "appId",
-    },
-    {
-      title: "所属项目",
-      dataIndex: "projectName",
-      key: "projectName",
-    },
-    {
-      title: "所属部门",
-      dataIndex: "departmentName",
-      key: "departmentName",
-    },
-    {
-      title: "应用状态",
-      dataIndex: "id",
-      key: "id",
-      width: 120,
-      render: (text: any, record: any) => {
-        return <div></div>;
-      },
-    },
-    {
-      title: "联系人",
-      dataIndex: "linkMan",
-      key: "linkMan",
-    },
-  ];
-
+  const [tableData, setTableData] = useState<
+    Array<IApplicationPipelineOutputDto>
+  >([]);
+  const [appId, setAppId] = useState<string>();
   /**
    * 页面初始化事件
    */
   useEffect(() => {
-    getPageList();
-  }, [paginationConfig]);
+    if (props.appId) {
+      props.appId && setAppId(props.appId);
+      getPageList();
+    }
+  }, [appId]);
+
+  /**
+   * 执行一次任务
+   */
+  const onExecuteJob = (_id: string) => {
+    _applicationPipelineService
+      .executeJob(_id)
+      .then((rep) => {
+        if (rep.success) {
+          message.success("任务下发成功", 3);
+        } else {
+          message.success(rep.errorMessage, 3);
+        }
+      })
+      .finally(() => {
+        getPageList();
+      });
+  };
+
+  /**
+   * 执行一次任务
+   */
+  const onDelete = (_id: string) => {
+    _applicationPipelineService
+      .delete(_id)
+      .then((rep) => {
+        if (rep.success) {
+          message.success("删除成功", 3);
+        } else {
+          message.success(rep.errorMessage, 3);
+        }
+      })
+      .finally(() => {
+        getPageList();
+      });
+  };
+
+  /**
+   * 执行一次任务
+   */
+  const onPublish = (_id: string) => {
+    _applicationPipelineService
+      .publish(_id)
+      .then((rep) => {
+        if (rep.success) {
+          message.success("发布成功", 3);
+        } else {
+          message.success(rep.errorMessage, 3);
+        }
+      })
+      .finally(() => {
+        getPageList();
+      });
+  };
 
   /**
    * 页面初始化获取数据
    */
   const getPageList = () => {
     setLoading(true);
-    let param = formData.getFieldsValue();
     let _param = {
       pageSize: paginationConfig.pageSize,
       pageIndex: paginationConfig.current,
     };
-
-    _applicationPipelineService
-      .getPage("luck.walnut", _param)
-      .then((rep) => {
-        if (rep.success) {
-          setPaginationConfig((Pagination) => {
-            Pagination.total = rep.result.total;
-            return Pagination;
-          });
-
-          console.log(rep.result);
-          setTableData(rep.result.data);
-        }
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    props.appId &&
+      _applicationPipelineService
+        .getPage(props.appId, _param)
+        .then((rep) => {
+          if (rep.success) {
+            setTableData(rep.result.data);
+          }
+        })
+        .finally(() => {
+          setLoading(false);
+        });
   };
 
   const goToAddApplicationPileLineOperation = () => {
@@ -155,40 +140,9 @@ const PipelinePage = (props: IProp) => {
       });
   };
 
-  const onSearch = () => {
-    setPaginationConfig((Pagination) => {
-      Pagination.current = 1;
-      return Pagination;
-    });
-    getPageList();
-  };
-
   return (
     <div>
       <Spin spinning={loading}>
-        {/* <Form
-          form={formData}
-          name="horizontal_login"
-          layout="horizontal"
-          {...searchFormItemDoubleRankLayout}
-          onFinish={onSearch}
-        >
-          <Row>
-            <Col span="6" style={{ textAlign: "center" }}>
-              <Button
-                type="primary"
-                shape="round"
-                htmlType="submit"
-                onClick={() => {
-                  getPageList();
-                }}
-              >
-                <SearchOutlined />
-                查询
-              </Button>
-            </Col>
-          </Row>
-        </Form> */}
         <Row>
           <Col span="24" style={{ textAlign: "right" }}>
             <Button
@@ -210,29 +164,79 @@ const PipelinePage = (props: IProp) => {
               <Col span={4}>
                 <Card title={item.name}>
                   <Row
-                    gutter={[16, 16]}
                     style={{ marginBottom: 30, textAlign: "center" }}
+                    gutter={[16, 8]}
                   >
-                    <Tag
-                      icon={<SyncOutlined spin />}
-                      style={{ textAlign: "center" }}
-                      color="processing"
-                    >
-                      构建中
-                    </Tag>
+                    <Col span={12}>
+                      <PlayCircleOutlined
+                        style={{
+                          fontSize: 20,
+                        }}
+                        onClick={() => onExecuteJob(item.id)}
+                      />
+                    </Col>
+                    <Col span={12}>
+                      {item.published ? (
+                        <Tag style={{ textAlign: "center" }} color="processing">
+                          已发布
+                        </Tag>
+                      ) : (
+                        <Tag style={{ textAlign: "center" }} color="gold">
+                          未发布
+                        </Tag>
+                      )}
+                    </Col>
                   </Row>
-                  <Row gutter={[16, 16]} style={{ marginBottom: 10 }}>
+                  <Row
+                    style={{ marginBottom: 30, textAlign: "center" }}
+                    gutter={[16, 8]}
+                  >
+                    <Col span={12}>
+                      任务：<a>asad</a>
+                    </Col>
+                    <Col span={12}>
+                      <Tag style={{ textAlign: "center" }} color="processing">
+                        {item.pipelineStateName}
+                      </Tag>
+                    </Col>
+                  </Row>
+                  <Row gutter={[16, 8]} style={{ marginBottom: 10 }}>
                     <Col span={8} style={{ textAlign: "center" }}>
-                      <UploadOutlined />
+                      {/* <UpSquareOutlined style={{
+                        color: "#2db7f5",
+                        fontSize: 16,
+                      }}/> */}
+
+                      <CloudUploadOutlined
+                        style={{
+                          color: "#2db7f5",
+                          fontSize: 20,
+                        }}
+                        onClick={() => onPublish(item.id)}
+                      />
+                      {/* <SendOutlined style={{
+                        color: "#2db7f5",
+                        fontSize: 16,
+                      }}/> */}
                     </Col>
-                    <Col span={8} style={{ textAlign: "center",color: "orange",  fontSize: 16  }}>
-                      <EditOutlined />
+                    <Col span={8} style={{ textAlign: "center" }}>
+                      <EditOutlined
+                        style={{
+                          color: "orange",
+                          fontSize: 20,
+                        }}
+                      />
                     </Col>
-                    <Col span={8} style={{ textAlign: "center" ,color: "red",  fontSize: 16 }}>
-                      <DeleteOutlined />
+                    <Col span={8} style={{ textAlign: "center" }}>
+                      <DeleteOutlined
+                        style={{
+                          color: "red",
+                          fontSize: 20,
+                        }}
+                        onClick={() => onDelete(item.id)}
+                      />
                     </Col>
                   </Row>
-                  <div></div>
                 </Card>
               </Col>
             );

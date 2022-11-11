@@ -36,10 +36,6 @@ export class ApplicationService extends BaseService implements IApplicationServi
         return this.dataRequest.deleteRequest(`${ApplicationApi.application}/${_id}`)
     }
 
-    getApplicationEnumList(): Promise<IServerReturn<any>> {
-        return this.dataRequest.getRequest(`${ApplicationApi.application}/enum/list`,)
-    }
-
     getLanguageList(): Promise<IServerReturn<any>> {
         return this.dataRequest.getRequest(`${ApplicationApi.application}/language/list`,)
     }
