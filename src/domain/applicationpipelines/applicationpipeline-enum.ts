@@ -19,7 +19,7 @@ export enum StepTypeEnum {
 /**
  * 流水线状态枚举
  */
-export enum PipelineStateEnum {
+export enum PipelineBuildStateEnum {
     /**
      * 准备完成
      */

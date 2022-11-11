@@ -1,4 +1,4 @@
-import { PipelineStateEnum, StepTypeEnum } from "./applicationpipeline-enum";
+import { PipelineBuildStateEnum, StepTypeEnum } from "./applicationpipeline-enum";
 
 import { IEntity } from "@/shared/entity";
 
@@ -29,7 +29,7 @@ export interface IApplicationPipelineBaseDto {
     /**
      * 流水线状态
      */
-    pipelineState: PipelineStateEnum;
+     pipelineBuildState: PipelineBuildStateEnum;
 
     /**
      * 流水线Dsl
@@ -51,7 +51,7 @@ export interface IApplicationPipelineOutputDto extends IApplicationPipelineBaseD
     /**
      * 流水线状态
      */
-    pipelineStateName: string;
+    pipelineBuildStateName: string;
 
 }
 

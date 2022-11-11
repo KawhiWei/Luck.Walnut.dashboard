@@ -18,6 +18,7 @@ import { useEffect, useState } from "react";
 import { IApplicationPipelineService } from "@/domain/applicationpipelines/iapplicationpipeline-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import Item from "antd/lib/list/Item";
+import { PipelineBuildStateEnum } from "@/domain/applicationpipelines/applicationpipeline-enum";
 import { initPaginationConfig } from "../../shared/ajax/request";
 import { useHistory } from "react-router-dom";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
@@ -164,10 +165,10 @@ const PipelinePage = (props: IProp) => {
               <Col span={4}>
                 <Card title={item.name}>
                   <Row
-                    style={{ marginBottom: 30, textAlign: "center" }}
-                    gutter={[16, 8]}
+                    style={{ marginBottom: 15, textAlign: "center" }}
+                    gutter={[8, 8]}
                   >
-                    <Col span={12}>
+                    <Col span={8}>
                       <PlayCircleOutlined
                         style={{
                           fontSize: 20,
@@ -175,7 +176,7 @@ const PipelinePage = (props: IProp) => {
                         onClick={() => onExecuteJob(item.id)}
                       />
                     </Col>
-                    <Col span={12}>
+                    <Col span={8}>
                       {item.published ? (
                         <Tag style={{ textAlign: "center" }} color="processing">
                           已发布
@@ -186,27 +187,24 @@ const PipelinePage = (props: IProp) => {
                         </Tag>
                       )}
                     </Col>
-                  </Row>
-                  <Row
-                    style={{ marginBottom: 30, textAlign: "center" }}
-                    gutter={[16, 8]}
-                  >
-                    <Col span={12}>
-                      任务：<a>asad</a>
+                    <Col span={8}>
+                      {item.pipelineBuildState == PipelineBuildStateEnum.running ? (
+                        <Tag
+                          style={{ textAlign: "center" }}
+                          color="processing"
+                          icon={<SyncOutlined spin />}
+                        >
+                          {item.pipelineBuildStateName}
+                        </Tag>
+                      ) : (
+                        <Tag style={{ textAlign: "center" }} color="processing">
+                          {item.pipelineBuildStateName}
+                        </Tag>
+                      )}
                     </Col>
-                    <Col span={12}>
-                      <Tag style={{ textAlign: "center" }} color="processing">
-                        {item.pipelineStateName}
-                      </Tag>
-                    </Col>
                   </Row>
-                  <Row gutter={[16, 8]} style={{ marginBottom: 10 }}>
+                  <Row gutter={[8, 8]} style={{ marginBottom: 15 }}>
                     <Col span={8} style={{ textAlign: "center" }}>
-                      {/* <UpSquareOutlined style={{
-                        color: "#2db7f5",
-                        fontSize: 16,
-                      }}/> */}
-
                       <CloudUploadOutlined
                         style={{
                           color: "#2db7f5",
@@ -214,10 +212,6 @@ const PipelinePage = (props: IProp) => {
                         }}
                         onClick={() => onPublish(item.id)}
                       />
-                      {/* <SendOutlined style={{
-                        color: "#2db7f5",
-                        fontSize: 16,
-                      }}/> */}
                     </Col>
                     <Col span={8} style={{ textAlign: "center" }}>
                       <EditOutlined
