@@ -163,7 +163,7 @@ const PipelinePage = (props: IProp) => {
           {tableData.map((item) => {
             return (
               <Col span={4}>
-                <Card title={item.name}>
+                <Card title={item.name} extra={<span>任务：A001211</span>}>
                   <Row
                     style={{ marginBottom: 15, textAlign: "center" }}
                     gutter={[8, 8]}
