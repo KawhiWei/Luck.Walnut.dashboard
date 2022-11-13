@@ -6,8 +6,8 @@ import {
   HistoryOutlined,
   PlayCircleOutlined,
   PlusOutlined,
+  SnippetsOutlined,
   SyncOutlined,
-  UploadOutlined,
 } from "@ant-design/icons";
 import {
   IApplicationPipelineBaseDto,
@@ -235,11 +235,8 @@ const PipelinePage = (props: IProp) => {
                   ]}
                 >
                   <Row style={{ marginBottom: 10 }}>
-                    <Col span="24">最近执行任务：{item.jenkinsBuildNumber}</Col>
-                  </Row>
-                  <Row style={{ marginBottom: 10 }}>
                     <Col span="24">
-                      最近任务状态：{" "}
+                      最近任务：
                       {item.pipelineBuildState ==
                       PipelineBuildStateEnum.running ? (
                         <Tag
