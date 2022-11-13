@@ -20,6 +20,7 @@ import {
 import { useEffect, useState } from "react";
 
 import BuildLogs from "./build-log";
+import ExecutedHistory from "./executed-history";
 import { IApplicationPipelineService } from "@/domain/applicationpipelines/iapplicationpipeline-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import Item from "antd/lib/list/Item";
@@ -52,6 +53,10 @@ const PipelinePage = (props: IProp) => {
   const [appId, setAppId] = useState<string>();
 
   const [subBuildLogsElement, setBuildLogsElement] = useState<any>(null);
+
+  const [subExecutedHistoryElement, setExecutedHistoryElement] =
+    useState<any>(null);
+
   /**
    * 页面初始化事件
    */
@@ -158,6 +163,26 @@ const PipelinePage = (props: IProp) => {
     setBuildLogsElement(null);
   };
 
+  /**
+   * 页面初始化获取数据
+   */
+  const onShowExecutedHistory = (_id: string) => {
+    setBuildLogsElement(null);
+    setExecutedHistoryElement(
+      <ExecutedHistory
+        id={_id}
+        onCallbackEvent={onExecutedHistoryClear}
+      ></ExecutedHistory>
+    );
+  };
+
+  /**
+   * 页面初始化获取数据
+   */
+  const onExecutedHistoryClear = () => {
+    setExecutedHistoryElement(null);
+  };
+
   const goToAddApplicationPileLineOperation = () => {
     props.appId &&
       history.push({
@@ -192,17 +217,6 @@ const PipelinePage = (props: IProp) => {
               <Col span={4}>
                 <Card
                   title={item.name}
-                  extra={
-                    <div>
-                      {item.jenkinsBuildNumber == 0 ? (
-                        <span>无任务</span>
-                      ) : (
-                        <div>
-                          <div>历史记录</div>
-                        </div>
-                      )}
-                    </div>
-                  }
                   actions={[
                     <PlayCircleOutlined
                       style={{
@@ -224,7 +238,9 @@ const PipelinePage = (props: IProp) => {
                         fontSize: 20,
                       }}
                     />,
-                    <HistoryOutlined />,
+                    <HistoryOutlined
+                      onClick={() => onShowExecutedHistory(item.id)}
+                    />,
                     <DeleteOutlined
                       style={{
                         color: "red",
@@ -276,6 +292,7 @@ const PipelinePage = (props: IProp) => {
           })}
         </Row>
         {subBuildLogsElement}
+        {subExecutedHistoryElement}
       </Spin>
     </div>
   );

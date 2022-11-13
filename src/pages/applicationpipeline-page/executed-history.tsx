@@ -7,7 +7,7 @@ interface IProp {
   /**
    * 阶段信息
    */
-  appId: string;
+  id: string;
 
   /**
    * 操作成功回调事件
@@ -15,7 +15,7 @@ interface IProp {
   onCallbackEvent?: any;
 }
 
-const ExecutedHistory = (props: any) => {
+const ExecutedHistory = (props: IProp) => {
   const [operationState, setOperationState] = useState<IOperationConfig>({
     visible: false,
   });
@@ -31,7 +31,9 @@ const ExecutedHistory = (props: any) => {
    * 编辑获取一个表单
    * @param _id
    */
-  const onLoad = () => {};
+  const onLoad = () => {
+    editOperationState(true);
+  };
 
   /**
    * 修改弹框属性
@@ -40,11 +42,15 @@ const ExecutedHistory = (props: any) => {
    */
   const editOperationState = (_visible: boolean, _title?: string) => {
     setOperationState({ visible: _visible, title: _title });
+    if (!_visible) {
+      props.onCallbackEvent && props.onCallbackEvent();
+    }
   };
   return (
     <div>
       <Drawer
         title="构建历史"
+        width={1400}
         placement="right"
         onClose={() => editOperationState(false)}
         open={operationState.visible}
