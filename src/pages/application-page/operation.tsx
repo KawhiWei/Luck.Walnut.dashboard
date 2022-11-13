@@ -72,7 +72,7 @@ const Operation = (props: IProp) => {
    * 页面初始化事件
    */
   useEffect(() => {
-    onGetLoad();
+    onLoad();
     getLanguageList();
   }, [formData]);
 
@@ -96,7 +96,7 @@ const Operation = (props: IProp) => {
    * 编辑获取一个表单
    * @param _id
    */
-  const onGetLoad = () => {
+  const onLoad = () => {
     switch (props.operationType) {
       case OperationTypeEnum.add:
         editOperationState(true, "添加");

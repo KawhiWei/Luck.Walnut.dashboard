@@ -15,6 +15,7 @@ import {
 } from "@/domain/applicationpipelines/applicationpipeline-dto";
 import { useEffect, useState } from "react";
 
+import BuildLogs from "./build-log";
 import { IApplicationPipelineService } from "@/domain/applicationpipelines/iapplicationpipeline-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import Item from "antd/lib/list/Item";
@@ -45,6 +46,8 @@ const PipelinePage = (props: IProp) => {
     Array<IApplicationPipelineOutputDto>
   >([]);
   const [appId, setAppId] = useState<string>();
+
+  const [subBuildLogsElement, setBuildLogsElement] = useState<any>(null);
   /**
    * 页面初始化事件
    */
@@ -131,6 +134,26 @@ const PipelinePage = (props: IProp) => {
         });
   };
 
+  /**
+   * 页面初始化获取数据
+   */
+  const onShowLog = (_id: string, _buildId: number) => {
+    setBuildLogsElement(
+      <BuildLogs
+        id={_id}
+        buildId={_buildId}
+        onCallbackEvent={onShowLogClear}
+      ></BuildLogs>
+    );
+  };
+
+  /**
+   * 页面初始化获取数据
+   */
+  const onShowLogClear = () => {
+    setBuildLogsElement(null);
+  };
+
   const goToAddApplicationPileLineOperation = () => {
     props.appId &&
       history.push({
@@ -163,7 +186,20 @@ const PipelinePage = (props: IProp) => {
           {tableData.map((item) => {
             return (
               <Col span={4}>
-                <Card title={item.name} extra={<span>任务：A001211</span>}>
+                <Card
+                  title={item.name}
+                  extra={
+                    <div>
+                      {item.jenkinsBuildNumber == 0 ? (
+                        <span>无任务</span>
+                      ) : (
+                        <div>
+                          <div>历史记录</div>
+                        </div>
+                      )}
+                    </div>
+                  }
+                >
                   <Row
                     style={{ marginBottom: 15, textAlign: "center" }}
                     gutter={[8, 8]}
@@ -188,13 +224,17 @@ const PipelinePage = (props: IProp) => {
                       )}
                     </Col>
                     <Col span={8}>
-                      {item.pipelineBuildState == PipelineBuildStateEnum.running ? (
+                      {item.pipelineBuildState ==
+                      PipelineBuildStateEnum.running ? (
                         <Tag
                           style={{ textAlign: "center" }}
                           color="processing"
+                          onClick={() => {
+                            onShowLog(item.id, item.jenkinsBuildNumber);
+                          }}
                           icon={<SyncOutlined spin />}
                         >
-                          {item.pipelineBuildStateName}
+                          {item.jenkinsBuildNumber}
                         </Tag>
                       ) : (
                         <Tag style={{ textAlign: "center" }} color="processing">
@@ -236,6 +276,7 @@ const PipelinePage = (props: IProp) => {
             );
           })}
         </Row>
+        {subBuildLogsElement}
       </Spin>
     </div>
   );

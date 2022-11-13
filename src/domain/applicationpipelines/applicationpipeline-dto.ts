@@ -53,6 +53,10 @@ export interface IApplicationPipelineOutputDto extends IApplicationPipelineBaseD
      */
     pipelineBuildStateName: string;
 
+    /**
+     * JenkinsBuild的Id
+     */
+    jenkinsBuildNumber:number;
 }
 
 

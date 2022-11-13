@@ -43,4 +43,11 @@ export interface IApplicationPipelineService {
      */
     executeJob(_id: string): Promise<IServerReturn<any>>;
 
+    /**
+     * 获取一个任务执行日志
+     * @param _id 
+     * @param _buildId
+     */
+    getBuildLog(_id: string, _buildId: number): Promise<IServerReturn<any>>;
+
 }

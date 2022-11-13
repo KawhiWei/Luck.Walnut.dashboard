@@ -5,6 +5,9 @@ import BaseService from "@/shared/service/BaseService/BaseService";
 import { IApplicationPipelineService } from "./iapplicationpipeline-service";
 
 export class ApplicationPipelineService extends BaseService implements IApplicationPipelineService {
+    getBuildLog(_id: string, _buildId: number): Promise<IServerReturn<any>> {
+        return this.dataRequest.getRequest(`${ApplicationPipelineApi.applicationpipeline}/${_id}/${_buildId}/build/log`)
+    }
 
     update(_id: string, _param: any): Promise<IServerReturn<any>> {
         return this.dataRequest.putRequest(`${ApplicationPipelineApi.applicationpipeline}/${_id}`, _param)
@@ -28,7 +31,6 @@ export class ApplicationPipelineService extends BaseService implements IApplicat
     }
 
     publish(_id: string): Promise<IServerReturn<any>> {
-
         return this.dataRequest.putRequest(`${ApplicationPipelineApi.applicationpipeline}/${_id}/publish`, {})
     }
 
