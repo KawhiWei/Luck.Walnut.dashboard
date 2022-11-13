@@ -3,16 +3,20 @@ import {
   CloudUploadOutlined,
   DeleteOutlined,
   EditOutlined,
+  HistoryOutlined,
   PlayCircleOutlined,
   PlusOutlined,
   SyncOutlined,
-  UpSquareOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
 import {
   IApplicationPipelineBaseDto,
   IApplicationPipelineOutputDto,
 } from "@/domain/applicationpipelines/applicationpipeline-dto";
+import {
+  formItemSingleRankLayout,
+  pipelineFormItemSingleRankLayout,
+} from "@/constans/layout/optionlayout";
 import { useEffect, useState } from "react";
 
 import BuildLogs from "./build-log";
@@ -199,31 +203,43 @@ const PipelinePage = (props: IProp) => {
                       )}
                     </div>
                   }
+                  actions={[
+                    <PlayCircleOutlined
+                      style={{
+                        fontSize: 20,
+                      }}
+                      onClick={() => onExecuteJob(item.id)}
+                    />,
+                    <CloudUploadOutlined
+                      key="setting"
+                      style={{
+                        color: "#2db7f5",
+                        fontSize: 20,
+                      }}
+                      onClick={() => onPublish(item.id)}
+                    />,
+                    <EditOutlined
+                      style={{
+                        color: "orange",
+                        fontSize: 20,
+                      }}
+                    />,
+                    <HistoryOutlined />,
+                    <DeleteOutlined
+                      style={{
+                        color: "red",
+                        fontSize: 20,
+                      }}
+                      onClick={() => onDelete(item.id)}
+                    />,
+                  ]}
                 >
-                  <Row
-                    style={{ marginBottom: 15, textAlign: "center" }}
-                    gutter={[8, 8]}
-                  >
-                    <Col span={8}>
-                      <PlayCircleOutlined
-                        style={{
-                          fontSize: 20,
-                        }}
-                        onClick={() => onExecuteJob(item.id)}
-                      />
-                    </Col>
-                    <Col span={8}>
-                      {item.published ? (
-                        <Tag style={{ textAlign: "center" }} color="processing">
-                          已发布
-                        </Tag>
-                      ) : (
-                        <Tag style={{ textAlign: "center" }} color="gold">
-                          未发布
-                        </Tag>
-                      )}
-                    </Col>
-                    <Col span={8}>
+                  <Row style={{ marginBottom: 10 }}>
+                    <Col span="24">最近执行任务：{item.jenkinsBuildNumber}</Col>
+                  </Row>
+                  <Row style={{ marginBottom: 10 }}>
+                    <Col span="24">
+                      最近任务状态：{" "}
                       {item.pipelineBuildState ==
                       PipelineBuildStateEnum.running ? (
                         <Tag
@@ -243,32 +259,18 @@ const PipelinePage = (props: IProp) => {
                       )}
                     </Col>
                   </Row>
-                  <Row gutter={[8, 8]} style={{ marginBottom: 15 }}>
-                    <Col span={8} style={{ textAlign: "center" }}>
-                      <CloudUploadOutlined
-                        style={{
-                          color: "#2db7f5",
-                          fontSize: 20,
-                        }}
-                        onClick={() => onPublish(item.id)}
-                      />
-                    </Col>
-                    <Col span={8} style={{ textAlign: "center" }}>
-                      <EditOutlined
-                        style={{
-                          color: "orange",
-                          fontSize: 20,
-                        }}
-                      />
-                    </Col>
-                    <Col span={8} style={{ textAlign: "center" }}>
-                      <DeleteOutlined
-                        style={{
-                          color: "red",
-                          fontSize: 20,
-                        }}
-                        onClick={() => onDelete(item.id)}
-                      />
+                  <Row style={{ marginBottom: 10 }}>
+                    <Col span="24">
+                      是否发布：
+                      {item.published ? (
+                        <Tag style={{ textAlign: "center" }} color="processing">
+                          已发布
+                        </Tag>
+                      ) : (
+                        <Tag style={{ textAlign: "center" }} color="gold">
+                          未发布
+                        </Tag>
+                      )}
                     </Col>
                   </Row>
                 </Card>

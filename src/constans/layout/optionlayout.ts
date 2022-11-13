@@ -25,3 +25,11 @@ export const formItemSingleRankLayout = {
   labelCol: { span: 3 },
   wrapperCol: { span: 20 },
 };
+
+/**
+* form表单单列布局设置
+*/
+export const pipelineFormItemSingleRankLayout = {
+  labelCol: { span: 3 },
+  wrapperCol: { span: 20 },
+};
