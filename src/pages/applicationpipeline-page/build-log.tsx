@@ -15,7 +15,7 @@ interface IProp {
   /**
    * jenkins Build Id
    */
-  buildId: number;
+  applicationPipelineId:string;
 
   /**
    * 操作成功回调事件
@@ -44,7 +44,7 @@ const BuildLogs = (props: IProp) => {
    */
   const onLoad = () => {
     _applicationPipelineService
-      .getBuildLog(props.id, props.buildId)
+      .getBuildLog(props.applicationPipelineId,props.id)
       .then((rep) => {
         if (rep.success) {
           setLogs(rep.result);

@@ -57,6 +57,11 @@ export interface IApplicationPipelineOutputDto extends IApplicationPipelineBaseD
      * JenkinsBuild的Id
      */
     jenkinsBuildNumber:number;
+
+    /**
+     * 最后一次执行任务的Id
+     */
+    lastApplicationPipelineExecutedRecordId:string,
 }
 
 

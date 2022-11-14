@@ -1,12 +1,13 @@
 import { Button, Card, Col, Form, Row, Spin, Tag, message } from "antd";
 import {
+  CheckCircleOutlined,
   CloudUploadOutlined,
   DeleteOutlined,
   EditOutlined,
   HistoryOutlined,
   PlayCircleOutlined,
   PlusOutlined,
-  SnippetsOutlined,
+  ReloadOutlined,
   SyncOutlined,
 } from "@ant-design/icons";
 import {
@@ -151,11 +152,11 @@ const PipelinePage = (props: IProp) => {
   /**
    * 页面初始化获取数据
    */
-  const onShowLog = (_id: string, _buildId: number) => {
+  const onShowLog = (_appId: string, _id: string) => {
     setBuildLogsElement(
       <BuildLogs
         id={_id}
-        buildId={_buildId}
+        applicationPipelineId={_appId}
         onCallbackEvent={onShowLogClear}
       ></BuildLogs>
     );
@@ -182,6 +183,28 @@ const PipelinePage = (props: IProp) => {
   };
 
   /**
+   * 处理标签
+   * @param _projectStatus
+   * @returns
+   */
+  const onPipelineBuildStateTag = (
+    _pipelineBuildState: PipelineBuildStateEnum
+  ): string => {
+    switch (_pipelineBuildState) {
+      case PipelineBuildStateEnum.ready:
+        return "cyan";
+      case PipelineBuildStateEnum.running:
+        return "processing";
+      case PipelineBuildStateEnum.success:
+        return "success";
+      case PipelineBuildStateEnum.fail:
+        return "error";
+      default:
+        return "";
+    }
+  };
+
+  /**
    * 页面初始化获取数据
    */
   const onExecutedHistoryClear = () => {
@@ -189,22 +212,22 @@ const PipelinePage = (props: IProp) => {
   };
 
   const goToAddApplicationPileLineOperation = () => {
-    if (props.appId) {
-      setOperationElement(
-        <OperationNew
-          appId={props.appId}
-          operationType={OperationTypeEnum.add}
-        ></OperationNew>
-      );
-    }
+    // if (props.appId) {
+    //   setOperationElement(
+    //     <OperationNew
+    //       appId={props.appId}
+    //       operationType={OperationTypeEnum.add}
+    //     ></OperationNew>
+    //   );
+    // }
 
-    // props.appId &&
-    //   history.push({
-    //     pathname: "/application/pipeline/edit",
-    //     state: {
-    //       appId: props.appId,
-    //     },
-    //   });
+    props.appId &&
+      history.push({
+        pathname: "/application/pipeline/edit",
+        state: {
+          appId: props.appId,
+        },
+      });
   };
 
   return (
@@ -212,6 +235,12 @@ const PipelinePage = (props: IProp) => {
       <Spin spinning={loading}>
         <Row>
           <Col span="24" style={{ textAlign: "right" }}>
+            <ReloadOutlined
+              style={{ textAlign: "right", marginRight: 10, fontSize: 16 }}
+              onClick={() => {
+                getPageList();
+              }}
+            />
             <Button
               shape="round"
               type="primary"
@@ -267,23 +296,18 @@ const PipelinePage = (props: IProp) => {
                   <Row style={{ marginBottom: 10 }}>
                     <Col span="24">
                       最近任务：
-                      {item.pipelineBuildState ==
-                      PipelineBuildStateEnum.running ? (
-                        <Tag
-                          style={{ textAlign: "center" }}
-                          color="processing"
-                          onClick={() => {
-                            onShowLog(item.id, item.jenkinsBuildNumber);
-                          }}
-                          icon={<SyncOutlined spin />}
-                        >
-                          {item.jenkinsBuildNumber}
-                        </Tag>
-                      ) : (
-                        <Tag style={{ textAlign: "center" }} color="processing">
-                          {item.pipelineBuildStateName}
-                        </Tag>
-                      )}
+                      <Tag
+                        style={{ textAlign: "center" }}
+                        color={onPipelineBuildStateTag(item.pipelineBuildState)}
+                        onClick={() => {
+                          onShowLog(
+                            item.id,
+                            item.lastApplicationPipelineExecutedRecordId
+                          );
+                        }}
+                      >
+                        {item.jenkinsBuildNumber}
+                      </Tag>
                     </Col>
                   </Row>
                   <Row style={{ marginBottom: 10 }}>

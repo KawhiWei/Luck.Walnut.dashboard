@@ -45,9 +45,16 @@ export interface IApplicationPipelineService {
 
     /**
      * 获取一个任务执行日志
-     * @param _id 
-     * @param _buildId
+     * @param _id
+     * @param _applicationPipelineId
      */
-    getBuildLog(_id: string, _buildId: number): Promise<IServerReturn<any>>;
+    getBuildLog(_applicationPipelineId: string,_id: string): Promise<IServerReturn<any>>;
+
+    /**
+     * 根据流水线Id分页获取历史执行记录
+     * @param _id 
+     * @param _param 
+     */
+    getExecutedRecordPageList(_id: string,_param:any): Promise<IServerReturn<IServerPageReturn<any>>>
 
 }
