@@ -18,7 +18,7 @@ import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
  * @returns
  */
 const ApplicationDashboard = (props: any) => {
-  const [defaultActiveKey, setdefaultActiveKey] = useState<string>();
+  const [defaultActiveKey, setDefaultActiveKey] = useState<string>("1");
   const history = useHistory();
 
   const _applicationService: IApplicationService = useHookProvider(
@@ -29,7 +29,7 @@ const ApplicationDashboard = (props: any) => {
   const [applicationData, setApplicationData] = useState<IApplicationBaseDto>();
 
   const DashboardDetail = () => {
-    if (props.location.state.appId) {
+    if (props.location.state && props.location.state.appId) {
       setAppId(props.location.state.appId);
       setLoading(true);
       _applicationService
@@ -42,11 +42,16 @@ const ApplicationDashboard = (props: any) => {
         .finally(() => {
           setLoading(false);
         });
+      if (props.location.state.defaultActiveKey) {
+        setDefaultActiveKey(props.location.state.defaultActiveKey);
+      }
+    } else {
+      backToApplicationList();
     }
   };
   useEffect(() => {
     DashboardDetail();
-  }, [appId]);
+  }, []);
 
   /**
    * 跳转到应用列表
@@ -79,7 +84,7 @@ const ApplicationDashboard = (props: any) => {
               }
             >
               <Tabs
-                defaultActiveKey={props.location.state.defaultActiveKey}
+                defaultActiveKey={defaultActiveKey}
                 items={[
                   {
                     label: `基础信息`,
@@ -93,9 +98,7 @@ const ApplicationDashboard = (props: any) => {
                   {
                     label: `应用流水线`,
                     key: "2",
-                    children: (
-                      <PipelinePage appId={props.location.state.appId} />
-                    ),
+                    children: <PipelinePage appId={appId} />,
                   },
                 ]}
               ></Tabs>
