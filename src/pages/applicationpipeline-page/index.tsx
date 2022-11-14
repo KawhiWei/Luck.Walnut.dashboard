@@ -24,7 +24,10 @@ import ExecutedHistory from "./executed-history";
 import { IApplicationPipelineService } from "@/domain/applicationpipelines/iapplicationpipeline-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import Item from "antd/lib/list/Item";
+import OperationNew from "./operation-new";
+import { OperationTypeEnum } from "@/shared/operation/operationType";
 import { PipelineBuildStateEnum } from "@/domain/applicationpipelines/applicationpipeline-enum";
+import { id } from "inversify";
 import { initPaginationConfig } from "../../shared/ajax/request";
 import { useHistory } from "react-router-dom";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
@@ -43,6 +46,8 @@ const PipelinePage = (props: IProp) => {
   const history = useHistory();
   const _applicationPipelineService: IApplicationPipelineService =
     useHookProvider(IocTypes.ApplicationPipelineService);
+
+  const [subOperationElement, setOperationElement] = useState<any>(null);
 
   const [paginationConfig, setPaginationConfig] =
     useState<initPaginationConfig>(new initPaginationConfig());
@@ -184,13 +189,22 @@ const PipelinePage = (props: IProp) => {
   };
 
   const goToAddApplicationPileLineOperation = () => {
-    props.appId &&
-      history.push({
-        pathname: "/application/pipeline/edit",
-        state: {
-          appId: props.appId,
-        },
-      });
+    if (props.appId) {
+      setOperationElement(
+        <OperationNew
+          appId={props.appId}
+          operationType={OperationTypeEnum.add}
+        ></OperationNew>
+      );
+    }
+
+    // props.appId &&
+    //   history.push({
+    //     pathname: "/application/pipeline/edit",
+    //     state: {
+    //       appId: props.appId,
+    //     },
+    //   });
   };
 
   return (
@@ -293,6 +307,7 @@ const PipelinePage = (props: IProp) => {
         </Row>
         {subBuildLogsElement}
         {subExecutedHistoryElement}
+        {subOperationElement}
       </Spin>
     </div>
   );

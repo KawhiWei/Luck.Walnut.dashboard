@@ -10,21 +10,58 @@ import SavePipeLine from "./save-pipeline";
 import StageOperation from "./stage-operation";
 import { StepTypeEnum } from "@/domain/applicationpipelines/applicationpipeline-enum";
 
+interface IProp {
+  /**
+   * 操作成功回调事件
+   */
+  onCallbackEvent?: any;
+  /**
+   * Id
+   */
+  id?: string;
+  /**
+   * 操作类型
+   */
+  operationType: OperationTypeEnum;
+  /**
+   * 应用Id
+   */
+  appId: string;
+}
 /**
  * 应用流水线设计
  */
-const Operation = (props: any) => {
+const OperationNew = (props: IProp) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [appId, setAppId] = useState<string>();
   const [stageOperationElement, setStageOperationElement] = useState<any>(null);
   const [stageList, setStageList] = useState<Array<IStageDto>>([]);
+  const [operationState, setOperationState] = useState<IOperationConfig>({
+    visible: false,
+  });
 
+  /**
+   * 修改弹框属性
+   * @param _visible
+   * @param _title
+   */
+  const editOperationState = (_visible: boolean, _title?: string) => {
+    setOperationState({ visible: _visible, title: _title });
+  };
   /**
    * 页面初始化事件
    */
   useEffect(() => {
-    onGetLoad();
+    onLoad();
   }, [stageList]);
+
+  /**
+   * 弹框取消事件
+   */
+  const onCancel = () => {
+    editOperationState(false);
+    props.onCallbackEvent && props.onCallbackEvent();
+  };
   const onAddStageModal = () => {
     setStageOperationElement(
       <StageOperation
@@ -132,64 +169,90 @@ const Operation = (props: any) => {
   /**
    *
    */
-  const onGetLoad = () => {
-    if (props.location.state.appId) {
-      setAppId(props.location.state.appId);
+  const onLoad = () => {
+    switch (props.operationType) {
+      case OperationTypeEnum.add:
+        editOperationState(true, "添加");
+        // formData.setFieldsValue(initformData);
+        break;
+      case OperationTypeEnum.view:
+        editOperationState(true, "查看");
+        break;
+      case OperationTypeEnum.edit:
     }
   };
 
   return (
     <div>
-      <Spin spinning={loading}>
-        <Row>
-          <Col span="24" style={{ textAlign: "right", minWidth: 270 }}>
-            <Button
-              shape="round"
-              type="primary"
-              style={{ margin: "8px 8px" }}
-              onClick={() => {
-                onSave();
-              }}
-            >
-              <PlusOutlined />
-              保存流水线
-            </Button>
-          </Col>
-        </Row>
-        <Row gutter={16} wrap={false}>
-          {stageList.map((stage: IStageDto, index) => {
-            return (
-              <Col span={4}>
-                <PipelineStage
-                  onAddStep={onAddStep}
-                  onRemoveStage={onRemoveStage}
-                  onRemoveStep={onRemoveStep}
-                  stageIndex={index}
-                  onEditStage={onEditStageModal}
-                  stage={stage}
-                />
-              </Col>
-            );
-          })}
-          <Col span={4}>
-            <Card style={{ marginBottom: 10, textAlign: "center" }}>
+      <Modal
+        width={1400}
+        style={{ borderRadius: 6 }}
+        getContainer={false}
+        onCancel={onCancel}
+        title={
+          <div
+            style={{
+              borderRadius: 10,
+            }}
+          >
+            {operationState.title}
+          </div>
+        }
+        closable={false}
+        visible={operationState.visible}
+        footer={null}
+      >
+        <Spin spinning={loading}>
+          <Row>
+            <Col span="24" style={{ textAlign: "right", minWidth: 270 }}>
               <Button
                 shape="round"
+                type="primary"
                 style={{ margin: "8px 8px" }}
                 onClick={() => {
-                  onAddStageModal();
+                  onSave();
                 }}
               >
                 <PlusOutlined />
-                添加阶段
+                保存流水线
               </Button>
-            </Card>
-          </Col>
-        </Row>
-        {stageOperationElement}
-      </Spin>
+            </Col>
+          </Row>
+          <Row gutter={16} wrap={false}>
+            {stageList.map((stage: IStageDto, index) => {
+              return (
+                <Col span={4}>
+                  <PipelineStage
+                    onAddStep={onAddStep}
+                    onRemoveStage={onRemoveStage}
+                    onRemoveStep={onRemoveStep}
+                    stageIndex={index}
+                    onEditStage={onEditStageModal}
+                    stage={stage}
+                  />
+                </Col>
+              );
+            })}
+            <Col span={4}>
+              <Card style={{ marginBottom: 10, textAlign: "center" }}>
+                <Button
+                  shape="round"
+                  style={{ margin: "8px 8px" }}
+                  onClick={() => {
+                    onAddStageModal();
+                  }}
+                >
+                  <PlusOutlined />
+                  添加阶段
+                </Button>
+              </Card>
+            </Col>
+          </Row>
+          {stageOperationElement}
+        </Spin>
+      </Modal>
     </div>
   );
 };
 
-export default Operation;
+export default OperationNew;
