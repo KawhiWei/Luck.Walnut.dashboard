@@ -44,7 +44,7 @@ export class ApplicationPipelineService extends BaseService implements IApplicat
     }
 
     getExecutedRecordPageList(_id: string,_param:any): Promise<IServerReturn<IServerPageReturn<any>>> {
-        return this.dataRequest.getRequest(`${ApplicationPipelineApi.applicationpipeline}/${_id}/executed/record/page/list`, {})
+        return this.dataRequest.getRequest(`${ApplicationPipelineApi.applicationpipeline}/${_id}/executed/record/page/list`, _param)
     }
 
     

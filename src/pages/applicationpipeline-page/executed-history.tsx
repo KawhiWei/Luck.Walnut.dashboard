@@ -46,18 +46,19 @@ const ExecutedHistory = (props: IProp) => {
       title: "JenkinsNumber",
       dataIndex: "jenkinsBuildNumber",
       key: "jenkinsBuildNumber",
+      width: 150,
     },
     {
       title: "镜像版本",
       dataIndex: "imageVersion",
       key: "imageVersion",
+      width: 400,
     },
     {
-      title: "运行状态",
+      title: "执行结果",
       dataIndex: "id",
       key: "id",
-      width: 50,
-      // fixed: 'right',
+      width: 120,
       render: (text: any, record: any) => {
         return (
           <div>
@@ -65,7 +66,7 @@ const ExecutedHistory = (props: IProp) => {
               style={{ textAlign: "center" }}
               color={onPipelineBuildStateTag(record.pipelineBuildState)}
             >
-              {record.jenkinsBuildNumber}
+              {record.pipelineBuildStateName}
             </Tag>
           </div>
         );
@@ -73,8 +74,9 @@ const ExecutedHistory = (props: IProp) => {
     },
     {
       title: "操作",
-      dataIndex: "id",
       key: "id",
+      width: 120,
+      fixed: "right",
       render: (text: any, record: any) => {
         return (
           <div>
@@ -151,7 +153,6 @@ const ExecutedHistory = (props: IProp) => {
       .getExecutedRecordPageList(props.id, _param)
       .then((rep) => {
         if (rep.success) {
-          console.log(rep);
           setPaginationConfig((Pagination) => {
             Pagination.total = rep.result.total;
             return Pagination;
