@@ -76,14 +76,19 @@ const PipelinePage = (props: IProp) => {
   /**
    * 执行一次任务
    */
-  const onExecuteJob = (_id: string) => {
+  const onExecuteJob = (_data: IApplicationPipelineOutputDto) => {
+    if (_data.pipelineBuildState == PipelineBuildStateEnum.running) {
+      message.error("有正在运行的任务，请等待运行完成在执行新的任务", 3);
+      return;
+    }
+
     _applicationPipelineService
-      .executeJob(_id)
+      .executeJob(_data.id)
       .then((rep) => {
         if (rep.success) {
           message.success("任务下发成功", 3);
         } else {
-          message.success(rep.errorMessage, 3);
+          message.error(rep.errorMessage, 3);
         }
       })
       .finally(() => {
@@ -265,7 +270,7 @@ const PipelinePage = (props: IProp) => {
                       style={{
                         fontSize: 20,
                       }}
-                      onClick={() => onExecuteJob(item.id)}
+                      onClick={() => onExecuteJob(item)}
                     />,
                     <CloudUploadOutlined
                       key="setting"
