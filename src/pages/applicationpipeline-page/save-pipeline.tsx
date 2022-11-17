@@ -23,7 +23,7 @@ import { useEffect, useState } from "react";
 import { IApplicationPipelineService } from "@/domain/applicationpipelines/iapplicationpipeline-service";
 import { IComponentIntegrationService } from "@/domain/componentintegration/icomponentintegration-service";
 import { IOperationConfig } from "@/shared/operation/operationConfig";
-import { IStageDto } from "@/domain/applicationpipelines/applicationpipeline-dto";
+import { IApplicationPipelineOutputDto, IStageDto,IApplicationPipelineSaveDto } from "@/domain/applicationpipelines/applicationpipeline-dto";
 import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
 import { useHistory } from "react-router-dom";
@@ -53,6 +53,8 @@ interface IProp {
    * 应用标识
    */
   appId?: string;
+
+  pipelineInfo?: IApplicationPipelineOutputDto;
 }
 
 const validateMessages = {
@@ -81,6 +83,8 @@ const SavePipeLine = (props: IProp) => {
   const [formData] = Form.useForm();
   const [loading, setLoading] = useState<boolean>(false);
 
+
+
   useEffect(() => {
     getComponentIntegrationList();
   }, []);
@@ -88,6 +92,9 @@ const SavePipeLine = (props: IProp) => {
     switch (props.operationType) {
       case OperationTypeEnum.add:
         editOperationState(true, "添加");
+        break;
+      case OperationTypeEnum.edit:
+        editOperationState(true, "编辑");
         break;
     }
   };
@@ -125,18 +132,55 @@ const SavePipeLine = (props: IProp) => {
   const onFinish = () => {
     setLoading(true);
     let form = formData.getFieldsValue();
-    if (props.appId) {
-      var param = {
-        appId: props.appId,
-        appEnvironmentId: "string",
-        name: form.name,
-        pipelineState: 0,
-        pipelineScript: props.stageList,
-        componentIntegrationId: form.componentIntegrationId,
-      };
-      _applicationPipelineService
-        .create(param)
-        .then((rep) => {
+    switch(props.operationType){
+      case OperationTypeEnum.add:
+        if (props.appId) {
+          var param = {
+            appId: props.appId,
+            appEnvironmentId: "string",
+            name: form.name,
+            pipelineState: 0,
+            pipelineScript: props.stageList,
+            componentIntegrationId: form.componentIntegrationId,
+          };
+          
+          _applicationPipelineService
+            .create(param)
+            .then((rep) => {
+              if (!rep.success) {
+                message.error(rep.errorMessage, 3);
+              } else {
+                message.success("保存成功", 3);
+                history.push({
+                  pathname: "/application/dashboard",
+                  state: {
+                    defaultActiveKey: "2",
+                    appId: props.appId,
+                  },
+                });
+              }
+            })
+            .finally(() => {
+              setLoading(false);
+            });
+        }
+        break;
+      case OperationTypeEnum.edit:
+        // var data = {...props.pipelineInfo, componentIntegrationId:form.componentIntegrationId};
+        // data.name = form.name;
+        // data.pipelineScript = props.stageList;
+
+        var data = {
+          appId: props.pipelineInfo?.appId,
+          appEnvironmentId: "string",
+          name: form.name,
+          pipelineState: 0,
+          pipelineScript: props.stageList,
+          componentIntegrationId: form.componentIntegrationId
+        }
+        console.log( props.pipelineInfo?.id)
+        _applicationPipelineService.update(props.pipelineInfo ? props.pipelineInfo.id : "", data)
+        .then(rep => {
           if (!rep.success) {
             message.error(rep.errorMessage, 3);
           } else {
@@ -149,11 +193,12 @@ const SavePipeLine = (props: IProp) => {
               },
             });
           }
-        })
-        .finally(() => {
+        }).finally(() => {
           setLoading(false);
         });
+        break;
     }
+    
   };
 
   return (
@@ -183,11 +228,12 @@ const SavePipeLine = (props: IProp) => {
           layout="horizontal"
           onFinish={onFinish}
           validateMessages={validateMessages}
+          initialValues={{...props.pipelineInfo}}
         >
           <Row>
             <Col span="24">
               <Form.Item name="name" label="名称" rules={[{ required: true }]}>
-                <Input style={{ borderRadius: 6 }} />
+                <Input style={{ borderRadius: 6 }}/>
               </Form.Item>
             </Col>
           </Row>

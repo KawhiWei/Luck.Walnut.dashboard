@@ -63,6 +63,8 @@ const PipelinePage = (props: IProp) => {
   const [subExecutedHistoryElement, setExecutedHistoryElement] =
     useState<any>(null);
 
+  // const [pipeline, setPipeline] = useState<IApplicationPipelineOutputDto>();
+
   /**
    * 页面初始化事件
    */
@@ -216,7 +218,7 @@ const PipelinePage = (props: IProp) => {
     setExecutedHistoryElement(null);
   };
 
-  const goToAddApplicationPileLineOperation = () => {
+  const goToAddApplicationPileLineOperation = (pipelineId?: string, pipeline?:IApplicationPipelineOutputDto) => {
     // if (props.appId) {
     //   setOperationElement(
     //     <OperationNew
@@ -225,15 +227,28 @@ const PipelinePage = (props: IProp) => {
     //     ></OperationNew>
     //   );
     // }
-
     props.appId &&
       history.push({
         pathname: "/application/pipeline/edit",
         state: {
           appId: props.appId,
-        },
+          pipelineId: pipelineId,
+          pipelineData:pipeline
+        }
       });
   };
+
+  const getPipelineInfo=(pipelineId:string)=>{
+    _applicationPipelineService.getDetail(pipelineId).then(rep => {
+      if(!rep.success){
+        message.error(rep.errorMessage, 3);
+      }else{
+        
+        // setPipeline(rep.result);
+        goToAddApplicationPileLineOperation(pipelineId, rep.result);
+      }
+    })
+  }
 
   return (
     <div>
@@ -285,6 +300,7 @@ const PipelinePage = (props: IProp) => {
                         color: "orange",
                         fontSize: 20,
                       }}
+                      onClick={() => getPipelineInfo(item.id)}
                     />,
                     <HistoryOutlined
                       onClick={() => onShowExecutedHistory(item.id)}

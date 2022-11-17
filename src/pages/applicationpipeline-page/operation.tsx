@@ -1,14 +1,17 @@
-import { Button, Card, Col, Modal, Row, Spin } from "antd";
+import { Button, Card, Col, message, Modal, Row, Spin } from "antd";
 import { useEffect, useState } from "react";
 
 import { IOperationConfig } from "@/shared/operation/operationConfig";
-import { IStageDto } from "@/domain/applicationpipelines/applicationpipeline-dto";
+import { IApplicationPipelineOutputDto, IStageDto } from "@/domain/applicationpipelines/applicationpipeline-dto";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
 import PipelineStage from "./pipeline-stage";
 import { PlusOutlined } from "@ant-design/icons";
 import SavePipeLine from "./save-pipeline";
 import StageOperation from "./stage-operation";
 import { StepTypeEnum } from "@/domain/applicationpipelines/applicationpipeline-enum";
+import { IApplicationPipelineService } from "@/domain/applicationpipelines/iapplicationpipeline-service";
+import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
+import { IocTypes } from "@/shared/config/ioc-types";
 
 /**
  * 应用流水线设计
@@ -18,12 +21,16 @@ const Operation = (props: any) => {
   const [appId, setAppId] = useState<string>();
   const [stageOperationElement, setStageOperationElement] = useState<any>(null);
   const [stageList, setStageList] = useState<Array<IStageDto>>([]);
-
+  const [pipelineId, setPipelineId] = useState<string>();
+  const _applicationPipelineService: IApplicationPipelineService =
+  useHookProvider(IocTypes.ApplicationPipelineService);
+  const [pipelineInfo,setPipelineInfo] = useState<IApplicationPipelineOutputDto>();
   /**
    * 页面初始化事件
    */
   useEffect(() => {
     onGetLoad();
+    onGetDetailed();
   }, [stageList]);
   const onAddStageModal = () => {
     setStageOperationElement(
@@ -120,14 +127,26 @@ const Operation = (props: any) => {
    * 保存
    */
   const onSave = () => {
-    setStageOperationElement(
-      <SavePipeLine
-        appId={appId}
-        operationType={OperationTypeEnum.add}
-        stageList={stageList}
-        onCallbackEvent={clearElement}
-      />
-    );
+    if(pipelineId){
+      setStageOperationElement(
+        <SavePipeLine
+          appId={appId}
+          operationType={OperationTypeEnum.edit}
+          stageList={stageList}
+          onCallbackEvent={clearElement}
+          pipelineInfo = {pipelineInfo}
+        />
+      );
+    }else{
+      setStageOperationElement(
+        <SavePipeLine
+          appId={appId}
+          operationType={OperationTypeEnum.add}
+          stageList={stageList}
+          onCallbackEvent={clearElement}
+        />
+      );
+    }
   };
   /**
    *
@@ -137,6 +156,30 @@ const Operation = (props: any) => {
       setAppId(props.location.state.appId);
     }
   };
+
+  const onGetDetailed = () => {
+    console.log(props.location.state.pipelineData)
+    if(props.location.state.pipelineId) {
+      setPipelineId(props.location.state.pipelineId);
+      setStageList(props.location.state.pipelineData.pipelineScript);
+      setPipelineInfo(props.location.state.pipelineData);
+    }
+  }
+
+  // const getPipelineDetail = (id:string) => {
+
+  //   _applicationPipelineService.getDetail(id).then(rep => {
+  //     if(!rep.success){
+  //       message.error(rep.errorMessage, 3);
+  //     }else{
+  //       setStageList(rep.result.pipelineScript);
+  //       setPipelineInfo(rep.result);
+  //     }
+  //   })
+  //   .finally(() => {
+  //     console.log(stageList)
+  //   })
+  // }
 
   return (
     <div>

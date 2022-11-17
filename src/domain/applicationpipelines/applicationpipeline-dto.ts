@@ -64,6 +64,10 @@ export interface IApplicationPipelineOutputDto extends IApplicationPipelineBaseD
     lastApplicationPipelineExecutedRecordId:string,
 }
 
+export interface IApplicationPipelineSaveDto extends IApplicationPipelineBaseDto, IEntity<string> {
+    ComponentIntegrationId: string;
+}
+
 
 /**
  * 步骤Dto
