@@ -161,6 +161,17 @@ const StepOperation = (props: any) => {
             </Col>
           </Row>
           <Row>
+            <Col span="24">
+              <Form.Item
+                name="name"
+                label="阶段类型："
+                rules={[{ required: true }]}
+              >
+                <Input style={{ borderRadius: 6 }} />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row>
             <Col span="24" style={{ textAlign: "right" }}>
               <Form.Item {...tailLayout}>
                 <Button shape="round" onClick={() => onCancel()}>
