@@ -218,7 +218,7 @@ const PipelinePage = (props: IProp) => {
     setExecutedHistoryElement(null);
   };
 
-  const goToAddApplicationPileLineOperation = (pipelineId?: string, pipeline?:IApplicationPipelineOutputDto) => {
+  const goToAddApplicationPileLineOperation = (pipelineId?: string) => {
     // if (props.appId) {
     //   setOperationElement(
     //     <OperationNew
@@ -232,8 +232,7 @@ const PipelinePage = (props: IProp) => {
         pathname: "/application/pipeline/edit",
         state: {
           appId: props.appId,
-          pipelineId: pipelineId,
-          pipelineData:pipeline
+          pipelineId: pipelineId
         }
       });
   };
@@ -243,9 +242,7 @@ const PipelinePage = (props: IProp) => {
       if(!rep.success){
         message.error(rep.errorMessage, 3);
       }else{
-        
-        // setPipeline(rep.result);
-        goToAddApplicationPileLineOperation(pipelineId, rep.result);
+        goToAddApplicationPileLineOperation(pipelineId);
       }
     })
   }
