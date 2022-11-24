@@ -1,5 +1,7 @@
 import { IServerPageReturn, IServerReturn } from "@/shared/entity";
 
+import { IApplicationPipelineOutputDto } from "./applicationpipeline-dto";
+
 export interface IApplicationPipelineService {
     /**
     * 获取表格数据
@@ -22,7 +24,7 @@ export interface IApplicationPipelineService {
      * 获取详情
      * @param _id 
      */
-    getDetail(_id: string): Promise<IServerReturn<any>>;
+    getDetail(_id: string): Promise<IServerReturn<IApplicationPipelineOutputDto>>;
 
     /**
      * 获取详情

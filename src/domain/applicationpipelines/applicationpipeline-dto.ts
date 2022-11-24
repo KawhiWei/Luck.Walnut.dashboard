@@ -65,7 +65,7 @@ export interface IApplicationPipelineOutputDto extends IApplicationPipelineBaseD
 }
 
 export interface IApplicationPipelineSaveDto extends IApplicationPipelineBaseDto, IEntity<string> {
-    ComponentIntegrationId: string;
+    componentIntegrationId: string;
 }
 
 

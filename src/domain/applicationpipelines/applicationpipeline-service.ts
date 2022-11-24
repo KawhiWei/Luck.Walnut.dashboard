@@ -2,6 +2,7 @@ import { IServerPageReturn, IServerReturn } from "@/shared/entity";
 
 import { ApplicationPipelineApi } from "@/constans/api";
 import BaseService from "@/shared/service/BaseService/BaseService";
+import { IApplicationPipelineOutputDto } from "./applicationpipeline-dto";
 import { IApplicationPipelineService } from "./iapplicationpipeline-service";
 
 export class ApplicationPipelineService extends BaseService implements IApplicationPipelineService {
@@ -13,7 +14,7 @@ export class ApplicationPipelineService extends BaseService implements IApplicat
         return this.dataRequest.putRequest(`${ApplicationPipelineApi.applicationpipeline}/${_id}`, _param)
     }
 
-    getDetail(_id: string): Promise<IServerReturn<any>> {
+    getDetail(_id: string): Promise<IServerReturn<IApplicationPipelineOutputDto>> {
         return this.dataRequest.getRequest(`${ApplicationPipelineApi.applicationpipeline}/${_id}`)
     }
 
