@@ -12,7 +12,7 @@ import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
  */
 const Operation = (props: any) => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [appId, setAppId] = useState<string>();
+  const [appId, setAppId] = useState<string>("");
   const [pipelineStageElement, setPipelineStageElement] = useState<any>(null);
   const _applicationPipelineService: IApplicationPipelineService =
     useHookProvider(IocTypes.ApplicationPipelineService);
@@ -29,7 +29,9 @@ const Operation = (props: any) => {
    */
   const onGetLoad = () => {
     if (props.location.state.appId) {
-      setAppId(props.location.state.appId);
+      setAppId((_appId)=>{
+        return props.location.state.appId;
+      });
     }
   };
 
@@ -37,8 +39,8 @@ const Operation = (props: any) => {
    *
    */
   const onGetDetailed = () => {
-    setLoading(true);
     if (props.location.state.pipelineId) {
+      setLoading(true);
       _applicationPipelineService
         .getDetail(props.location.state.pipelineId)
         .then((rep) => {
@@ -48,6 +50,7 @@ const Operation = (props: any) => {
           } else {
             setPipelineStageElement(
               <PipelineStage
+                appId={props.location.state.appId}
                 operationType={OperationTypeEnum.edit}
                 pipelineInfo={rep.result}
               ></PipelineStage>
@@ -57,10 +60,10 @@ const Operation = (props: any) => {
         .finally(() => {
           setLoading(false);
         });
-    }
-    else{
+    } else {
       setPipelineStageElement(
         <PipelineStage
+          appId={props.location.state.appId}
           operationType={OperationTypeEnum.add}
         ></PipelineStage>
       );

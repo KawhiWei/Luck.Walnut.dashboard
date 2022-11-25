@@ -13,6 +13,7 @@ import {
   Select,
   message,
 } from "antd";
+import { IApplicationPipelineOutputDto, IApplicationPipelineSaveDto, IStageDto } from "@/domain/applicationpipelines/applicationpipeline-dto";
 import {
   formItemDoubleRankLayout,
   formItemSingleRankLayout,
@@ -23,7 +24,6 @@ import { useEffect, useState } from "react";
 import { IApplicationPipelineService } from "@/domain/applicationpipelines/iapplicationpipeline-service";
 import { IComponentIntegrationService } from "@/domain/componentintegration/icomponentintegration-service";
 import { IOperationConfig } from "@/shared/operation/operationConfig";
-import { IApplicationPipelineOutputDto, IStageDto,IApplicationPipelineSaveDto } from "@/domain/applicationpipelines/applicationpipeline-dto";
 import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
 import { useHistory } from "react-router-dom";
@@ -52,7 +52,7 @@ interface IProp {
   /**
    * 应用标识
    */
-  appId?: string;
+  appId: string;
 
   pipelineInfo?: IApplicationPipelineOutputDto;
 }

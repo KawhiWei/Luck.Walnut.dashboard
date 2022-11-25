@@ -12,6 +12,7 @@ import {
 import { useEffect, useState } from "react";
 
 import { OperationTypeEnum } from "@/shared/operation/operationType";
+import SavePipeLine from "./save-pipeline";
 import StageOperation from "./stage-operation";
 import { StepTypeEnum } from "@/domain/applicationpipelines/applicationpipeline-enum";
 
@@ -22,6 +23,11 @@ interface IProp {
    * 流水线信息
    */
   pipelineInfo?: IApplicationPipelineOutputDto;
+
+  /**
+   * 应用标识
+   */
+  appId: string;
 }
 
 /***
@@ -138,31 +144,20 @@ const PipelineStage = (props: IProp) => {
     setStageList((current) => [...current]);
   };
 
-  // /**
-  //  * 保存
-  //  */
-  // const onSave = () => {
-  //   if (pipelineId) {
-  //     setStageOperationElement(
-  //       <SavePipeLine
-  //         appId={appId}
-  //         operationType={OperationTypeEnum.edit}
-  //         stageList={stageList}
-  //         onCallbackEvent={clearElement}
-  //         pipelineInfo={pipelineInfo}
-  //       />
-  //     );
-  //   } else {
-  //     setStageOperationElement(
-  //       <SavePipeLine
-  //         appId={appId}
-  //         operationType={operationType}
-  //         stageList={stageList}
-  //         onCallbackEvent={clearElement}
-  //       />
-  //     );
-  //   }
-  // };
+  /**
+   * 保存
+   */
+  const onSave = () => {
+    setStageOperationElement(
+      <SavePipeLine
+        appId={props.appId}
+        operationType={OperationTypeEnum.edit}
+        stageList={stageList}
+        onCallbackEvent={clearElement}
+        pipelineInfo={pipelineInfo}
+      />
+    );
+  };
 
   return (
     <div>
@@ -173,7 +168,7 @@ const PipelineStage = (props: IProp) => {
             type="primary"
             style={{ margin: "8px 8px" }}
             onClick={() => {
-              // onSave();
+              onSave();
             }}
           >
             <PlusOutlined />
@@ -193,7 +188,7 @@ const PipelineStage = (props: IProp) => {
                     <EditFilled
                       style={{ marginRight: 10, textAlign: "right" }}
                       onClick={() => {
-                        onEditStage(index, stage.name);
+                        onEditStageModal(stage, index);
                       }}
                     />
                     <CloseOutlined
