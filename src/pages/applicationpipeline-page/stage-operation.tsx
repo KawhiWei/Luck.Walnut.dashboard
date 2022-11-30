@@ -82,14 +82,14 @@ const StageOperation = (props: IProp) => {
   const onGetLoad = () => {
     switch (props.operationType) {
       case OperationTypeEnum.add:
-        editOperationState(true, "添加");
+        editOperationState(true, "添加阶段");
         break;
       case OperationTypeEnum.view:
-        editOperationState(true, "查看");
+        editOperationState(true, "查看阶段");
         break;
       case OperationTypeEnum.edit:
         props.stage && formData.setFieldsValue(props.stage);
-        editOperationState(true, "添加");
+        editOperationState(true, "添加阶段");
         break;
     }
   };

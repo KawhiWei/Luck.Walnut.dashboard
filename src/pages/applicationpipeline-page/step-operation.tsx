@@ -1,4 +1,4 @@
-import { Button, Card, Col, Form, Input, Modal, Row, Spin } from "antd";
+import { Button, Card, Col, Form, Input, Modal, Row, Select, Spin } from "antd";
 import {
   formItemSingleRankLayout,
   tailLayout,
@@ -8,6 +8,8 @@ import { useEffect, useState } from "react";
 import { IOperationConfig } from "@/shared/operation/operationConfig";
 import { IStepDto } from "@/domain/applicationpipelines/applicationpipeline-dto";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
+import { StepTypeEnum } from "@/domain/applicationpipelines/applicationpipeline-enum";
+import { StepTypeMap } from "@/domain/applicationpipelines/steptype-map";
 
 interface IProp {
   /**
@@ -31,20 +33,30 @@ interface IProp {
   step?: IStepDto;
 
   /**
+   * 添加步骤事件回调
+   */
+  onAddCallbackEvent?: any;
+
+  /**
    * 编辑步骤事件回调
    */
-  onEditStep?: any;
+  onEditCallbackEvent?: any;
 
   /**
    * 下标
    */
-  stageIndex?: number;
+  stageIndex: number;
+
+  /**
+   * 当前编辑步骤的下标
+   */
+  stepIndex?: number;
 }
 
 /***
  * 步骤添加和编辑弹框
  */
-const StepOperation = (props: any) => {
+const StepOperation = (props: IProp) => {
   const validateMessages = {
     required: "${label} 不可为空",
     types: {
@@ -58,8 +70,14 @@ const StepOperation = (props: any) => {
   const [operationState, setOperationState] = useState<IOperationConfig>({
     visible: false,
   });
+  const [currentStep, setCurrentStep] = useState<IStepDto>({
+    content: "",
+    stepType: StepTypeEnum.pullCode,
+    name: "",
+  });
 
   const [formData] = Form.useForm();
+  const [contentFormData] = Form.useForm();
   /**
    * 页面初始化事件
    */
@@ -82,14 +100,16 @@ const StepOperation = (props: any) => {
   const onGetLoad = () => {
     switch (props.operationType) {
       case OperationTypeEnum.add:
-        editOperationState(true, "添加");
+        editOperationState(true, "添加步骤");
         break;
       case OperationTypeEnum.view:
-        editOperationState(true, "查看");
+        editOperationState(true, "查看步骤");
         break;
       case OperationTypeEnum.edit:
-        props.stage && formData.setFieldsValue(props.stage);
-        editOperationState(true, "添加");
+        if (props.step) {
+          formData.setFieldsValue(props.step);
+          editOperationState(true, "编辑步骤");
+        }
         break;
     }
   };
@@ -110,17 +130,30 @@ const StepOperation = (props: any) => {
     let param = formData.getFieldsValue();
     switch (props.operationType) {
       case OperationTypeEnum.add:
-        props.onAddStage && props.onAddStage(param.name);
+        props.onAddCallbackEvent &&
+          props.onAddCallbackEvent(props.stageIndex, param);
         break;
       case OperationTypeEnum.view:
         editOperationState(true, "查看");
         break;
       case OperationTypeEnum.edit:
-        (props.onEditStage || props.stageIndex) &&
-          props.onEditStage(props.stageIndex, param.name);
+        props.onEditCallbackEvent &&
+          props.onEditCallbackEvent(props.stageIndex, props.stepIndex, param);
         break;
     }
   };
+  /**
+   * next
+   */
+  const onNext = () => {
+    let param = formData.getFieldsValue();
+    setCurrentStep((current) => {
+      current.name = param.name;
+      current.stepType = param.stepType;
+      return current;
+    });
+  };
+
   return (
     <div>
       <Modal
@@ -146,7 +179,7 @@ const StepOperation = (props: any) => {
           {...formItemSingleRankLayout}
           name="nest-messages"
           layout="horizontal"
-          onFinish={onFinish}
+          onFinish={onNext}
           validateMessages={validateMessages}
         >
           <Row>
@@ -163,11 +196,19 @@ const StepOperation = (props: any) => {
           <Row>
             <Col span="24">
               <Form.Item
-                name="name"
+                name="stepType"
                 label="阶段类型："
                 rules={[{ required: true }]}
               >
-                <Input style={{ borderRadius: 6 }} />
+                <Select allowClear={true} placeholder="请选择步骤类型">
+                  {StepTypeMap.map((item: any) => {
+                    return (
+                      <Select.Option value={item.key}>
+                        {item.value}
+                      </Select.Option>
+                    );
+                  })}
+                </Select>
               </Form.Item>
             </Col>
           </Row>
@@ -189,6 +230,15 @@ const StepOperation = (props: any) => {
             </Col>
           </Row>
         </Form>
+
+      { 1==1?<div>
+
+        {currentStep.stepType==StepTypeEnum.pullCode?<form>
+
+        </form>:currentStep.stepType==StepTypeEnum.executeCommand?<></>:}
+        
+      </div>:null}
+        
       </Modal>
     </div>
   );

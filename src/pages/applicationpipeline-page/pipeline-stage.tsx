@@ -8,12 +8,14 @@ import {
 import {
   IApplicationPipelineOutputDto,
   IStageDto,
+  IStepDto,
 } from "@/domain/applicationpipelines/applicationpipeline-dto";
 import { useEffect, useState } from "react";
 
 import { OperationTypeEnum } from "@/shared/operation/operationType";
 import SavePipeLine from "./save-pipeline";
 import StageOperation from "./stage-operation";
+import StepOperation from "./step-operation";
 import { StepTypeEnum } from "@/domain/applicationpipelines/applicationpipeline-enum";
 
 interface IProp {
@@ -36,12 +38,14 @@ interface IProp {
 const PipelineStage = (props: IProp) => {
   const [stageList, setStageList] = useState<Array<IStageDto>>([]);
   const [stageOperationElement, setStageOperationElement] = useState<any>(null);
+  const [stepOperationElement, setStepOperationElement] = useState<any>(null);
+
   const [pipelineInfo, setPipelineInfo] =
     useState<IApplicationPipelineOutputDto>();
 
   useEffect(() => {
     onLoad();
-  }, []);
+  }, [stageList]);
 
   const onLoad = () => {
     if (props.pipelineInfo) {
@@ -55,7 +59,7 @@ const PipelineStage = (props: IProp) => {
   const onAddStageModal = () => {
     setStageOperationElement(
       <StageOperation
-        onCallbackEvent={clearElement}
+        onCallbackEvent={clearStageOperationElement}
         onAddStage={onAddStageCallBack}
         operationType={OperationTypeEnum.add}
       />
@@ -73,10 +77,13 @@ const PipelineStage = (props: IProp) => {
         steps: [],
       },
     ]);
-    clearElement();
+    clearStageOperationElement();
   };
 
-  const clearElement = () => {
+  /**
+   * 清空阶段弹框
+   */
+  const clearStageOperationElement = () => {
     setStageOperationElement(null);
   };
 
@@ -86,7 +93,7 @@ const PipelineStage = (props: IProp) => {
   const onEditStageModal = (_stage: IStageDto, _stageIndex: number) => {
     setStageOperationElement(
       <StageOperation
-        onCallbackEvent={clearElement}
+        onCallbackEvent={clearStageOperationElement}
         onEditStage={onEditStage}
         operationType={OperationTypeEnum.edit}
         stage={_stage}
@@ -105,7 +112,7 @@ const PipelineStage = (props: IProp) => {
       }
     });
     setStageList((current) => [...current]);
-    clearElement();
+    clearStageOperationElement();
   };
 
   /**
@@ -120,16 +127,77 @@ const PipelineStage = (props: IProp) => {
    * 添加步骤
    */
   const onAddStep = (_stageIndex: number) => {
+    setStepOperationElement(
+      <StepOperation
+        operationType={OperationTypeEnum.add}
+        stageIndex={_stageIndex}
+        onCallbackEvent={onAddStepCallBack}
+        onAddCallbackEvent={onAddStepCallBack}
+      ></StepOperation>
+    );
+  };
+
+  /**
+   * 添加步骤回调事件
+   */
+  const onAddStepCallBack = (_stageIndex: number, _step: IStepDto) => {
     stageList.filter((item, index) => {
       if (index == _stageIndex) {
-        item.steps.push({
-          name: "asdasdas",
-          stepType: StepTypeEnum.pullCode,
-          content: "asdasdasdasdasdasdasdasdasdasdas",
+        item.steps.push(_step);
+      }
+    });
+    setStageList((current) => [...current]);
+    clearStepOperationElement();
+  };
+
+  /**
+   * 编辑步骤
+   */
+  const onEditStep = (
+    _stageIndex: number,
+    _stepIndex: number,
+    _step: IStepDto
+  ) => {
+    setStepOperationElement(
+      <StepOperation
+        operationType={OperationTypeEnum.edit}
+        stageIndex={_stageIndex}
+        stepIndex={_stepIndex}
+        step={_step}
+        onCallbackEvent={clearStepOperationElement}
+        onEditCallbackEvent={onEditStepCallBack}
+      ></StepOperation>
+    );
+  };
+
+  /**
+   * 编辑步骤回调事件
+   */
+  const onEditStepCallBack = (
+    _stageIndex: number,
+    _stepIndex: number,
+    _step: IStepDto
+  ) => {
+    stageList.filter((stageItem, stageIndex) => {
+      if (stageIndex == _stageIndex) {
+        stageItem.steps.filter((stepItem, stepIndex) => {
+          if (stepIndex == _stepIndex) {
+            stepItem.name = _step.name;
+            stepItem.content = _step.content;
+            stepItem.stepType = _step.stepType;
+          }
         });
       }
     });
     setStageList((current) => [...current]);
+    clearStepOperationElement();
+  };
+
+  /**
+   * 清空步骤弹框
+   */
+  const clearStepOperationElement = () => {
+    setStepOperationElement(null);
   };
 
   /**
@@ -153,7 +221,7 @@ const PipelineStage = (props: IProp) => {
         appId={props.appId}
         operationType={OperationTypeEnum.edit}
         stageList={stageList}
-        onCallbackEvent={clearElement}
+        onCallbackEvent={clearStageOperationElement}
         pipelineInfo={pipelineInfo}
       />
     );
@@ -211,6 +279,12 @@ const PipelineStage = (props: IProp) => {
                     >
                       <Card style={{ marginBottom: 10, borderRadius: 0 }}>
                         <Row justify="end">
+                          <EditFilled
+                            style={{ marginRight: 10, textAlign: "right" }}
+                            onClick={() => {
+                              onEditStep(index, stepIndex, step);
+                            }}
+                          />
                           <CloseOutlined
                             style={{ marginBottom: 10, textAlign: "right" }}
                             onClick={() => {
@@ -260,6 +334,7 @@ const PipelineStage = (props: IProp) => {
         </Col>
       </Row>
       {stageOperationElement}
+      {stepOperationElement}
     </div>
   );
 };
