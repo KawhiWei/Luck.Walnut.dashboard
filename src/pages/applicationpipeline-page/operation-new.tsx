@@ -66,7 +66,7 @@ const OperationNew = (props: IProp) => {
     setStageOperationElement(
       <StageOperation
         onCallbackEvent={clearElement}
-        onAddStage={onAddStage}
+        onAddStageCallback={onAddStage}
         operationType={OperationTypeEnum.add}
       />
     );

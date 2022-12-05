@@ -19,6 +19,9 @@ import StepOperation from "./step-operation";
 import { StepTypeEnum } from "@/domain/applicationpipelines/applicationpipeline-enum";
 
 interface IProp {
+  /**
+   * 操作类型
+   */
   operationType: OperationTypeEnum;
 
   /**
@@ -39,7 +42,6 @@ const PipelineStage = (props: IProp) => {
   const [stageList, setStageList] = useState<Array<IStageDto>>([]);
   const [stageOperationElement, setStageOperationElement] = useState<any>(null);
   const [stepOperationElement, setStepOperationElement] = useState<any>(null);
-
   const [pipelineInfo, setPipelineInfo] =
     useState<IApplicationPipelineOutputDto>();
 
@@ -60,7 +62,7 @@ const PipelineStage = (props: IProp) => {
     setStageOperationElement(
       <StageOperation
         onCallbackEvent={clearStageOperationElement}
-        onAddStage={onAddStageCallBack}
+        onAddStageCallback={onAddStageCallBack}
         operationType={OperationTypeEnum.add}
       />
     );
@@ -70,13 +72,14 @@ const PipelineStage = (props: IProp) => {
    * 添加阶段
    */
   const onAddStageCallBack = (_name: string) => {
-    setStageList((current) => [
-      ...current,
-      {
-        name: _name,
-        steps: [],
-      },
-    ]);
+    debugger;
+
+    stageList.push({
+      name: _name,
+      steps: [],
+    });
+    setStageList((current) => [...current]);
+    console.log(stageList);
     clearStageOperationElement();
   };
 
@@ -129,9 +132,10 @@ const PipelineStage = (props: IProp) => {
   const onAddStep = (_stageIndex: number) => {
     setStepOperationElement(
       <StepOperation
+        appId={props.pipelineInfo ? props.pipelineInfo.appId : ""}
         operationType={OperationTypeEnum.add}
         stageIndex={_stageIndex}
-        onCallbackEvent={onAddStepCallBack}
+        onCallbackEvent={clearStepOperationElement}
         onAddCallbackEvent={onAddStepCallBack}
       ></StepOperation>
     );
@@ -141,6 +145,7 @@ const PipelineStage = (props: IProp) => {
    * 添加步骤回调事件
    */
   const onAddStepCallBack = (_stageIndex: number, _step: IStepDto) => {
+    debugger;
     stageList.filter((item, index) => {
       if (index == _stageIndex) {
         item.steps.push(_step);
@@ -160,6 +165,7 @@ const PipelineStage = (props: IProp) => {
   ) => {
     setStepOperationElement(
       <StepOperation
+        appId={props.pipelineInfo ? props.pipelineInfo.appId : ""}
         operationType={OperationTypeEnum.edit}
         stageIndex={_stageIndex}
         stepIndex={_stepIndex}

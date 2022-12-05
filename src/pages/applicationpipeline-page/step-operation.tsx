@@ -1,15 +1,29 @@
-import { Button, Card, Col, Form, Input, Modal, Row, Select, Spin } from "antd";
+import {
+  Button,
+  Card,
+  Col,
+  Form,
+  Input,
+  Modal,
+  Row,
+  Select,
+  Spin,
+  Steps,
+} from "antd";
 import {
   formItemSingleRankLayout,
   tailLayout,
 } from "@/constans/layout/optionlayout";
 import { useEffect, useState } from "react";
 
+import { IApplicationService } from "@/domain/applications/iapplication-service";
 import { IOperationConfig } from "@/shared/operation/operationConfig";
 import { IStepDto } from "@/domain/applicationpipelines/applicationpipeline-dto";
+import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
 import { StepTypeEnum } from "@/domain/applicationpipelines/applicationpipeline-enum";
 import { StepTypeMap } from "@/domain/applicationpipelines/steptype-map";
+import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
 interface IProp {
   /**
@@ -48,15 +62,35 @@ interface IProp {
   stageIndex: number;
 
   /**
+   * 代码仓库地址
+   */
+  appId: string;
+
+  /**
    * 当前编辑步骤的下标
    */
   stepIndex?: number;
 }
 
+const items = [
+  {
+    title: "步骤类型",
+    description: "",
+  },
+  {
+    title: "步骤信息设置",
+    description: "",
+  },
+];
 /***
  * 步骤添加和编辑弹框
  */
 const StepOperation = (props: IProp) => {
+  const [currentStepIndex, setCurrentStepIndex] = useState(0);
+  const _applicationService: IApplicationService = useHookProvider(
+    IocTypes.ApplicationService
+  );
+  const [loading, setLoading] = useState<boolean>(false);
   const validateMessages = {
     required: "${label} 不可为空",
     types: {
@@ -83,7 +117,7 @@ const StepOperation = (props: IProp) => {
    */
   useEffect(() => {
     onGetLoad();
-  }, [formData]);
+  }, [currentStepIndex]);
 
   /**
    * 弹框取消事件
@@ -127,23 +161,23 @@ const StepOperation = (props: IProp) => {
    * 底部栏OK事件
    */
   const onFinish = () => {
-    let param = formData.getFieldsValue();
     switch (props.operationType) {
       case OperationTypeEnum.add:
         props.onAddCallbackEvent &&
-          props.onAddCallbackEvent(props.stageIndex, param);
+          props.onAddCallbackEvent(props.stageIndex, currentStep);
         break;
       case OperationTypeEnum.view:
         editOperationState(true, "查看");
         break;
       case OperationTypeEnum.edit:
+        debugger
         props.onEditCallbackEvent &&
-          props.onEditCallbackEvent(props.stageIndex, props.stepIndex, param);
+          props.onEditCallbackEvent(props.stageIndex, props.stepIndex, currentStep);
         break;
     }
   };
   /**
-   * next
+   * 步骤选择组件下一步
    */
   const onNext = () => {
     let param = formData.getFieldsValue();
@@ -152,6 +186,25 @@ const StepOperation = (props: IProp) => {
       current.stepType = param.stepType;
       return current;
     });
+    setLoading(true);
+    switch (currentStep.stepType) {
+      case 1:
+        _applicationService
+          .getApplicationDashboardDetail(props.appId)
+          .then((rep) => {
+            debugger;
+            if (rep.success) {
+              let data = {
+                git: rep.result.application.codeWarehouseAddress,
+              };
+              contentFormData.setFieldsValue(data);
+              setCurrentStepIndex(currentStepIndex + 1);
+            }
+          });
+        break;
+    }
+    setLoading(false);
+    console.log(currentStepIndex, currentStep);
   };
 
   return (
@@ -171,74 +224,125 @@ const StepOperation = (props: IProp) => {
           </div>
         }
         closable={false}
-        visible={operationState.visible}
+        open={operationState.visible}
         footer={null}
       >
-        <Form
-          form={formData}
-          {...formItemSingleRankLayout}
-          name="nest-messages"
-          layout="horizontal"
-          onFinish={onNext}
-          validateMessages={validateMessages}
-        >
-          <Row>
-            <Col span="24">
-              <Form.Item
-                name="name"
-                label="阶段名称："
-                rules={[{ required: true }]}
-              >
-                <Input style={{ borderRadius: 6 }} />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="24">
-              <Form.Item
-                name="stepType"
-                label="阶段类型："
-                rules={[{ required: true }]}
-              >
-                <Select allowClear={true} placeholder="请选择步骤类型">
-                  {StepTypeMap.map((item: any) => {
-                    return (
-                      <Select.Option value={item.key}>
-                        {item.value}
-                      </Select.Option>
-                    );
-                  })}
-                </Select>
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="24" style={{ textAlign: "right" }}>
-              <Form.Item {...tailLayout}>
-                <Button shape="round" onClick={() => onCancel()}>
-                  取消
-                </Button>
-                <Button
-                  shape="round"
-                  style={{ margin: "0 8px" }}
-                  type="primary"
-                  htmlType="submit"
+        <Steps
+          current={currentStepIndex}
+          size="small"
+          progressDot
+          items={items}
+        />
+        {currentStepIndex == 0 ? (
+          <Form
+            form={formData}
+            {...formItemSingleRankLayout}
+            name="nest-messages"
+            layout="horizontal"
+            onFinish={onNext}
+            validateMessages={validateMessages}
+          >
+            <Row>
+              <Col span="24">
+                <Form.Item
+                  name="name"
+                  label="阶段名称："
+                  rules={[{ required: true }]}
                 >
-                  保存
-                </Button>
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form>
-
-      { 1==1?<div>
-
-        {currentStep.stepType==StepTypeEnum.pullCode?<form>
-
-        </form>:currentStep.stepType==StepTypeEnum.executeCommand?<></>:}
-        
-      </div>:null}
-        
+                  <Input style={{ borderRadius: 6 }} />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row>
+              <Col span="24">
+                <Form.Item
+                  name="stepType"
+                  label="阶段类型："
+                  rules={[{ required: true }]}
+                >
+                  <Select allowClear={true} placeholder="请选择步骤类型">
+                    {StepTypeMap.map((item: any) => {
+                      return (
+                        <Select.Option value={item.key}>
+                          {item.value}
+                        </Select.Option>
+                      );
+                    })}
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row>
+              <Col span="24" style={{ textAlign: "right" }}>
+                <Form.Item {...tailLayout}>
+                  <Button shape="round" onClick={() => onCancel()}>
+                    取消
+                  </Button>
+                  <Button
+                    shape="round"
+                    style={{ margin: "0 8px" }}
+                    type="primary"
+                    loading={loading}
+                    htmlType="submit"
+                  >
+                    下一步
+                  </Button>
+                </Form.Item>
+              </Col>
+            </Row>
+          </Form>
+        ) : null}
+        {currentStepIndex == 1 &&
+        currentStep.stepType == StepTypeEnum.pullCode ? (
+          <Form
+            form={contentFormData}
+            {...formItemSingleRankLayout}
+            name="nest-messages"
+            layout="horizontal"
+            onFinish={onNext}
+            validateMessages={validateMessages}
+          >
+            <Row>
+              <Col span="24">
+                <Form.Item
+                  name="git"
+                  label="拉取代码："
+                  rules={[{ required: true }]}
+                >
+                  <Input style={{ borderRadius: 6 }} disabled />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row>
+              <Col span="24">
+                <Form.Item
+                  name="branch"
+                  label="分支："
+                  rules={[{ required: true }]}
+                >
+                  <Input style={{ borderRadius: 6 }} />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row>
+              <Col span="24" style={{ textAlign: "right" }}>
+                <Form.Item {...tailLayout}>
+                  <Button shape="round" onClick={() => onCancel()}>
+                    取消
+                  </Button>
+                  <Button
+                    shape="round"
+                    style={{ margin: "0 8px" }}
+                    type="primary"
+                    onClick={() => onFinish()}
+                  >
+                    保存
+                  </Button>
+                </Form.Item>
+              </Col>
+            </Row>
+          </Form>
+        ) : null}
       </Modal>
     </div>
   );

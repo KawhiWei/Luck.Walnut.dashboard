@@ -13,7 +13,7 @@ interface IProp {
   /**
    * 新增阶段事件回调
    */
-  onAddStage?: any;
+  onAddStageCallback?: any;
 
   /**
    * 回调事件
@@ -110,7 +110,7 @@ const StageOperation = (props: IProp) => {
     let param = formData.getFieldsValue();
     switch (props.operationType) {
       case OperationTypeEnum.add:
-        props.onAddStage && props.onAddStage(param.name);
+        props.onAddStageCallback && props.onAddStageCallback(param.name);
         break;
       case OperationTypeEnum.view:
         editOperationState(true, "查看");

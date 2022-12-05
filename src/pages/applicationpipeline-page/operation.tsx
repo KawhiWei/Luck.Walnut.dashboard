@@ -29,7 +29,7 @@ const Operation = (props: any) => {
    */
   const onGetLoad = () => {
     if (props.location.state.appId) {
-      setAppId((_appId)=>{
+      setAppId((_appId) => {
         return props.location.state.appId;
       });
     }

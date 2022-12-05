@@ -12,12 +12,9 @@ export const testList:Map<ApplicationStateEnum,string>[]=[
 
 
 export class ApplicationService extends BaseService implements IApplicationService {
-
     getPage(_param: any): Promise<IServerReturn<IServerPageReturn<IApplicationBaseDto>>> {
         return this.dataRequest.getRequest(`${ApplicationApi.application}/Page`, _param)
     }
-
-
     getApplicationDashboardDetail(_appId: string): Promise<IServerReturn<any>> {
         return this.dataRequest.getRequest(`${ApplicationApi.application}/${_appId}/dashboard`)
     }
