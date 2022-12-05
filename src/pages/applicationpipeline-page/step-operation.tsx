@@ -111,7 +111,7 @@ const StepOperation = (props: IProp) => {
   });
 
   const [formData] = Form.useForm();
-  const [contentFormData] = Form.useForm();
+  const [pullCodeFormData] = Form.useForm();
   /**
    * 页面初始化事件
    */
@@ -161,6 +161,12 @@ const StepOperation = (props: IProp) => {
    * 底部栏OK事件
    */
   const onFinish = () => {
+    let content = "";
+    switch (currentStep.stepType) {
+      case StepTypeEnum.pullCode:
+        content = JSON.stringify(pullCodeFormData.getFieldsValue());
+        break;
+    }
     switch (props.operationType) {
       case OperationTypeEnum.add:
         props.onAddCallbackEvent &&
@@ -170,9 +176,12 @@ const StepOperation = (props: IProp) => {
         editOperationState(true, "查看");
         break;
       case OperationTypeEnum.edit:
-        debugger
         props.onEditCallbackEvent &&
-          props.onEditCallbackEvent(props.stageIndex, props.stepIndex, currentStep);
+          props.onEditCallbackEvent(
+            props.stageIndex,
+            props.stepIndex,
+            currentStep
+          );
         break;
     }
   };
@@ -197,7 +206,7 @@ const StepOperation = (props: IProp) => {
               let data = {
                 git: rep.result.application.codeWarehouseAddress,
               };
-              contentFormData.setFieldsValue(data);
+              pullCodeFormData.setFieldsValue(data);
               setCurrentStepIndex(currentStepIndex + 1);
             }
           });
@@ -295,7 +304,7 @@ const StepOperation = (props: IProp) => {
         {currentStepIndex == 1 &&
         currentStep.stepType == StepTypeEnum.pullCode ? (
           <Form
-            form={contentFormData}
+            form={pullCodeFormData}
             {...formItemSingleRankLayout}
             name="nest-messages"
             layout="horizontal"
