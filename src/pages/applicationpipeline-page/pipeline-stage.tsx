@@ -174,6 +174,7 @@ const PipelineStage = (props: IProp) => {
         onEditCallbackEvent={onEditStepCallBack}
       ></StepOperation>
     );
+    
   };
 
   /**
@@ -196,6 +197,7 @@ const PipelineStage = (props: IProp) => {
       }
     });
     setStageList((current) => [...current]);
+    console.log(stageList);
     clearStepOperationElement();
   };
 

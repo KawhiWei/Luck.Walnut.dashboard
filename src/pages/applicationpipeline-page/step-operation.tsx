@@ -167,6 +167,12 @@ const StepOperation = (props: IProp) => {
         content = JSON.stringify(pullCodeFormData.getFieldsValue());
         break;
     }
+
+    setCurrentStep((current) => {
+      current.content = content;
+      return current;
+    });
+    console.log(currentStep);
     switch (props.operationType) {
       case OperationTypeEnum.add:
         props.onAddCallbackEvent &&
@@ -201,7 +207,6 @@ const StepOperation = (props: IProp) => {
         _applicationService
           .getApplicationDashboardDetail(props.appId)
           .then((rep) => {
-            debugger;
             if (rep.success) {
               let data = {
                 git: rep.result.application.codeWarehouseAddress,
@@ -213,7 +218,6 @@ const StepOperation = (props: IProp) => {
         break;
     }
     setLoading(false);
-    console.log(currentStepIndex, currentStep);
   };
 
   return (

@@ -25,7 +25,6 @@ import ExecutedHistory from "./executed-history";
 import { IApplicationPipelineService } from "@/domain/applicationpipelines/iapplicationpipeline-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import Item from "antd/lib/list/Item";
-import OperationNew from "./operation-new";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
 import { PipelineBuildStateEnum } from "@/domain/applicationpipelines/applicationpipeline-enum";
 import { id } from "inversify";
@@ -232,20 +231,20 @@ const PipelinePage = (props: IProp) => {
         pathname: "/application/pipeline/edit",
         state: {
           appId: props.appId,
-          pipelineId: pipelineId
-        }
+          pipelineId: pipelineId,
+        },
       });
   };
 
-  const getPipelineInfo=(pipelineId:string)=>{
-    _applicationPipelineService.getDetail(pipelineId).then(rep => {
-      if(!rep.success){
+  const getPipelineInfo = (pipelineId: string) => {
+    _applicationPipelineService.getDetail(pipelineId).then((rep) => {
+      if (!rep.success) {
         message.error(rep.errorMessage, 3);
-      }else{
+      } else {
         goToAddApplicationPileLineOperation(pipelineId);
       }
-    })
-  }
+    });
+  };
 
   return (
     <div>
@@ -354,5 +353,4 @@ const PipelinePage = (props: IProp) => {
     </div>
   );
 };
-
 export default PipelinePage;

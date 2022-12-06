@@ -76,7 +76,7 @@ const ExecutedHistory = (props: IProp) => {
       title: "操作",
       key: "id",
       width: 120,
-      fixed: "right",
+      fixed: false,
       render: (text: any, record: any) => {
         return (
           <div>
