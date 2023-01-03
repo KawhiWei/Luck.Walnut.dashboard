@@ -103,6 +103,11 @@ const ApplicationPage = () => {
       key: "appId",
     },
     {
+      title: "应用类型",
+      dataIndex: "developmentLanguage",
+      key: "developmentLanguage",
+    },
+    {
       title: "所属项目",
       dataIndex: "projectName",
       key: "projectName",

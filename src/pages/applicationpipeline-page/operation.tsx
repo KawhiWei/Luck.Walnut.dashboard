@@ -1,7 +1,9 @@
 import { Spin, message } from "antd";
 import { useEffect, useState } from "react";
 
+import { IApplicationBaseDto } from "@/domain/applications/application-dto";
 import { IApplicationPipelineService } from "@/domain/applicationpipelines/iapplicationpipeline-service";
+import { IApplicationService } from "@/domain/applications/iapplication-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
 import PipelineStage from "./pipeline-stage";
@@ -16,6 +18,7 @@ const Operation = (props: any) => {
   const [pipelineStageElement, setPipelineStageElement] = useState<any>(null);
   const _applicationPipelineService: IApplicationPipelineService =
     useHookProvider(IocTypes.ApplicationPipelineService);
+
   /**
    * 页面初始化事件
    */
@@ -69,6 +72,7 @@ const Operation = (props: any) => {
       );
     }
   };
+
   return (
     <div>
       <Spin spinning={loading}>{pipelineStageElement}</Spin>

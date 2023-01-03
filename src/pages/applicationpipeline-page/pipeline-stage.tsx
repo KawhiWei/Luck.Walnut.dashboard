@@ -6,17 +6,26 @@ import {
   PlusOutlined,
 } from "@ant-design/icons";
 import {
+  IApplicationBaseDto,
+  IApplicationDto,
+} from "@/domain/applications/application-dto";
+import {
   IApplicationPipelineOutputDto,
   IStageDto,
   IStepDto,
 } from "@/domain/applicationpipelines/applicationpipeline-dto";
 import { useEffect, useState } from "react";
 
+import { IApplicationService } from "@/domain/applications/iapplication-service";
+import { IBuildImageService } from "@/domain/buildimages/ibuildimage-service";
+import { IBuildImageVersionBaseDto } from "@/domain/buildimages/buildimage-dto";
+import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
 import SavePipeLine from "./save-pipeline";
 import StageOperation from "./stage-operation";
 import StepOperation from "./step-operation";
 import { StepTypeEnum } from "@/domain/applicationpipelines/applicationpipeline-enum";
+import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
 interface IProp {
   /**
@@ -45,7 +54,16 @@ const PipelineStage = (props: IProp) => {
   const [pipelineInfo, setPipelineInfo] =
     useState<IApplicationPipelineOutputDto>();
 
+  const [buildImageVersionArray, setBuildImageVersionArray] = useState<
+    Array<IBuildImageVersionBaseDto>
+  >([]);
+  const [applicationData, setApplicationData] = useState<IApplicationDto>();
+  const _applicationService: IApplicationService = useHookProvider(
+    IocTypes.ApplicationService
+  );
+
   useEffect(() => {
+    onGetLoadApplication();
     onLoad();
   }, [stageList]);
 
@@ -55,6 +73,21 @@ const PipelineStage = (props: IProp) => {
       setStageList(props.pipelineInfo.pipelineScript);
     }
   };
+
+  /**
+   *
+   */
+  const onGetLoadApplication = () => {
+    _applicationService
+      .getApplicationDashboardDetail(props.appId)
+      .then((rep) => {
+        if (rep.success) {
+          setApplicationData(rep.result.application);
+          setBuildImageVersionArray(rep.result.buildImageVersionList);
+        }
+      });
+  };
+
   /**
    * 添加阶段
    */
@@ -72,14 +105,11 @@ const PipelineStage = (props: IProp) => {
    * 添加阶段
    */
   const onAddStageCallBack = (_name: string) => {
-    debugger;
-
     stageList.push({
       name: _name,
       steps: [],
     });
     setStageList((current) => [...current]);
-    console.log(stageList);
     clearStageOperationElement();
   };
 
@@ -132,10 +162,12 @@ const PipelineStage = (props: IProp) => {
   const onAddStep = (_stageIndex: number) => {
     setStepOperationElement(
       <StepOperation
+        buildImageVersionList={buildImageVersionArray}
         appId={props.pipelineInfo ? props.pipelineInfo.appId : ""}
         operationType={OperationTypeEnum.add}
         stageIndex={_stageIndex}
         onCallbackEvent={clearStepOperationElement}
+        applicationData={applicationData}
         onAddCallbackEvent={onAddStepCallBack}
       ></StepOperation>
     );
@@ -145,7 +177,6 @@ const PipelineStage = (props: IProp) => {
    * 添加步骤回调事件
    */
   const onAddStepCallBack = (_stageIndex: number, _step: IStepDto) => {
-    debugger;
     stageList.filter((item, index) => {
       if (index == _stageIndex) {
         item.steps.push(_step);
@@ -165,16 +196,17 @@ const PipelineStage = (props: IProp) => {
   ) => {
     setStepOperationElement(
       <StepOperation
+        buildImageVersionList={buildImageVersionArray}
         appId={props.pipelineInfo ? props.pipelineInfo.appId : ""}
         operationType={OperationTypeEnum.edit}
         stageIndex={_stageIndex}
         stepIndex={_stepIndex}
         step={_step}
+        applicationData={applicationData}
         onCallbackEvent={clearStepOperationElement}
         onEditCallbackEvent={onEditStepCallBack}
       ></StepOperation>
     );
-    
   };
 
   /**
@@ -227,7 +259,7 @@ const PipelineStage = (props: IProp) => {
     setStageOperationElement(
       <SavePipeLine
         appId={props.appId}
-        operationType={OperationTypeEnum.edit}
+        operationType={props.operationType}
         stageList={stageList}
         onCallbackEvent={clearStageOperationElement}
         pipelineInfo={pipelineInfo}

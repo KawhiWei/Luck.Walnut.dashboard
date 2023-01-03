@@ -9,7 +9,7 @@ export const StepTypeMap = [
         value: "拉取代码"
     },
     {
-        key: StepTypeEnum.buildDockerImage,
+        key: StepTypeEnum.buildImage,
         value: "构建镜像"
     },
     {

@@ -231,19 +231,27 @@ const PipelinePage = (props: IProp) => {
         pathname: "/application/pipeline/edit",
         state: {
           appId: props.appId,
-          pipelineId: pipelineId,
         },
       });
   };
 
-  const getPipelineInfo = (pipelineId: string) => {
-    _applicationPipelineService.getDetail(pipelineId).then((rep) => {
-      if (!rep.success) {
-        message.error(rep.errorMessage, 3);
-      } else {
-        goToAddApplicationPileLineOperation(pipelineId);
-      }
-    });
+  const goToEditApplicationPileLineOperation = (pipelineId: string) => {
+    // if (props.appId) {
+    //   setOperationElement(
+    //     <OperationNew
+    //       appId={props.appId}
+    //       operationType={OperationTypeEnum.add}
+    //     ></OperationNew>
+    //   );
+    // }
+    props.appId &&
+      history.push({
+        pathname: "/application/pipeline/edit",
+        state: {
+          appId: props.appId,
+          pipelineId:pipelineId
+        },
+      });
   };
 
   return (
@@ -296,7 +304,7 @@ const PipelinePage = (props: IProp) => {
                         color: "orange",
                         fontSize: 20,
                       }}
-                      onClick={() => getPipelineInfo(item.id)}
+                      onClick={() => goToEditApplicationPileLineOperation(item.id)}
                     />,
                     <HistoryOutlined
                       onClick={() => onShowExecutedHistory(item.id)}

@@ -82,6 +82,10 @@ const StageOperation = (props: IProp) => {
   const onGetLoad = () => {
     switch (props.operationType) {
       case OperationTypeEnum.add:
+        formData.setFieldsValue({
+          name:"新建阶段",
+          steps:[]
+        });
         editOperationState(true, "添加阶段");
         break;
       case OperationTypeEnum.view:

@@ -41,6 +41,15 @@ export interface IApplicationPipelineBaseDto {
      */
     nextPipelineId: string;
 
+    /**
+     * 开发平台
+     */
+    developmentLanguage: string;
+
+    
+
+    
+
 }
 
 
@@ -62,6 +71,7 @@ export interface IApplicationPipelineOutputDto extends IApplicationPipelineBaseD
      * 最后一次执行任务的Id
      */
     lastApplicationPipelineExecutedRecordId:string,
+
 }
 
 export interface IApplicationPipelineSaveDto extends IApplicationPipelineBaseDto, IEntity<string> {

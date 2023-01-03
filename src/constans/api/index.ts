@@ -26,3 +26,8 @@ export const ComponentIntegrationApi = {
 export const ApplicationPipelineApi = {
   applicationpipeline: "/walnut/api/applicationpipelines",
 }
+
+
+export const BuildImageApi = {
+  buildImage: "/walnut/api/build/images",
+}
