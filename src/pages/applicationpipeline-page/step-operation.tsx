@@ -123,7 +123,7 @@ const StepOperation = (props: IProp) => {
     name: "",
   });
 
-  const [formData] = Form.useForm();
+  const [currentStepFormData] = Form.useForm();
   const [pullCodeFormData] = Form.useForm();
   const [buildImageFormData] = Form.useForm();
 
@@ -156,7 +156,7 @@ const StepOperation = (props: IProp) => {
         break;
       case OperationTypeEnum.edit:
         if (props.step) {
-          formData.setFieldsValue(props.step);
+          currentStepFormData.setFieldsValue(props.step);
           editOperationState(true, "编辑步骤");
         }
         break;
@@ -180,6 +180,9 @@ const StepOperation = (props: IProp) => {
     switch (currentStep.stepType) {
       case StepTypeEnum.pullCode:
         content = JSON.stringify(pullCodeFormData.getFieldsValue());
+        break;
+      case StepTypeEnum.buildImage:
+        content = JSON.stringify(buildImageFormData.getFieldsValue());
         break;
     }
     setCurrentStep((current) => {
@@ -208,20 +211,18 @@ const StepOperation = (props: IProp) => {
    * 步骤选择组件下一步
    */
   const onNext = () => {
-    let param = formData.getFieldsValue();
+    let param = currentStepFormData.getFieldsValue();
     setCurrentStep((current) => {
       current.name = param.name;
       current.stepType = param.stepType;
       return current;
     });
-
-    debugger
     switch (currentStep.stepType) {
       case StepTypeEnum.pullCode:
         let pullCodeData = {
           git: props.applicationData?.codeWarehouseAddress,
         };
-        if (props.operationType != OperationTypeEnum.add && props.step) {
+        if (props.operationType !== OperationTypeEnum.add && props.step) {
           pullCodeFormData.setFieldsValue(JSON.parse(props.step.content));
         } else {
           pullCodeFormData.setFieldsValue(pullCodeData);
@@ -231,9 +232,9 @@ const StepOperation = (props: IProp) => {
         let buildImageData = {
           buildImageName: props.applicationData?.buildImageName,
           compileScript: props.applicationData?.compileScript,
-          dockerFileSrc:'./Dockerfile'
+          dockerFileSrc: "./Dockerfile",
         };
-        if (props.operationType != OperationTypeEnum.add && props.step) {
+        if (props.operationType !== OperationTypeEnum.add && props.step) {
           pullCodeFormData.setFieldsValue(JSON.parse(props.step.content));
         } else {
           buildImageFormData.setFieldsValue(buildImageData);
@@ -242,6 +243,20 @@ const StepOperation = (props: IProp) => {
     }
 
     setCurrentStepIndex(currentStepIndex + 1);
+  };
+  /**
+   * onStepTypeChangeName
+   */
+  const onStepTypeChangeName = (value: any) => {
+    const stepType = StepTypeMap.find((item) => item.key === value);
+    if (stepType) {
+      setCurrentStep((current) => {
+        current.name = stepType.value;
+        current.stepType = stepType.key;
+        return current;
+      });
+      currentStepFormData.setFieldsValue(currentStep);
+    }
   };
 
   return (
@@ -270,9 +285,9 @@ const StepOperation = (props: IProp) => {
           progressDot
           items={items}
         />
-        {currentStepIndex == 0 ? (
+        {currentStepIndex === 0 ? (
           <Form
-            form={formData}
+            form={currentStepFormData}
             {...formItemSingleRankLayout}
             name="nest-messages"
             layout="horizontal"
@@ -282,22 +297,15 @@ const StepOperation = (props: IProp) => {
             <Row>
               <Col span="24">
                 <Form.Item
-                  name="name"
-                  label="阶段名称："
-                  rules={[{ required: true }]}
-                >
-                  <Input style={{ borderRadius: 6 }} />
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row>
-              <Col span="24">
-                <Form.Item
                   name="stepType"
                   label="阶段类型："
                   rules={[{ required: true }]}
                 >
-                  <Select allowClear={true} placeholder="请选择步骤类型">
+                  <Select
+                    allowClear={true}
+                    placeholder="请选择步骤类型"
+                    onChange={onStepTypeChangeName}
+                  >
                     {StepTypeMap.map((item: any) => {
                       return (
                         <Select.Option value={item.key}>
@@ -309,6 +317,18 @@ const StepOperation = (props: IProp) => {
                 </Form.Item>
               </Col>
             </Row>
+            <Row>
+              <Col span="24">
+                <Form.Item
+                  name="name"
+                  label="阶段名称："
+                  rules={[{ required: true }]}
+                >
+                  <Input style={{ borderRadius: 6 }} />
+                </Form.Item>
+              </Col>
+            </Row>
+
             <Row>
               <Col span="24" style={{ textAlign: "right" }}>
                 <Form.Item {...tailLayout}>
@@ -329,8 +349,8 @@ const StepOperation = (props: IProp) => {
             </Row>
           </Form>
         ) : null}
-        {currentStepIndex == 1 &&
-        currentStep.stepType == StepTypeEnum.pullCode ? (
+        {currentStepIndex === 1 &&
+          currentStep.stepType === StepTypeEnum.pullCode ? (
           <Form
             form={pullCodeFormData}
             {...formItemSingleRankLayout}
@@ -381,8 +401,8 @@ const StepOperation = (props: IProp) => {
           </Form>
         ) : null}
 
-        {currentStepIndex == 1 &&
-        currentStep.stepType == StepTypeEnum.buildImage ? (
+        {currentStepIndex === 1 &&
+          currentStep.stepType === StepTypeEnum.buildImage ? (
           <Form
             form={buildImageFormData}
             {...formItemSingleRankLayout}
