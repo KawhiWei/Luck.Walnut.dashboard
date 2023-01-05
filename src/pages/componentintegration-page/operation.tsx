@@ -10,6 +10,7 @@ import {
   Select,
   message,
 } from "antd";
+import { ComponentCategoryMap, ComponentTypeMap } from "@/domain/componentintegration/componentintegration-map";
 import {
   DeleteOutlined,
   EditOutlined,
@@ -26,7 +27,6 @@ import {
 } from "@/constans/layout/optionlayout";
 import { useEffect, useState } from "react";
 
-import { ComponentLinkTypeMap } from "@/domain/componentintegration/componentintegration-map";
 import { IComponentIntegrationService } from "@/domain/componentintegration/icomponentintegration-service";
 import { IOperationConfig } from "@/shared/operation/operationConfig";
 import { IocTypes } from "@/shared/config/ioc-types";
@@ -170,8 +170,8 @@ const Operation = (props: IProp) => {
         width={1000}
         getContainer={false}
         title={operationState.title}
-        closable={true}
-        visible={operationState.visible}
+        closable={false}
+        open={operationState.visible}
         footer={null}
         onCancel={onCancel}
       >
@@ -200,12 +200,27 @@ const Operation = (props: IProp) => {
           <Row>
             <Col span="24">
               <Form.Item
-                name="componentLinkType"
+                name="componentType"
                 label="组件类型："
                 rules={[{ required: true }]}
               >
                 <Radio.Group>
-                  {ComponentLinkTypeMap.map((item: any) => {
+                  {ComponentTypeMap.map((item: any) => {
+                    return <Radio value={item.key}>{item.value}</Radio>;
+                  })}
+                </Radio.Group>
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row>
+            <Col span="24">
+              <Form.Item
+                name="componentCategory"
+                label="组件分类："
+                rules={[{ required: true }]}
+              >
+                <Radio.Group>
+                  {ComponentCategoryMap.map((item: any) => {
                     return <Radio value={item.key}>{item.value}</Radio>;
                   })}
                 </Radio.Group>

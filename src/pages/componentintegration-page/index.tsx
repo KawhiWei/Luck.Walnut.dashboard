@@ -27,7 +27,7 @@ import {
 } from "../../shared/ajax/request";
 import { useEffect, useState } from "react";
 
-import { ComponentLinkTypeMap } from "@/domain/componentintegration/componentintegration-map";
+import { ComponentTypeMap } from "@/domain/componentintegration/componentintegration-map";
 import { IComponentIntegrationService } from "@/domain/componentintegration/icomponentintegration-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import Operation from "./operation";
@@ -213,9 +213,9 @@ const ComponentIntegrationPage = () => {
         >
           <Row>
             <Col span="6">
-              <Form.Item name="componentLinkType" label="组件类型：">
+              <Form.Item name="componentType" label="组件类型：">
                 <Select allowClear={true} placeholder="请选择组件类型">
-                  {ComponentLinkTypeMap.map((item: any) => {
+                  {ComponentTypeMap.map((item: any) => {
                     return (
                       <Select.Option value={item.key}>
                         {item.value}

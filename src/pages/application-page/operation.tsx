@@ -191,7 +191,7 @@ const Operation = (props: IProp) => {
           </div>
         }
         closable={false}
-        visible={operationState.visible}
+        open={operationState.visible}
         footer={null}
       >
         <Form

@@ -20,3 +20,22 @@
      */
     jenkins = 4,
 }
+
+
+/***
+ * 应用状态枚举
+ */
+export enum ComponentCategoryEnum {
+    /**
+     * 代码仓库
+     */
+    codeWarehouse = 1,
+    /**
+     * 流水线
+     */
+    pipeLine = 2,
+    /**
+     * 镜像仓库
+     */
+    imageWarehouse = 3,
+}
