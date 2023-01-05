@@ -58,7 +58,10 @@ const ApplicationPage = () => {
   const [subOperationElement, setOperationElement] = useState<any>(null);
   const [formData] = Form.useForm();
   const [projectArray, setProjectArray] = useState<Array<any>>([]);
+  const [componentIntegrationArray, setComponentIntegrationArray] = useState<Array<any>>([]);
 
+
+  
   const pagination: PaginationProps = {
     ...tacitPagingProps,
     total: paginationConfig.total,
@@ -213,6 +216,7 @@ const ApplicationPage = () => {
   useEffect(() => {
     getPageList();
     onGetProjectList();
+    onGetApplicationSelectedData();
   }, [paginationConfig]);
 
   const onSearch = () => {
@@ -232,6 +236,14 @@ const ApplicationPage = () => {
     });
   };
 
+  const onGetApplicationSelectedData = () => {
+    _applicationService.getApplicationSelectedData().then((rep) => {
+      if (rep.success) {
+        setComponentIntegrationArray(rep.result.componentIntegrationList);
+      }
+    });
+  };
+
   /**
    * 修改任务
    * @param _id
@@ -239,6 +251,7 @@ const ApplicationPage = () => {
   const editRow = (_id: any) => {
     setOperationElement(
       <Operation
+        componentIntegrationArray={componentIntegrationArray}
         onCallbackEvent={clearElement}
         operationType={OperationTypeEnum.edit}
         id={_id}
@@ -297,6 +310,8 @@ const ApplicationPage = () => {
   const addChange = () => {
     setOperationElement(
       <Operation
+
+      componentIntegrationArray={componentIntegrationArray}
         onCallbackEvent={clearElement}
         projectArray={projectArray}
         operationType={OperationTypeEnum.add}

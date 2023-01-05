@@ -160,6 +160,7 @@ const ConfigRelease = (props: IProp) => {
         let param: Array<string> = [];
         selectedRowKeys.map(key => {
             param.push(key.toString());
+            return key;
         });
         props.envId && _environmentService.releasePublish(props.envId, param).then((rep) => {
             if (!rep.success) {

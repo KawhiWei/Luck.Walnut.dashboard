@@ -40,4 +40,10 @@ export interface IApplicationService {
     getApplicationDashboardDetail(_appId: string): Promise<IServerReturn<any>>;
 
     getLanguageList(): Promise<IServerReturn<any>>;
+
+
+    /**
+     * 获取应用添加或者修改时所需要获取下拉框的数据
+     */
+    getApplicationSelectedData(): Promise<IServerReturn<any>>;
 }

@@ -107,7 +107,7 @@ const Operation = (props: IProp) => {
         props.onCallbackEvent && props.onCallbackEvent()
     };
     return (<div>
-        <Modal width={500} getContainer={false}
+        <Modal width={"70%"} getContainer={false}
             onCancel={onCancel}
             title={operationState.title}
             closable={false}

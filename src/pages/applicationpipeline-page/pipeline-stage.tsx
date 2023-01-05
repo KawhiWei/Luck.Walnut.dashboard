@@ -143,6 +143,7 @@ const PipelineStage = (props: IProp) => {
       if (index === _stageIndex) {
         item.name = _name;
       }
+      return item;
     });
     setStageList((current) => [...current]);
     clearStageOperationElement();
@@ -178,9 +179,10 @@ const PipelineStage = (props: IProp) => {
    */
   const onAddStepCallBack = (_stageIndex: number, _step: IStepDto) => {
     stageList.filter((item, index) => {
-      if (index == _stageIndex) {
+      if (index === _stageIndex) {
         item.steps.push(_step);
       }
+      return item;
     });
     setStageList((current) => [...current]);
     clearStepOperationElement();
@@ -218,15 +220,17 @@ const PipelineStage = (props: IProp) => {
     _step: IStepDto
   ) => {
     stageList.filter((stageItem, stageIndex) => {
-      if (stageIndex == _stageIndex) {
+      if (stageIndex === _stageIndex) {
         stageItem.steps.filter((stepItem, stepIndex) => {
-          if (stepIndex == _stepIndex) {
+          if (stepIndex === _stepIndex) {
             stepItem.name = _step.name;
             stepItem.content = _step.content;
             stepItem.stepType = _step.stepType;
           }
+          return stepItem;
         });
       }
+      return stageItem;
     });
     setStageList((current) => [...current]);
     console.log(stageList);
@@ -248,6 +252,7 @@ const PipelineStage = (props: IProp) => {
       if (index === _stageIndex) {
         item.steps.splice(_stepIndex, 1);
       }
+      return item;
     });
     setStageList((current) => [...current]);
   };

@@ -167,7 +167,7 @@ const Operation = (props: IProp) => {
   return (
     <div>
       <Modal
-        width={1000}
+        width={"70%"}
         getContainer={false}
         title={operationState.title}
         closable={false}

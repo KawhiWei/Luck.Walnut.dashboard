@@ -44,6 +44,12 @@ interface IProp {
    * 项目列表
    */
   projectArray: Array<any>;
+
+  /**
+   * 
+   */
+  componentIntegrationArray: Array<any>;
+  
 }
 
 const validateMessages = {
@@ -68,6 +74,7 @@ const Operation = (props: IProp) => {
   const [formData] = Form.useForm();
   const projectArray = props.projectArray;
   const [languageArray, setLanguageArray] = useState<Array<any>>([]);
+
   /**
    * 页面初始化事件
    */
@@ -109,7 +116,7 @@ const Operation = (props: IProp) => {
         props.id &&
           _applicationService.getDetail(props.id).then((rep) => {
             if (rep.success) {
-              formData.setFieldsValue(rep.result);
+              formData.setFieldsValue(rep.result.application);
               editOperationState(true, "修改");
             } else {
               message.error(rep.errorMessage, 3);
@@ -177,7 +184,7 @@ const Operation = (props: IProp) => {
   return (
     <div>
       <Modal
-        width={1000}
+        width={"70%"}
         style={{ borderRadius: 6 }}
         getContainer={false}
         onCancel={onCancel}
@@ -196,14 +203,14 @@ const Operation = (props: IProp) => {
       >
         <Form
           form={formData}
-          {...formItemSingleRankLayout}
+          {...formItemDoubleRankLayout}
           name="nest-messages"
           layout="horizontal"
           onFinish={onFinish}
           validateMessages={validateMessages}
         >
           <Row>
-            <Col span="24">
+            <Col span="12">
               <Form.Item
                 name="appId"
                 label="应用唯一标识："
@@ -215,9 +222,7 @@ const Operation = (props: IProp) => {
                 />
               </Form.Item>
             </Col>
-          </Row>
-          <Row>
-            <Col span="24">
+            <Col span="12">
               <Form.Item
                 name="englishName"
                 label="应用英文名"
@@ -228,7 +233,7 @@ const Operation = (props: IProp) => {
             </Col>
           </Row>
           <Row>
-            <Col span="24">
+            <Col span="12">
               <Form.Item
                 name="chineseName"
                 label="应用中文名："
@@ -237,9 +242,7 @@ const Operation = (props: IProp) => {
                 <Input style={{ borderRadius: 6 }} />
               </Form.Item>
             </Col>
-          </Row>
-          <Row>
-            <Col span="24">
+            <Col span="12">
               <Form.Item
                 name="projectId"
                 label="所属项目："
@@ -256,7 +259,7 @@ const Operation = (props: IProp) => {
             </Col>
           </Row>
           <Row>
-            <Col span="24">
+            <Col span="12">
               <Form.Item
                 name="applicationState"
                 label="应用状态："
@@ -277,9 +280,7 @@ const Operation = (props: IProp) => {
                 </Select>
               </Form.Item>
             </Col>
-          </Row>
-          <Row>
-            <Col span="24">
+            <Col span="12">
               <Form.Item
                 name=""
                 label="应用开发语言："
@@ -300,7 +301,7 @@ const Operation = (props: IProp) => {
             </Col>
           </Row>
           <Row>
-            <Col span="24">
+            <Col span="12">
               <Form.Item
                 name="applicationLevel"
                 label="应用等级："
@@ -321,9 +322,7 @@ const Operation = (props: IProp) => {
                 </Select>
               </Form.Item>
             </Col>
-          </Row>
-          <Row>
-            <Col span="24">
+            <Col span="12">
               <Form.Item
                 name="departmentName"
                 label="所属部门："
@@ -334,7 +333,7 @@ const Operation = (props: IProp) => {
             </Col>
           </Row>
           <Row>
-            <Col span="24">
+            <Col span="12">
               <Form.Item
                 name="principal"
                 label="负责人："
@@ -343,22 +342,50 @@ const Operation = (props: IProp) => {
                 <Input style={{ borderRadius: 6 }} />
               </Form.Item>
             </Col>
-          </Row>
-          <Row>
-            <Col span="24">
+            <Col span="12">
               <Form.Item name="codeWarehouseAddress" label="代码仓库地址：">
                 <Input style={{ borderRadius: 6 }} />
               </Form.Item>
             </Col>
           </Row>
           <Row>
-            <Col span="24">
+            <Col span="12">
+              <Form.Item
+                name="buildImageId"
+                label="基础构建镜像："
+                rules={[{ required: true }]}
+              >
+              </Form.Item>
+
+
+            </Col>
+            <Col span="12">
+              <Form.Item
+                name="imageWarehouseId"
+                label="镜像推送仓库：">
+                <Select
+                  style={{ width: 180 }}
+                  allowClear={true}
+                  placeholder="请选择镜像推送仓库"
+                >
+                  {props.componentIntegrationArray.map((item: any) => {
+                    return (
+                      <Select.Option value={item.id}>
+                        {item.componentCategoryName}
+                      </Select.Option>
+                    );
+                  })}
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row>
+            <Col span="12">
               <Form.Item name="describe" label="应用描述：">
                 <TextArea style={{ borderRadius: 6 }} rows={14}></TextArea>
               </Form.Item>
             </Col>
           </Row>
-
           <Row>
             <Col span="24" style={{ textAlign: "right" }}>
               <Form.Item {...tailLayout}>

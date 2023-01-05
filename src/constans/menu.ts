@@ -22,7 +22,7 @@ export const menuList: IMenuOutput[] = [
   {
     id: "1001",
     name: "应用管理",
-    path: "/systemsetting",
+    path: "/application",
     component: "pages/application-page/index",
     tabs: [],
     buttonClick: "",
@@ -73,7 +73,7 @@ export const menuList: IMenuOutput[] = [
         children: [],
       },
       {
-        id: "1001-2",
+        id: "1001-3",
         name: "配置中心",
         path: "/application/configcenter",
         component: "pages/config/indexnew",
@@ -91,7 +91,7 @@ export const menuList: IMenuOutput[] = [
         children: [],
       },
       {
-        id: "1001-3",
+        id: "1001-4",
         name: "配置中心第一版",
         path: "/application/configcenterold",
         component: "pages/config/index",
@@ -109,7 +109,7 @@ export const menuList: IMenuOutput[] = [
         children: [],
       },
       {
-        id: "1001-3",
+        id: "1001-5",
         name: "编辑流水线",
         path: "/application/pipeline/edit",
         component: "pages/applicationpipeline-page/operation",
@@ -131,7 +131,7 @@ export const menuList: IMenuOutput[] = [
   {
     id: "1002",
     name: "系统日志",
-    path: "/systemlog",
+    path: "/system/log",
     component: "pages/test-page/test-page",
     tabs: [],
     buttonClick: "",
@@ -167,7 +167,7 @@ export const menuList: IMenuOutput[] = [
   {
     id: "1003",
     name: "项目管理",
-    path: "/projectmanager",
+    path: "/project/manager",
     component: "pages/test-page/test-page",
     tabs: [],
     buttonClick: "",

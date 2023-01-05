@@ -202,7 +202,7 @@ const ProjectOperation = (props: IProp) => {
   return (
     <div>
       <Modal
-        width={1000}
+        width={"70%"}
         getContainer={false}
         onCancel={onCancel}
         title={operationState.title}

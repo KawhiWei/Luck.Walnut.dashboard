@@ -158,6 +158,7 @@ const ConfigRelease = (props: IProp) => {
    * 获取数据
    */
   const getTable = () => {
+
     setLoading(true);
     let param = {
       pageSize: paginationConfig.pageSize,
@@ -204,8 +205,10 @@ const ConfigRelease = (props: IProp) => {
   const release = () => {
     setLoading(true);
     let param: Array<string> = [];
-    selectedRowKeys.map((key) => {
+    
+    selectedRowKeys.forEach(key => {
       param.push(key.toString());
+      return key;
     });
     props.environmentId &&
       _environmentService
@@ -228,7 +231,7 @@ const ConfigRelease = (props: IProp) => {
       <Modal
         width={1000}
         title={operationState.title}
-        visible={operationState.visible}
+        open={operationState.visible}
         closable={false}
         onCancel={onCancel}
         getContainer={false}

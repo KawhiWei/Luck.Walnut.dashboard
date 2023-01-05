@@ -36,4 +36,8 @@ export class ApplicationService extends BaseService implements IApplicationServi
     getLanguageList(): Promise<IServerReturn<any>> {
         return this.dataRequest.getRequest(`${ApplicationApi.application}/language/list`,)
     }
+
+    getApplicationSelectedData(): Promise<IServerReturn<any>> {
+        return this.dataRequest.getRequest(`${ApplicationApi.application}/selected/data`,)
+    }
 }

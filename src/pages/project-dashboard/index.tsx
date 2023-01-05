@@ -5,7 +5,7 @@ const ProjectDashboard = () => {
         <div>
             <Row>
                 <Col span="24" style={{ textAlign: 'left' }}>
-                    <Card title="项目概概况" extra={<a href="#">More</a>} >
+                    <Card title="项目概概况"  >
                         <p>Card content</p>
                         <p>Card content</p>
                         <p>Card content</p>
@@ -13,14 +13,14 @@ const ProjectDashboard = () => {
                 </Col>
             </Row>
             <Row >
-                <Card title="需求列表" extra={<a href="#">More</a>} >
+                <Card title="需求列表"  >
                     <p>Card content</p>
                     <p>Card content</p>
                     <p>Card content</p>
                 </Card>
             </Row>
             <Row >
-                <Card title="测试列表" extra={<a href="#">More</a>} >
+                <Card title="测试列表" >
                     <p>Card content</p>
                     <p>Card content</p>
                     <p>Card content</p>
