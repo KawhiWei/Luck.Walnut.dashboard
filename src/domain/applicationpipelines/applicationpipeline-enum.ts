@@ -6,14 +6,19 @@ export enum StepTypeEnum {
      * 拉取代码
      */
     pullCode = 1,
+
+    /**
+     * 编译发布
+     */
+    compilePublish=2,
     /**
      * 构建Docker镜像
      */
-    buildImage = 2,
+    buildImage = 3,
     /**
      * 执行命令
      */
-    executeCommand = 3,
+    executeCommand = 4,
 }
 
 /**

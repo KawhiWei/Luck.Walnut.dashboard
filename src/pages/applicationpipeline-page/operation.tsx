@@ -7,6 +7,7 @@ import { IApplicationService } from "@/domain/applications/iapplication-service"
 import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
 import PipelineStage from "./pipeline-stage";
+import { useHistory } from "react-router-dom";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
 /**
@@ -14,6 +15,7 @@ import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
  */
 const Operation = (props: any) => {
   const [loading, setLoading] = useState<boolean>(false);
+  const history = useHistory();
   const [appId, setAppId] = useState<string>("");
   const [pipelineStageElement, setPipelineStageElement] = useState<any>(null);
   const _applicationPipelineService: IApplicationPipelineService =
@@ -31,9 +33,14 @@ const Operation = (props: any) => {
    *
    */
   const onGetLoad = () => {
-    if (props.location.state.appId) {
+    console.log(props.location)
+    if (props.location.state && props.location.state.appId) {
       setAppId((_appId) => {
         return props.location.state.appId;
+      });
+    } else {
+      history.push({
+        pathname: "/application/list",
       });
     }
   };
@@ -42,7 +49,7 @@ const Operation = (props: any) => {
    *
    */
   const onGetDetailed = () => {
-    if (props.location.state.pipelineId) {
+    if (props.location.state && props.location.state.pipelineId) {
       setLoading(true);
       _applicationPipelineService
         .getDetail(props.location.state.pipelineId)

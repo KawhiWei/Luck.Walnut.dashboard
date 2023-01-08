@@ -13,7 +13,11 @@ import {
   Select,
   message,
 } from "antd";
-import { IApplicationPipelineOutputDto, IApplicationPipelineSaveDto, IStageDto } from "@/domain/applicationpipelines/applicationpipeline-dto";
+import {
+  IApplicationPipelineOutputDto,
+  IApplicationPipelineSaveDto,
+  IStageDto,
+} from "@/domain/applicationpipelines/applicationpipeline-dto";
 import {
   formItemDoubleRankLayout,
   formItemSingleRankLayout,
@@ -83,8 +87,6 @@ const SavePipeLine = (props: IProp) => {
   const [formData] = Form.useForm();
   const [loading, setLoading] = useState<boolean>(false);
 
-
-
   useEffect(() => {
     getComponentIntegrationList();
   }, []);
@@ -132,7 +134,7 @@ const SavePipeLine = (props: IProp) => {
   const onFinish = () => {
     setLoading(true);
     let form = formData.getFieldsValue();
-    switch(props.operationType){
+    switch (props.operationType) {
       case OperationTypeEnum.add:
         if (props.appId) {
           var param = {
@@ -143,7 +145,7 @@ const SavePipeLine = (props: IProp) => {
             pipelineScript: props.stageList,
             componentIntegrationId: form.componentIntegrationId,
           };
-          
+
           _applicationPipelineService
             .create(param)
             .then((rep) => {
@@ -176,29 +178,30 @@ const SavePipeLine = (props: IProp) => {
           name: form.name,
           pipelineState: 0,
           pipelineScript: props.stageList,
-          componentIntegrationId: form.componentIntegrationId
-        }
-        console.log( props.pipelineInfo?.id)
-        _applicationPipelineService.update(props.pipelineInfo ? props.pipelineInfo.id : "", data)
-        .then(rep => {
-          if (!rep.success) {
-            message.error(rep.errorMessage, 3);
-          } else {
-            message.success("保存成功", 3);
-            history.push({
-              pathname: "/application/dashboard",
-              state: {
-                defaultActiveKey: "2",
-                appId: props.appId,
-              },
-            });
-          }
-        }).finally(() => {
-          setLoading(false);
-        });
+          componentIntegrationId: form.componentIntegrationId,
+        };
+        console.log(props.pipelineInfo?.id);
+        _applicationPipelineService
+          .update(props.pipelineInfo ? props.pipelineInfo.id : "", data)
+          .then((rep) => {
+            if (!rep.success) {
+              message.error(rep.errorMessage, 3);
+            } else {
+              message.success("保存成功", 3);
+              history.push({
+                pathname: "/application/dashboard",
+                state: {
+                  defaultActiveKey: "2",
+                  appId: props.appId,
+                },
+              });
+            }
+          })
+          .finally(() => {
+            setLoading(false);
+          });
         break;
     }
-    
   };
 
   return (
@@ -228,12 +231,12 @@ const SavePipeLine = (props: IProp) => {
           layout="horizontal"
           onFinish={onFinish}
           validateMessages={validateMessages}
-          initialValues={{...props.pipelineInfo}}
+          initialValues={{ ...props.pipelineInfo }}
         >
           <Row>
             <Col span="24">
               <Form.Item name="name" label="名称" rules={[{ required: true }]}>
-                <Input style={{ borderRadius: 6 }}/>
+                <Input style={{ borderRadius: 6 }} />
               </Form.Item>
             </Col>
           </Row>

@@ -9,6 +9,10 @@ export const StepTypeMap = [
         value: "拉取代码"
     },
     {
+        key: StepTypeEnum.compilePublish,
+        value: "编译发布"
+    },
+    {
         key: StepTypeEnum.buildImage,
         value: "构建镜像"
     },

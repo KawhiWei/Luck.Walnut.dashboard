@@ -126,6 +126,7 @@ const StepOperation = (props: IProp) => {
   const [currentStepFormData] = Form.useForm();
   const [pullCodeFormData] = Form.useForm();
   const [buildImageFormData] = Form.useForm();
+  const [compilePublishFormData] = Form.useForm();
 
   /**
    * 页面初始化事件
@@ -184,6 +185,10 @@ const StepOperation = (props: IProp) => {
       case StepTypeEnum.buildImage:
         content = JSON.stringify(buildImageFormData.getFieldsValue());
         break;
+      case StepTypeEnum.compilePublish:
+        content = JSON.stringify(compilePublishFormData.getFieldsValue());
+        debugger
+        break;
     }
     setCurrentStep((current) => {
       current.content = content;
@@ -234,14 +239,25 @@ const StepOperation = (props: IProp) => {
           compileScript: props.applicationData?.compileScript,
           dockerFileSrc: "./Dockerfile",
         };
-        if (props.operationType !== OperationTypeEnum.add && props.step) {
-          pullCodeFormData.setFieldsValue(JSON.parse(props.step.content));
+        if ( props.step && props.step.content!=="" && props.operationType !== OperationTypeEnum.add) {
+          buildImageFormData.setFieldsValue(JSON.parse(props.step.content));
         } else {
           buildImageFormData.setFieldsValue(buildImageData);
         }
         break;
+      case StepTypeEnum.compilePublish:
+        let compilePublishData = {
+          buildImageName: props.applicationData?.buildImageName,
+          compileScript: props.applicationData?.compileScript,
+          dockerFileSrc: "./Dockerfile",
+        };
+        if (props.step && props.step.content!=="" && props.operationType !== OperationTypeEnum.add) {
+          compilePublishFormData.setFieldsValue(JSON.parse(props.step.content));
+        } else {
+          compilePublishFormData.setFieldsValue(compilePublishData);
+        }
+        break;
     }
-
     setCurrentStepIndex(currentStepIndex + 1);
   };
   /**
@@ -350,7 +366,7 @@ const StepOperation = (props: IProp) => {
           </Form>
         ) : null}
         {currentStepIndex === 1 &&
-          currentStep.stepType === StepTypeEnum.pullCode ? (
+        currentStep.stepType === StepTypeEnum.pullCode ? (
           <Form
             form={pullCodeFormData}
             {...formItemSingleRankLayout}
@@ -400,9 +416,85 @@ const StepOperation = (props: IProp) => {
             </Row>
           </Form>
         ) : null}
-
         {currentStepIndex === 1 &&
-          currentStep.stepType === StepTypeEnum.buildImage ? (
+        currentStep.stepType === StepTypeEnum.compilePublish ? (
+          <Form
+            form={compilePublishFormData}
+            {...formItemSingleRankLayout}
+            name="nest-messages"
+            layout="horizontal"
+            onFinish={onNext}
+            validateMessages={validateMessages}
+            initialValues={compilePublishFormData}
+          >
+            <Row>
+              <Col span="24">
+                <Form.Item
+                  name="buildImageName"
+                  label="依赖镜像："
+                  rules={[{ required: true }]}
+                >
+                  <Input style={{ borderRadius: 6 }} disabled />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row>
+              <Col span="24">
+                <Form.Item
+                  name="version"
+                  label="镜像版本："
+                  rules={[{ required: true }]}
+                >
+                  <Select
+                    style={{ width: 180 }}
+                    allowClear={true}
+                    placeholder="请选择镜像版本"
+                  >
+                    {props.buildImageVersionList.map(
+                      (item: IBuildImageVersionBaseDto) => {
+                        return (
+                          <Select.Option value={item.version}>
+                            {item.version}
+                          </Select.Option>
+                        );
+                      }
+                    )}
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row>
+              <Col span="24">
+                <Form.Item
+                  name="compileScript"
+                  label="编译命令："
+                  rules={[{ required: true }]}
+                >
+                  <TextArea autoSize={{ minRows: 6, maxRows: 16 }} />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row>
+              <Col span="24" style={{ textAlign: "right" }}>
+                <Form.Item {...tailLayout}>
+                  <Button shape="round" onClick={() => onCancel()}>
+                    取消
+                  </Button>
+                  <Button
+                    shape="round"
+                    style={{ margin: "0 8px" }}
+                    type="primary"
+                    onClick={() => onFinish()}
+                  >
+                    保存
+                  </Button>
+                </Form.Item>
+              </Col>
+            </Row>
+          </Form>
+        ) : null}
+        {currentStepIndex === 1 &&
+        currentStep.stepType === StepTypeEnum.buildImage ? (
           <Form
             form={buildImageFormData}
             {...formItemSingleRankLayout}
@@ -416,7 +508,7 @@ const StepOperation = (props: IProp) => {
               <Col span="24">
                 <Form.Item
                   name="buildImageName"
-                  label="构建镜像："
+                  label="依赖镜像："
                   rules={[{ required: true }]}
                 >
                   <Input style={{ borderRadius: 6 }} disabled />
