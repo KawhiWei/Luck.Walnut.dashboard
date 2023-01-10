@@ -1,11 +1,13 @@
-import { OperationTypeEnum } from "@/shared/operation/operationType";
-import { Modal, Form, Row, Col, Input, Button, message } from "antd";
+import { Button, Col, Form, Input, Modal, Row, message } from "antd";
+import { formItemDoubleRankLayout, formItemSingleRankLayout, tailLayout } from "@/constans/layout/optionlayout";
 import { useEffect, useState } from "react";
-import { IOperationConfig } from "@/shared/operation/operationConfig";
-import { formItemDoubleRankLayout, tailLayout } from "@/constans/layout/optionlayout";
+
 import { IBuildImageService } from  "@/domain/buildimages/ibuildimage-service";
-import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
+import { IOperationConfig } from "@/shared/operation/operationConfig";
 import { IocTypes } from "@/shared/config/ioc-types";
+import { OperationTypeEnum } from "@/shared/operation/operationType";
+import TextArea from "antd/lib/input/TextArea";
+import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
 interface IProp{
     onCallbackEvent?: any;
@@ -118,7 +120,7 @@ const Operation = (props: IProp) => {
     return (
         <div>
             <Modal
-                width={"30%"}
+                width={"70%"}
                 style={{ borderRadius: 6 }}
                 getContainer={false}
                 onCancel={onCancel}
@@ -137,7 +139,7 @@ const Operation = (props: IProp) => {
             >
                 <Form
                     form={formData}
-                    {...formItemDoubleRankLayout}
+                    {...formItemSingleRankLayout}
                     name="nest-messages"
                     layout="horizontal"
                     onFinish={onFinish}
@@ -168,7 +170,7 @@ const Operation = (props: IProp) => {
                                 label="构建脚本:"
                                 rules={[{ required: true }]}
                             >
-                                <Input style={{borderRadius: 6}} disabled={props.operationType === OperationTypeEnum.view}/>
+                                <TextArea autoSize={{ minRows: 6, maxRows: 16 }} style={{borderRadius: 6}} disabled={props.operationType === OperationTypeEnum.view}/>
                             </Form.Item>
                         </Col>
                         {props.operationType !==  OperationTypeEnum.view ? 

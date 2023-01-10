@@ -232,7 +232,7 @@ const Operation = (props: IProp) => {
               <Form.Item
                 name="componentLinkUrl"
                 label="链接地址:"
-                rules={[{ required: true }, { type: "url" }]}
+                rules={[{ required: true }]}
               >
                 <Input style={{ borderRadius: 6 }} />
               </Form.Item>
