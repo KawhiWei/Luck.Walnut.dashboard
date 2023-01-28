@@ -7,4 +7,5 @@ export const IocTypes = {
     ComponentIntegrationService: Symbol("ComponentIntegrationService"),
     ApplicationPipelineService: Symbol("ApplicationPipelineService"),
     BuildImageService: Symbol("BuildImageService"),
+    ClusterService: Symbol("ClusterService"),
 };

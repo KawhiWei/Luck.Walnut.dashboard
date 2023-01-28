@@ -31,3 +31,8 @@ export const ApplicationPipelineApi = {
 export const BuildImageApi = {
   buildImage: "/walnut/api/build/images",
 }
+
+
+export const KubernetesApi = {
+  cluster: "/kube/api/clusters",
+}

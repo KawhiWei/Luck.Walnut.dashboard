@@ -8,4 +8,8 @@ module.exports = function (app) {
         target: "http://localhost:5079",    // 目标路径
         changeOrigin: true
     }))
+    app.use(createProxyMiddleware('/kube', {
+        target: "http://localhost:5004",    // 目标路径
+        changeOrigin: true
+    }))
 }
