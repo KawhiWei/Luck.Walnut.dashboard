@@ -1,3 +1,4 @@
+import { Area, Pie, Radar } from "@ant-design/charts";
 import {
   Card,
   Col,
@@ -15,7 +16,6 @@ import { useEffect, useState } from "react";
 import { AntDesignChartsRadarDto } from "@/domain/kubernetes/clusters/kubernetes-cluster-dto";
 import { IClusterService } from "@/domain/kubernetes/clusters/icluster-service";
 import { IocTypes } from "@/shared/config/ioc-types";
-import { Radar } from "@ant-design/charts";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
 const KubernetesDashboard = (props: any) => {
@@ -29,34 +29,51 @@ const KubernetesDashboard = (props: any) => {
   const [radarData, setRadarData] = useState<Array<AntDesignChartsRadarDto>>(
     []
   );
-
+  const data = [
+    {
+      type: "分类一",
+      value: 27,
+    },
+    {
+      type: "分类二",
+      value: 25,
+    },
+    {
+      type: "分类三",
+      value: 18,
+    },
+    {
+      type: "分类四",
+      value: 15,
+    },
+    {
+      type: "分类五",
+      value: 10,
+    },
+    {
+      type: "其他",
+      value: 5,
+    },
+  ];
   const config = {
+    appendPadding: 10,
+    height: 200,
     data: radarData.map((d) => ({ ...d, star: Math.sqrt(d.count) })),
-    xField: "name",
-    yField: "count",
-    appendPadding: [0, 10, 0, 10],
-    meta: {
-      star: {
-        alias: "name-数量",
-        min: 0,
-        nice: true,
-        formatter: (v: any) => Number(v).toFixed(2),
+    angleField: "count",
+    colorField: "name",
+    radius: 0.75,
+    label: {
+      type: "spider",
+      labelHeight: 28,
+    },
+    interactions: [
+      {
+        type: "element-selected",
       },
-    },
-    xAxis: {
-      tickLine: null,
-    },
-    yAxis: {
-      label: false,
-      grid: {
-        alternateColor: "rgba(0, 0, 0, 0.04)",
+      {
+        type: "element-active",
       },
-    },
-    // 开启辅助点
-    point: {
-      size: 2,
-    },
-    area: {},
+    ],
   };
 
   /**
@@ -136,7 +153,7 @@ const KubernetesDashboard = (props: any) => {
     <div>
       <Spin spinning={globalLoading}>
         <Row gutter={[16, 16]}>
-          <Col span="12">
+          <Col span="8">
             <Card title="概览">
               <Row gutter={[16, 16]}>
                 <Col span="12">
@@ -156,17 +173,14 @@ const KubernetesDashboard = (props: any) => {
                     })}
                   </Select>
                 </Col>
-                <Col span="12">
-                  <Card title="统计信息"></Card>
-                </Col>
               </Row>
             </Card>
           </Col>
         </Row>
         <Row gutter={[16, 16]}>
-          <Col span="6">
+          <Col span="4">
             <Card title="概览">
-              <Radar {...config} />
+              <Pie {...config} />
             </Card>
           </Col>
         </Row>
