@@ -25,6 +25,7 @@ import ExecutedHistory from "./executed-history";
 import { IApplicationPipelineService } from "@/domain/applicationpipelines/iapplicationpipeline-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import Item from "antd/lib/list/Item";
+import Operation from "./operation";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
 import { PipelineBuildStateEnum } from "@/domain/applicationpipelines/applicationpipeline-enum";
 import { id } from "inversify";
@@ -61,8 +62,6 @@ const PipelinePage = (props: IProp) => {
 
   const [subExecutedHistoryElement, setExecutedHistoryElement] =
     useState<any>(null);
-
-  // const [pipeline, setPipeline] = useState<IApplicationPipelineOutputDto>();
 
   /**
    * 页面初始化事件
@@ -217,41 +216,31 @@ const PipelinePage = (props: IProp) => {
     setExecutedHistoryElement(null);
   };
 
-  const goToAddApplicationPileLineOperation = (pipelineId?: string) => {
-    // if (props.appId) {
-    //   setOperationElement(
-    //     <OperationNew
-    //       appId={props.appId}
-    //       operationType={OperationTypeEnum.add}
-    //     ></OperationNew>
-    //   );
-    // }
-    props.appId &&
-      history.push({
-        pathname: "/application/pipeline/edit",
-        state: {
-          appId: props.appId,
-        },
-      });
+  const editRow = (_pipelineId: string) => {
+    if (props.appId) {
+      setOperationElement(
+        <Operation
+          pipelineId={_pipelineId}
+          appId={props.appId}
+          operationType={OperationTypeEnum.edit}
+        ></Operation>
+      );
+    }
   };
-
-  const goToEditApplicationPileLineOperation = (pipelineId: string) => {
-    // if (props.appId) {
-    //   setOperationElement(
-    //     <OperationNew
-    //       appId={props.appId}
-    //       operationType={OperationTypeEnum.add}
-    //     ></OperationNew>
-    //   );
-    // }
-    props.appId &&
-      history.push({
-        pathname: "/application/pipeline/edit",
-        state: {
-          appId: props.appId,
-          pipelineId:pipelineId
-        },
-      });
+  const clearElement = () => {
+    setOperationElement(null);
+    getPageList();
+  };
+  const addChange = () => {
+    if (props.appId) {
+      setOperationElement(
+        <Operation
+          appId={props.appId}
+          onCallbackEvent={clearElement}
+          operationType={OperationTypeEnum.add}
+        />
+      );
+    }
   };
 
   return (
@@ -270,7 +259,7 @@ const PipelinePage = (props: IProp) => {
               type="primary"
               style={{ margin: "8px 8px" }}
               onClick={() => {
-                goToAddApplicationPileLineOperation();
+                addChange();
               }}
             >
               <PlusOutlined />
@@ -304,7 +293,7 @@ const PipelinePage = (props: IProp) => {
                         color: "orange",
                         fontSize: 20,
                       }}
-                      onClick={() => goToEditApplicationPileLineOperation(item.id)}
+                      onClick={() => editRow(item.id)}
                     />,
                     <HistoryOutlined
                       onClick={() => onShowExecutedHistory(item.id)}

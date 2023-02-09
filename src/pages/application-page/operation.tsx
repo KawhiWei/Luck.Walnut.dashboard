@@ -1,3 +1,5 @@
+import "../drawer.less";
+
 import {
   ApplicationLevelMap,
   ApplicationStateMap,
@@ -5,12 +7,15 @@ import {
 import {
   Button,
   Col,
+  Drawer,
+  DrawerProps,
   Form,
   Input,
   InputNumber,
   Modal,
   Row,
   Select,
+  Space,
   message,
 } from "antd";
 import {
@@ -49,7 +54,7 @@ interface IProp {
    * 
    */
   componentIntegrationArray: Array<any>;
-  
+
 }
 
 const validateMessages = {
@@ -74,7 +79,7 @@ const Operation = (props: IProp) => {
   const [formData] = Form.useForm();
   const projectArray = props.projectArray;
   const [languageArray, setLanguageArray] = useState<Array<any>>([]);
-
+  const [placement, setPlacement] = useState<DrawerProps['placement']>('top');
   /**
    * 页面初始化事件
    */
@@ -183,11 +188,12 @@ const Operation = (props: IProp) => {
 
   return (
     <div>
-      <Modal
+      <Drawer
         width={"70%"}
         style={{ borderRadius: 6 }}
         getContainer={false}
-        onCancel={onCancel}
+        key={placement}
+        placement={placement}
         title={
           <div
             style={{
@@ -199,7 +205,25 @@ const Operation = (props: IProp) => {
         }
         closable={false}
         open={operationState.visible}
-        footer={null}
+        footer={
+        <Space style={{float:"right"}}>
+          <Button
+            shape="round"
+            disabled={loading}
+            onClick={() => onCancel()}
+          >
+            取消
+          </Button>
+          <Button
+            shape="round"
+            style={{ margin: "0 8px" }}
+            type="primary"
+            loading={loading}
+            htmlType="submit"
+          >
+            保存
+          </Button>
+        </Space>}
       >
         <Form
           form={formData}
@@ -386,30 +410,8 @@ const Operation = (props: IProp) => {
               </Form.Item>
             </Col>
           </Row>
-          <Row>
-            <Col span="24" style={{ textAlign: "right" }}>
-              <Form.Item {...tailLayout}>
-                <Button
-                  shape="round"
-                  disabled={loading}
-                  onClick={() => onCancel()}
-                >
-                  取消
-                </Button>
-                <Button
-                  shape="round"
-                  style={{ margin: "0 8px" }}
-                  type="primary"
-                  loading={loading}
-                  htmlType="submit"
-                >
-                  保存
-                </Button>
-              </Form.Item>
-            </Col>
-          </Row>
         </Form>
-      </Modal>
+      </Drawer>
     </div>
   );
 };

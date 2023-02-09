@@ -30,7 +30,6 @@ import {
 } from "../../shared/ajax/request";
 import { useEffect, useState } from "react";
 
-import { ApplicationStateEnum } from "@/domain/applications/applicationstate-enum";
 import { ApplicationStateMap } from "@/domain/applications/application-map";
 import ApplicationStateTag from "./applicationStateTag";
 import { IApplicationBaseDto } from "@/domain/applications/application-dto";
@@ -61,7 +60,7 @@ const ApplicationPage = () => {
   const [componentIntegrationArray, setComponentIntegrationArray] = useState<Array<any>>([]);
 
 
-  
+
   const pagination: PaginationProps = {
     ...tacitPagingProps,
     total: paginationConfig.total,
@@ -311,7 +310,7 @@ const ApplicationPage = () => {
     setOperationElement(
       <Operation
 
-      componentIntegrationArray={componentIntegrationArray}
+        componentIntegrationArray={componentIntegrationArray}
         onCallbackEvent={clearElement}
         projectArray={projectArray}
         operationType={OperationTypeEnum.add}

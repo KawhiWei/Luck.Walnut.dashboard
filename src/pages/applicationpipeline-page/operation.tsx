@@ -1,3 +1,5 @@
+import "../drawer.less";
+
 import { Spin, message } from "antd";
 import { useEffect, useState } from "react";
 
@@ -10,13 +12,30 @@ import PipelineStage from "./pipeline-stage";
 import { useHistory } from "react-router-dom";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
+interface IProp {
+  /**
+   * 操作成功回调事件
+   */
+  onCallbackEvent?: any;
+  /**
+   * appId
+   */
+  appId: string;
+  /**
+   * Id
+   */
+  pipelineId?: string;
+  /**
+   * 操作类型
+   */
+  operationType: OperationTypeEnum;
+
+}
 /**
  * 应用流水线设计
  */
-const Operation = (props: any) => {
+const Operation = (props: IProp) => {
   const [loading, setLoading] = useState<boolean>(false);
-  const history = useHistory();
-  const [appId, setAppId] = useState<string>("");
   const [pipelineStageElement, setPipelineStageElement] = useState<any>(null);
   const _applicationPipelineService: IApplicationPipelineService =
     useHookProvider(IocTypes.ApplicationPipelineService);
@@ -33,26 +52,17 @@ const Operation = (props: any) => {
    *
    */
   const onGetLoad = () => {
-    console.log(props.location)
-    if (props.location.state && props.location.state.appId) {
-      setAppId((_appId) => {
-        return props.location.state.appId;
-      });
-    } else {
-      history.push({
-        pathname: "/application/list",
-      });
-    }
+
   };
 
   /**
    *
    */
   const onGetDetailed = () => {
-    if (props.location.state && props.location.state.pipelineId) {
-      setLoading(true);
+    setLoading(true);
+    if (props.pipelineId && props.operationType == OperationTypeEnum.edit)
       _applicationPipelineService
-        .getDetail(props.location.state.pipelineId)
+        .getDetail(props.pipelineId)
         .then((rep) => {
           console.log(rep);
           if (!rep.success) {
@@ -60,8 +70,8 @@ const Operation = (props: any) => {
           } else {
             setPipelineStageElement(
               <PipelineStage
-                appId={props.location.state.appId}
-                operationType={OperationTypeEnum.edit}
+                appId={props.appId}
+                operationType={props.operationType}
                 pipelineInfo={rep.result}
               ></PipelineStage>
             );
@@ -70,14 +80,7 @@ const Operation = (props: any) => {
         .finally(() => {
           setLoading(false);
         });
-    } else {
-      setPipelineStageElement(
-        <PipelineStage
-          appId={props.location.state.appId}
-          operationType={OperationTypeEnum.add}
-        ></PipelineStage>
-      );
-    }
+
   };
 
   return (
