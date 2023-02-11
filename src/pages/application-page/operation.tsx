@@ -189,7 +189,6 @@ const Operation = (props: IProp) => {
   return (
     <div>
       <Drawer
-        width={"70%"}
         style={{ borderRadius: 6 }}
         getContainer={false}
         key={placement}
@@ -206,24 +205,24 @@ const Operation = (props: IProp) => {
         closable={false}
         open={operationState.visible}
         footer={
-        <Space style={{float:"right"}}>
-          <Button
-            shape="round"
-            disabled={loading}
-            onClick={() => onCancel()}
-          >
-            取消
-          </Button>
-          <Button
-            shape="round"
-            style={{ margin: "0 8px" }}
-            type="primary"
-            loading={loading}
-            htmlType="submit"
-          >
-            保存
-          </Button>
-        </Space>}
+          <Space style={{ float: "right" }}>
+            <Button
+              shape="round"
+              disabled={loading}
+              onClick={() => onCancel()}
+            >
+              取消
+            </Button>
+            <Button
+              shape="round"
+              style={{ margin: "0 8px" }}
+              type="primary"
+              loading={loading}
+              htmlType="submit"
+            >
+              保存
+            </Button>
+          </Space>}
       >
         <Form
           form={formData}

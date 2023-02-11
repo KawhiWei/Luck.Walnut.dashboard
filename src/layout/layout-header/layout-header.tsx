@@ -10,7 +10,7 @@ const LayoutHeader = () => {
     }
     return (
         <div>
-            <Layout.Header className="sukt-layout__header">
+            <Layout.Header className="luck-layout-header ">
                 <Button ghost={true} type="primary" onClick={logout}>退出登录</Button>
             </Layout.Header>
         </div>

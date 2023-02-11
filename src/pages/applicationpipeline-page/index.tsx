@@ -222,6 +222,7 @@ const PipelinePage = (props: IProp) => {
         <Operation
           pipelineId={_pipelineId}
           appId={props.appId}
+          onCallbackEvent={clearElement}
           operationType={OperationTypeEnum.edit}
         ></Operation>
       );
@@ -244,7 +245,7 @@ const PipelinePage = (props: IProp) => {
   };
 
   return (
-    <div>
+    <div className="luck-content-test">
       <Spin spinning={loading}>
         <Row>
           <Col span="24" style={{ textAlign: "right" }}>

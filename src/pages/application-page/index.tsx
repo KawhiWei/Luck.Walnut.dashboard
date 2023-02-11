@@ -93,6 +93,14 @@ const ApplicationPage = () => {
       title: "应用英文名",
       dataIndex: "englishName",
       key: "englishName",
+      render: (text: any, record: any) => {
+        return (
+          <div className="table-operation">
+            <Button type="link"
+              onClick={() => goToApplicationDashboard(record.appId)}>{record.englishName}</Button>
+          </div>
+        );
+      },
     },
     {
       title: "应用中文名",
@@ -145,46 +153,35 @@ const ApplicationPage = () => {
       title: "操作",
       dataIndex: "id",
       key: "id",
-      _render: (text: any, record: any) => {
-        return (
-          <div className="table-operation">
-            <Tooltip placement="top" title="应用看板">
-              <EyeOutlined
-                style={{ color: "#108ee9", marginRight: 10, fontSize: 16 }}
-                onClick={() => goToApplicationDashboard(record.appId)}
-              />
-            </Tooltip>
-            <Tooltip placement="top" title="配置管理">
-              <SettingTwoTone
-                style={{ marginRight: 10, fontSize: 16 }}
-                onClick={() => goToConfig(record.appId)}
-              />
-            </Tooltip>
-            <Tooltip placement="top" title="编辑">
-              <EditOutlined
-                style={{ color: "orange", marginRight: 10, fontSize: 16 }}
-                onClick={() => editRow(record.id)}
-              />
-            </Tooltip>
-            <Tooltip placement="top" title="删除">
-              <Popconfirm
-                placement="top"
-                title="确认删除?"
-                onConfirm={() => deleteRow(record.id)}
-                icon={<WarningOutlined />}
-              >
-                <DeleteOutlined style={{ color: "red", fontSize: 16 }} />
-              </Popconfirm>
-            </Tooltip>
-          </div>
-        );
-      },
-      get render() {
-        return this._render;
-      },
-      set render(value) {
-        this._render = value;
-      },
+      render: (text: any, record: any) => (
+        <div className="table-operation">
+          <Tooltip placement="top" title="应用看板">
+            <EyeOutlined
+              style={{ color: "#108ee9", marginRight: 10, fontSize: 16 }}
+              onClick={() => goToApplicationDashboard(record.appId)} />
+          </Tooltip>
+          <Tooltip placement="top" title="配置管理">
+            <SettingTwoTone
+              style={{ marginRight: 10, fontSize: 16 }}
+              onClick={() => goToConfig(record.appId)} />
+          </Tooltip>
+          <Tooltip placement="top" title="编辑">
+            <EditOutlined
+              style={{ color: "orange", marginRight: 10, fontSize: 16 }}
+              onClick={() => editRow(record.id)} />
+          </Tooltip>
+          <Tooltip placement="top" title="删除">
+            <Popconfirm
+              placement="top"
+              title="确认删除?"
+              onConfirm={() => deleteRow(record.id)}
+              icon={<WarningOutlined />}
+            >
+              <DeleteOutlined style={{ color: "red", fontSize: 16 }} />
+            </Popconfirm>
+          </Tooltip>
+        </div>
+      ),
     },
   ];
 

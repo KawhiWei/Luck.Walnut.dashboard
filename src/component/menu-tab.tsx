@@ -35,7 +35,7 @@ class Menus extends React.Component<IProp, any> {
   render() {
     return (
       <div>
-        <Menu mode="inline"  selectedKeys={[this.props.defaultpath]} theme="dark" >
+        <Menu mode="inline"  selectedKeys={[this.props.defaultpath]}  >
         {this.state.menuTreeNode}
       </Menu>
       </div>
