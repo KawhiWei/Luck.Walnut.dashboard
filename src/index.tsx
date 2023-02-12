@@ -12,5 +12,5 @@ ReactDOM.render(
     <Router />
   </React.StrictMode>,
 
-  document.getElementById('sukt')
+  document.getElementById('luck')
 );

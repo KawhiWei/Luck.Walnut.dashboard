@@ -430,6 +430,7 @@ const ApplicationPage = () => {
               dataSource={tableData}
               pagination={pagination}
               scroll={{ y: 700 }}
+              size="small"
             />
           </Col>
         </Row>
