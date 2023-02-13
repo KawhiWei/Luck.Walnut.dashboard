@@ -71,8 +71,9 @@ const BuildLogs = (props: IProp) => {
     <div>
       <Drawer
         title="执行日志"
-        width={1200}
+        width={"80%"}
         placement="right"
+        maskClosable={false}
         onClose={() => editOperationState(false)}
         open={operationState.visible}
       >

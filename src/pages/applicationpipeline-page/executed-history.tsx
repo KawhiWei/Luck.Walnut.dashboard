@@ -214,8 +214,9 @@ const ExecutedHistory = (props: IProp) => {
     <div>
       <Drawer
         title="构建历史"
-        width={1000}
+        width={"80%"}
         placement="right"
+        maskClosable={false}
         onClose={() => editOperationState(false)}
         open={operationState.visible}
       >

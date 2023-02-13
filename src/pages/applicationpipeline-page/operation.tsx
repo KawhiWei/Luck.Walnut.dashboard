@@ -124,8 +124,8 @@ const Operation = (props: IProp) => {
     <div id="test">
       <Drawer
         style={{ borderRadius: 6 }}
-        // getContainer={() => document.getElementById('test') || document.body}
-        getContainer={false}
+        maskClosable={false}
+        onClose={() => editOperationState(false)}
         width="80%"
         title={
           <div
