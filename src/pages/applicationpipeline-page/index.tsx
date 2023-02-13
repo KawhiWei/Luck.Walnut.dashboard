@@ -38,13 +38,14 @@ interface IProp {
    * 应用Id
    */
   appId?: string;
+
+  
 }
 
 /***
  * 应用流水线设计
  */
 const PipelinePage = (props: IProp) => {
-  const history = useHistory();
   const _applicationPipelineService: IApplicationPipelineService =
     useHookProvider(IocTypes.ApplicationPipelineService);
 
@@ -245,7 +246,7 @@ const PipelinePage = (props: IProp) => {
   };
 
   return (
-    <div className="luck-content-test">
+    <div>
       <Spin spinning={loading}>
         <Row>
           <Col span="24" style={{ textAlign: "right" }}>

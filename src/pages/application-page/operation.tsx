@@ -191,8 +191,7 @@ const Operation = (props: IProp) => {
       <Drawer
         style={{ borderRadius: 6 }}
         getContainer={false}
-        key={placement}
-        placement={placement}
+        width="80%"
         title={
           <div
             style={{

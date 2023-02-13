@@ -113,19 +113,9 @@ const ApplicationPage = () => {
       key: "appId",
     },
     {
-      title: "应用类型",
-      dataIndex: "developmentLanguage",
-      key: "developmentLanguage",
-    },
-    {
       title: "所属项目",
       dataIndex: "projectName",
       key: "projectName",
-    },
-    {
-      title: "所属部门",
-      dataIndex: "departmentName",
-      key: "departmentName",
     },
     {
       title: "应用状态",
@@ -145,26 +135,22 @@ const ApplicationPage = () => {
       },
     },
     {
-      title: "联系人",
-      dataIndex: "linkMan",
-      key: "linkMan",
-    },
-    {
       title: "操作",
       dataIndex: "id",
       key: "id",
+      width: 400,
       render: (text: any, record: any) => (
         <div className="table-operation">
-          <Tooltip placement="top" title="应用看板">
+          {/* <Tooltip placement="top" title="应用看板">
             <EyeOutlined
               style={{ color: "#108ee9", marginRight: 10, fontSize: 16 }}
               onClick={() => goToApplicationDashboard(record.appId)} />
-          </Tooltip>
-          <Tooltip placement="top" title="配置管理">
+          </Tooltip> */}
+          {/* <Tooltip placement="top" title="配置管理">
             <SettingTwoTone
               style={{ marginRight: 10, fontSize: 16 }}
               onClick={() => goToConfig(record.appId)} />
-          </Tooltip>
+          </Tooltip> */}
           <Tooltip placement="top" title="编辑">
             <EditOutlined
               style={{ color: "orange", marginRight: 10, fontSize: 16 }}

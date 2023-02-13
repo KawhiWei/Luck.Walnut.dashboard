@@ -6,7 +6,7 @@ import ReactDOM from 'react-dom';
 import Router from "@/router/index";
 import startQiankun from "@/shared/micro";
 
-startQiankun();
+// startQiankun();
 ReactDOM.render(
   <React.StrictMode>
     <Router />

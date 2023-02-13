@@ -15,7 +15,7 @@ const LayoutSider = (props: { menus: IMenuOutput[],defaultpath:any }) => {
   
   return (
     <Layout.Sider  width={246}>
-      <div  className="logo">胡桃木PaaS平台</div>
+      <div  className="logo">核桃PaaS平台</div>
       <Menus defaultpath={props.defaultpath} menus={props.menus} />
     </Layout.Sider>
   )

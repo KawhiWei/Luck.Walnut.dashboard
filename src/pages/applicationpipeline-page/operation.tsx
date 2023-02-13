@@ -123,12 +123,10 @@ const Operation = (props: IProp) => {
   return (
     <div id="test">
       <Drawer
-        width={"70%"}
         style={{ borderRadius: 6 }}
         // getContainer={() => document.getElementById('test') || document.body}
         getContainer={false}
-        key={placement}
-        placement={placement}
+        width="80%"
         title={
           <div
             style={{
