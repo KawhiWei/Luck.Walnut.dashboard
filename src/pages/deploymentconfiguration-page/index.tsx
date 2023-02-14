@@ -133,7 +133,7 @@ const DeploymentConfigurationPage = () => {
                 <Table columns={columns}
                     dataSource = {tableData}
                     scroll={{y:700}}
-                    pagination={pagination}
+                    // pagination={pagination}
                 />
             </Spin>
         </div>
