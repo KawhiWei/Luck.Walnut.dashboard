@@ -36,3 +36,7 @@ export const BuildImageApi = {
 export const KubernetesApi = {
   cluster: "/kube/api/clusters",
 }
+
+export const DeploymentApi = {
+  deployments:"Kube/api/application/deployments",
+}

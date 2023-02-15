@@ -5,7 +5,8 @@ import {
     Form,
     Row,
     Spin,
-    Table
+    Table,
+    PaginationProps
 } from "antd";
 import {
     ReloadOutlined,
@@ -18,6 +19,9 @@ import {
 
 import { searchFormItemDoubleRankLayout } from "@/constans/layout/optionlayout";
 import { IApplicationDeploymentOutputDto } from "@/domain/applicationdeployments/applicationdeployment-dto";
+import { ApplicationDeploymentService } from "@/domain/applicationdeployments/applicationdeployment-service";
+import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
+import { IocTypes } from "@/shared/config/ioc-types";
 
 const DeploymentConfigurationPage = () => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -25,6 +29,12 @@ const DeploymentConfigurationPage = () => {
     const [tableData,setTableData]=useState<Array<IApplicationDeploymentOutputDto>>();
     const [paginationConfig, setPaginationConfig] =
     useState<initPaginationConfig>(new initPaginationConfig());
+    const _deploymentService: ApplicationDeploymentService = useHookProvider(IocTypes.DeploymentService);
+    useEffect(() => {
+        getPageList();
+    },[paginationConfig])
+
+
     const columns = [
         {
             title: "部署环境",
@@ -79,22 +89,28 @@ const DeploymentConfigurationPage = () => {
         }
 
     ]
-    // const pagination: PaginationProps = {
-    //     ...tacitPagingProps,
-    //     total: paginationConfig.total,
-    //     current: paginationConfig.current,
-    //     pageSize: paginationConfig.pageSize,
-    //     showTotal: (total) => {
-    //         return `共 ${total} 条`;
-    //     }
-    // }
+    const pagination: PaginationProps = {
+        ...tacitPagingProps,
+        total: paginationConfig.total,
+        current: paginationConfig.current,
+        pageSize: paginationConfig.pageSize,
+        showTotal: (total) => {
+            return `共 ${total} 条`;
+        }
+    }
 
     const onSearch = () => {
 
     }
 
     const getPageList = () => {
-
+        setLoading(true);
+        let param = formData.getFieldsValue();
+        let _param = {
+            pageSize: paginationConfig.pageSize,
+            pageIndex: paginationConfig.current,
+        }
+        
     }
     const addChange = () => {
 
@@ -133,7 +149,7 @@ const DeploymentConfigurationPage = () => {
                 <Table columns={columns}
                     dataSource = {tableData}
                     scroll={{y:700}}
-                    // pagination={pagination}
+                    pagination={pagination}
                 />
             </Spin>
         </div>
