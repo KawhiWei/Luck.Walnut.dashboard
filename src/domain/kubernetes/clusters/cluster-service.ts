@@ -19,7 +19,7 @@ export class ClusterService extends BaseService implements IClusterService {
      * @returns 
      */
     getClusterDashboard(_id: string): Promise<IServerReturn<any>> {
-        return this.dataRequest.getRequest(`${KubernetesApi.cluster}/${_id}/cluster/dashboard`);
+        return this.dataRequest.getRequest(`${KubernetesApi.cluster}/${_id}/cluster/resource/dashboard`);
     }
 
 

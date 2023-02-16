@@ -1,38 +1,46 @@
-import { useEffect, useState } from "react";
 import {
     Button,
     Col,
     Form,
+    PaginationProps,
     Row,
     Spin,
-    Table,
-    PaginationProps
+    Table
 } from "antd";
 import {
-    ReloadOutlined,
-    PlusOutlined
+    PlusOutlined,
+    ReloadOutlined
 } from "@ant-design/icons";
 import {
     initPaginationConfig,
     tacitPagingProps,
 } from "../../shared/ajax/request";
+import { useEffect, useState } from "react";
 
-import { searchFormItemDoubleRankLayout } from "@/constans/layout/optionlayout";
-import { IApplicationDeploymentOutputDto } from "@/domain/applicationdeployments/applicationdeployment-dto";
-import { ApplicationDeploymentService } from "@/domain/applicationdeployments/applicationdeployment-service";
-import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
+import { IDeploymentConfigurationOutputDto } from "@/domain/deployment-configurations/deployment-configuration-dto";
+import { IDeploymentConfigurationService } from "@/domain/deployment-configurations/ideployment-configuration-service";
 import { IocTypes } from "@/shared/config/ioc-types";
+import { searchFormItemDoubleRankLayout } from "@/constans/layout/optionlayout";
+import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
-const DeploymentConfigurationPage = () => {
+interface IProp {
+    /**
+     * 应用Id
+     */
+    appId?: string;
+
+
+}
+const DeploymentConfigurationPage = (props: IProp) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [formData] = Form.useForm();
-    const [tableData,setTableData]=useState<Array<IApplicationDeploymentOutputDto>>();
+    const [tableData, setTableData] = useState<Array<IDeploymentConfigurationOutputDto>>();
     const [paginationConfig, setPaginationConfig] =
-    useState<initPaginationConfig>(new initPaginationConfig());
-    const _deploymentService: ApplicationDeploymentService = useHookProvider(IocTypes.DeploymentService);
+        useState<initPaginationConfig>(new initPaginationConfig());
+    const _deploymentConfigurationOutputDto: IDeploymentConfigurationService = useHookProvider(IocTypes.DeploymentConfigurationService);
     useEffect(() => {
         getPageList();
-    },[paginationConfig])
+    }, [paginationConfig])
 
 
     const columns = [
@@ -75,11 +83,11 @@ const DeploymentConfigurationPage = () => {
         {
             title: "镜像拉取证书",
             dataIndex: "imagePullSecretId",
-        },{
+        }, {
             title: "操作",
             dataIndex: "id",
-            key:"id",
-            render:(text: any, record: any) => {
+            key: "id",
+            render: (text: any, record: any) => {
                 return (
                     <div>
 
@@ -110,7 +118,8 @@ const DeploymentConfigurationPage = () => {
             pageSize: paginationConfig.pageSize,
             pageIndex: paginationConfig.current,
         }
-        
+        setLoading(false);
+
     }
     const addChange = () => {
 
@@ -147,9 +156,10 @@ const DeploymentConfigurationPage = () => {
                     </Row>
                 </Form>
                 <Table columns={columns}
-                    dataSource = {tableData}
-                    scroll={{y:700}}
+                    dataSource={tableData}
                     pagination={pagination}
+                    scroll={{ y: 700 }}
+                    size="small"
                 />
             </Spin>
         </div>
