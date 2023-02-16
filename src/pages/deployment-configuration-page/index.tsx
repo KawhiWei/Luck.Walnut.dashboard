@@ -2,14 +2,19 @@ import {
     Button,
     Col,
     Form,
+    message,
     PaginationProps,
+    Popconfirm,
     Row,
     Spin,
-    Table
+    Table,
+    Tooltip
 } from "antd";
 import {
     PlusOutlined,
-    ReloadOutlined
+    ReloadOutlined,
+    WarningOutlined,
+    DeleteOutlined
 } from "@ant-design/icons";
 import {
     initPaginationConfig,
@@ -37,11 +42,10 @@ const DeploymentConfigurationPage = (props: IProp) => {
     const [tableData, setTableData] = useState<Array<IDeploymentConfigurationOutputDto>>();
     const [paginationConfig, setPaginationConfig] =
         useState<initPaginationConfig>(new initPaginationConfig());
-    const _deploymentConfigurationOutputDto: IDeploymentConfigurationService = useHookProvider(IocTypes.DeploymentConfigurationService);
+    const _deploymentConfigurationService: IDeploymentConfigurationService = useHookProvider(IocTypes.DeploymentConfigurationService);
     useEffect(() => {
         getPageList();
     }, [paginationConfig])
-
 
     const columns = [
         {
@@ -89,8 +93,17 @@ const DeploymentConfigurationPage = (props: IProp) => {
             key: "id",
             render: (text: any, record: any) => {
                 return (
-                    <div>
-
+                    <div className="table-operation">
+                        <Tooltip placement="top" title="删除">
+                            <Popconfirm
+                                placement="top"
+                                title="确认删除?"
+                                onConfirm={() => deleteRow(record.id)}
+                                icon={<WarningOutlined />}
+                            >
+                                <DeleteOutlined style={{ color: "red", fontSize: 16 }} />
+                            </Popconfirm>
+                        </Tooltip>
                     </div>
                 )
             }
@@ -104,6 +117,24 @@ const DeploymentConfigurationPage = (props: IProp) => {
         pageSize: paginationConfig.pageSize,
         showTotal: (total) => {
             return `共 ${total} 条`;
+        },
+        onShowSizeChange: (current: number, pageSize: number) => {
+            setPaginationConfig(Pagination => {
+                Pagination.pageSize = pageSize;
+                Pagination.current = current;
+                return Pagination;
+            });
+            getPageList();
+        },
+        onChange: (page: number, pageSize?: number) => {
+            setPaginationConfig((Pagination) => {
+                Pagination.current = page;
+                if (pageSize) {
+                    Pagination.pageSize = pageSize;
+                }
+                return Pagination;
+            });
+            getPageList();
         }
     }
 
@@ -118,11 +149,26 @@ const DeploymentConfigurationPage = (props: IProp) => {
             pageSize: paginationConfig.pageSize,
             pageIndex: paginationConfig.current,
         }
+        _deploymentConfigurationService.getPage("luck.walnut",_param).then((x) => {
+            if(x.success){
+                setTableData(x.result.data);
+            }
+        }).finally(() => {
+            setLoading(false);
+        })
         setLoading(false);
-
     }
     const addChange = () => {
 
+    }
+    const deleteRow = (_id: string) => {
+        _deploymentConfigurationService.delete(_id).then(res => {
+            if(!res.success){
+                message.error(res.errorMessage, 3);
+            }else{
+                getPageList();
+            }
+        });
     }
     return (
         <div>

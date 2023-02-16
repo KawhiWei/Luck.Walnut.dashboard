@@ -4,4 +4,6 @@ import { IDeploymentConfigurationOutputDto } from "./deployment-configuration-dt
 
 export interface IDeploymentConfigurationService {
     getPage(_appId: string, _param: any): Promise<IServerReturn<IServerPageReturn<IDeploymentConfigurationOutputDto>>>;
+
+    delete(_id: string): Promise<IServerReturn<any>>;
 }

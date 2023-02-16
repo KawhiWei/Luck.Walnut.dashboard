@@ -9,5 +9,8 @@ export class DeploymentConfigurationService extends BaseService implements IDepl
     getPage(_appId: string, _param: any): Promise<IServerReturn<IServerPageReturn<IDeploymentConfigurationOutputDto>>> {
         return this.dataRequest.getRequest(`${DeploymentApi.deployments}/${_appId}/page/list`, _param);
     }
+    delete(_id:string): Promise<IServerReturn<any>>{
+        return this.dataRequest.deleteRequest(`${DeploymentApi.deployments}/${_id}`)
+    }
 }
 
