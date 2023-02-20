@@ -37,7 +37,6 @@ interface IProp {
  */
 const Operation = (props: IProp) => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [placement, setPlacement] = useState<DrawerProps['placement']>('top');
   const [pipelineStageElement, setPipelineStageElement] = useState<any>(null);
   const _applicationPipelineService: IApplicationPipelineService =
     useHookProvider(IocTypes.ApplicationPipelineService);
@@ -46,7 +45,6 @@ const Operation = (props: IProp) => {
    * 页面初始化事件
    */
   useEffect(() => {
-    console.log(document.querySelector('.luck-content'))
     debugger
     onGetLoad();
     onGetDetailed();
@@ -67,7 +65,6 @@ const Operation = (props: IProp) => {
    *
    */
   const onGetLoad = () => {
-
     switch (props.operationType) {
       case OperationTypeEnum.add:
         editOperationState(true, "添加");

@@ -25,7 +25,7 @@ const ApplicationDashboard = (props: any) => {
   const _applicationService: IApplicationService = useHookProvider(
     IocTypes.ApplicationService
   );
-  const [appId, setAppId] = useState<string>();
+  const [appId, setAppId] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [applicationData, setApplicationData] = useState<IApplicationBaseDto>();
 
@@ -101,12 +101,12 @@ const ApplicationDashboard = (props: any) => {
                     key: "2",
                     children: <PipelinePage appId={appId} />,
                   },
-                  {
-                    label: `部署配置`,
-                    key: "3",
-                    // children:<div>adasdasdas</div>,
-                    children: <DeploymentConfigurationPage appId={appId} />,
-                  },
+                  // {
+                  //   label: `部署配置`,
+                  //   key: "3",
+                  //   // children:<div>adasdasdas</div>,
+                  //   children: <DeploymentConfigurationPage appId={appId} />,
+                  // },
                 ]}
               ></Tabs>
             </Card>

@@ -2,19 +2,19 @@ import {
     Button,
     Col,
     Form,
-    message,
     PaginationProps,
     Popconfirm,
     Row,
     Spin,
     Table,
-    Tooltip
+    Tooltip,
+    message
 } from "antd";
 import {
+    DeleteOutlined,
     PlusOutlined,
     ReloadOutlined,
-    WarningOutlined,
-    DeleteOutlined
+    WarningOutlined
 } from "@ant-design/icons";
 import {
     initPaginationConfig,
@@ -25,6 +25,9 @@ import { useEffect, useState } from "react";
 import { IDeploymentConfigurationOutputDto } from "@/domain/deployment-configurations/deployment-configuration-dto";
 import { IDeploymentConfigurationService } from "@/domain/deployment-configurations/ideployment-configuration-service";
 import { IocTypes } from "@/shared/config/ioc-types";
+import Operation from "./operation";
+import { OperationTypeEnum } from "@/shared/operation/operationType";
+import { id } from "inversify";
 import { searchFormItemDoubleRankLayout } from "@/constans/layout/optionlayout";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
@@ -32,7 +35,7 @@ interface IProp {
     /**
      * 应用Id
      */
-    appId?: string;
+    appId: string;
 
 
 }
@@ -40,6 +43,7 @@ const DeploymentConfigurationPage = (props: IProp) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [formData] = Form.useForm();
     const [tableData, setTableData] = useState<Array<IDeploymentConfigurationOutputDto>>();
+    const [subOperationElement, setOperationElement] = useState<any>(null);
     const [paginationConfig, setPaginationConfig] =
         useState<initPaginationConfig>(new initPaginationConfig());
     const _deploymentConfigurationService: IDeploymentConfigurationService = useHookProvider(IocTypes.DeploymentConfigurationService);
@@ -49,31 +53,32 @@ const DeploymentConfigurationPage = (props: IProp) => {
 
     const columns = [
         {
+            title: "应用Id",
+            dataIndex: "appId",
+        },
+        {
             title: "部署环境",
             dataIndex: "environmentName",
-        },
-        {
-            title: "应用运行时类型",
-            dataIndex: "applicationRuntimeType",
-        },
-        {
-            title: "部署类型",
-            dataIndex: "deploymentType",
         },
         {
             title: "中文名称",
             dataIndex: "chineseName",
         },
         {
+            title: "应用运行时",
+            dataIndex: "applicationRuntimeTypeName",
+        },
+        {
+            title: "部署类型",
+            dataIndex: "deploymentTypeName",
+        },
+
+        {
             title: "名称",
             dataIndex: "name",
         },
         {
-            title: "应用Id",
-            dataIndex: "appId",
-        },
-        {
-            title: "命名空间Id",
+            title: "命名空间",
             dataIndex: "kubernetesNameSpaceId",
         },
         {
@@ -87,7 +92,8 @@ const DeploymentConfigurationPage = (props: IProp) => {
         {
             title: "镜像拉取证书",
             dataIndex: "imagePullSecretId",
-        }, {
+        },
+        {
             title: "操作",
             dataIndex: "id",
             key: "id",
@@ -139,7 +145,7 @@ const DeploymentConfigurationPage = (props: IProp) => {
     }
 
     const onSearch = () => {
-
+        getPageList();
     }
 
     const getPageList = () => {
@@ -149,8 +155,8 @@ const DeploymentConfigurationPage = (props: IProp) => {
             pageSize: paginationConfig.pageSize,
             pageIndex: paginationConfig.current,
         }
-        _deploymentConfigurationService.getPage("luck.walnut",_param).then((x) => {
-            if(x.success){
+        _deploymentConfigurationService.getPage("luck.walnut", _param).then((x) => {
+            if (x.success) {
                 setTableData(x.result.data);
             }
         }).finally(() => {
@@ -159,13 +165,21 @@ const DeploymentConfigurationPage = (props: IProp) => {
         setLoading(false);
     }
     const addChange = () => {
-
+        setOperationElement(<Operation operationType={OperationTypeEnum.add} appId={props.appId}></Operation>)
     }
+
+    /***
+     * 修改一个配置
+     */
+    const editRow = (_id: string) => {
+        setOperationElement(<Operation operationType={OperationTypeEnum.add} appId={props.appId} id={_id}></Operation>)
+    }
+
     const deleteRow = (_id: string) => {
         _deploymentConfigurationService.delete(_id).then(res => {
-            if(!res.success){
+            if (!res.success) {
                 message.error(res.errorMessage, 3);
-            }else{
+            } else {
                 getPageList();
             }
         });
@@ -184,7 +198,7 @@ const DeploymentConfigurationPage = (props: IProp) => {
                             <ReloadOutlined
                                 style={{ textAlign: "right", marginRight: 10, fontSize: 16 }}
                                 onClick={() => {
-                                    getPageList();
+                                    onSearch();
                                 }}
                             />
                             <Button
@@ -196,7 +210,7 @@ const DeploymentConfigurationPage = (props: IProp) => {
                                 }}
                             >
                                 <PlusOutlined />
-                                添加流水线
+                                添加部署
                             </Button>
                         </Col>
                     </Row>
@@ -207,6 +221,7 @@ const DeploymentConfigurationPage = (props: IProp) => {
                     scroll={{ y: 700 }}
                     size="small"
                 />
+                {subOperationElement}
             </Spin>
         </div>
     )
