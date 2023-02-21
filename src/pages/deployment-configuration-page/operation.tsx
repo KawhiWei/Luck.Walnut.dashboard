@@ -95,7 +95,8 @@ const Operation = (props: IProp) => {
                         {operationState.title}
                     </div>
                 }
-                closable={false}
+                onClose={() => onCancel()}
+                closable={true}
                 open={operationState.visible}
                 footer={
                     <Space style={{ float: "right" }}>

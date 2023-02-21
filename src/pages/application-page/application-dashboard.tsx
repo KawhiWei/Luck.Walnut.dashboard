@@ -1,14 +1,11 @@
-import { Button, Card, Col, Form, Row, Spin, Tabs } from "antd";
+import { Button, Card, Col, Row, Spin, Tabs } from "antd";
 import { useEffect, useState } from "react";
 
 import ApplicationInformation from "./application-information";
 import DeploymentConfigurationPage from "../deployment-configuration-page/index";
 import { IApplicationBaseDto } from "@/domain/applications/application-dto";
 import { IApplicationService } from "@/domain/applications/iapplication-service";
-import { IEnvironmentService } from "@/domain/environment/ienvironment-service";
-import { IProjectService } from "@/domain/projects/iproject-service";
 import { IocTypes } from "@/shared/config/ioc-types";
-import NewConfigPage from "../config/indexnew";
 import PipelinePage from "../application-pipeline-page/index";
 import RollbackOutlined from "@ant-design/icons";
 import { useHistory } from "react-router-dom";
@@ -67,7 +64,7 @@ const ApplicationDashboard = (props: any) => {
   return (
     <div>
       <Spin spinning={loading}>
-        <Row gutter={12} style={{ textAlign: "left", marginTop: 10 }}>
+        <Row gutter={12} style={{ textAlign: "left" }}>
           <Col span="24">
             <Card
               title="应用监控"
@@ -101,12 +98,11 @@ const ApplicationDashboard = (props: any) => {
                     key: "2",
                     children: <PipelinePage appId={appId} />,
                   },
-                  // {
-                  //   label: `部署配置`,
-                  //   key: "3",
-                  //   // children:<div>adasdasdas</div>,
-                  //   children: <DeploymentConfigurationPage appId={appId} />,
-                  // },
+                  {
+                    label: `部署配置`,
+                    key: "3",
+                    children: <DeploymentConfigurationPage appId={appId} />,
+                  },
                 ]}
               ></Tabs>
             </Card>

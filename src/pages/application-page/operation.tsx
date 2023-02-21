@@ -189,8 +189,6 @@ const Operation = (props: IProp) => {
   return (
     <div>
       <Drawer
-        style={{ borderRadius: 6 }}
-        getContainer={false}
         width="80%"
         title={
           <div
@@ -201,7 +199,8 @@ const Operation = (props: IProp) => {
             {operationState.title}
           </div>
         }
-        closable={false}
+        onClose={() => onCancel()}
+        closable={true}
         open={operationState.visible}
         footer={
           <Space style={{ float: "right" }}>

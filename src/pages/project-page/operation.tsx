@@ -3,6 +3,7 @@ import {
   Button,
   Col,
   DatePicker,
+  Drawer,
   Form,
   Input,
   InputNumber,
@@ -201,14 +202,39 @@ const ProjectOperation = (props: IProp) => {
 
   return (
     <div>
-      <Modal
-        width={"70%"}
-        getContainer={false}
-        onCancel={onCancel}
-        title={operationState.title}
-        closable={false}
-        visible={operationState.visible}
-        footer={null}
+      <Drawer
+        width="80%"
+        title={
+          <div
+            style={{
+              borderRadius: 10,
+            }}
+          >
+            {operationState.title}
+          </div>
+        }
+        onClose={() => onCancel()}
+        closable={true}
+        open={operationState.visible}
+        footer={
+          <Space style={{ float: "right" }}>
+            <Button
+              shape="round"
+              disabled={loading}
+              onClick={() => onCancel()}
+            >
+              取消
+            </Button>
+            <Button
+              shape="round"
+              style={{ margin: "0 8px" }}
+              type="primary"
+              loading={loading}
+              htmlType="submit"
+            >
+              保存
+            </Button>
+          </Space>}
       >
         <Form
           form={formData}
@@ -330,26 +356,8 @@ const ProjectOperation = (props: IProp) => {
               </Form.Item>
             </Col>
           </Row>
-          <Row>
-            <Col span="24" style={{ textAlign: "right" }}>
-              <Form.Item {...tailLayout}>
-                <Button shape="round" onClick={() => onCancel()}>
-                  取消
-                </Button>
-                <Button
-                  shape="round"
-                  style={{ margin: "0 8px" }}
-                  type="primary"
-                  loading={loading}
-                  htmlType="submit"
-                >
-                  保存
-                </Button>
-              </Form.Item>
-            </Col>
-          </Row>
         </Form>
-      </Modal>
+      </Drawer>
     </div>
   );
 };

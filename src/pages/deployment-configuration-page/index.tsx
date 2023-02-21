@@ -165,14 +165,14 @@ const DeploymentConfigurationPage = (props: IProp) => {
         setLoading(false);
     }
     const addChange = () => {
-        setOperationElement(<Operation operationType={OperationTypeEnum.add} appId={props.appId}></Operation>)
+        setOperationElement(<Operation operationType={OperationTypeEnum.add} appId={props.appId} onCallbackEvent={clearElement}></Operation>)
     }
 
     /***
      * 修改一个配置
      */
     const editRow = (_id: string) => {
-        setOperationElement(<Operation operationType={OperationTypeEnum.add} appId={props.appId} id={_id}></Operation>)
+        setOperationElement(<Operation operationType={OperationTypeEnum.add} appId={props.appId} id={_id} onCallbackEvent={clearElement}></Operation>)
     }
 
     const deleteRow = (_id: string) => {
@@ -184,6 +184,11 @@ const DeploymentConfigurationPage = (props: IProp) => {
             }
         });
     }
+    const clearElement = () => {
+        setOperationElement(null);
+        getPageList();
+    };
+
     return (
         <div>
             <Spin spinning={loading}>

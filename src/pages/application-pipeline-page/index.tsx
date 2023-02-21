@@ -230,7 +230,6 @@ const PipelinePage = (props: IProp) => {
     }
   };
   const clearElement = () => {
-    debugger
     setOperationElement(null);
     getPageList();
   };

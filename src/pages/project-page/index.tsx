@@ -14,8 +14,6 @@ import {
 } from "antd";
 import {
   DeleteOutlined,
-  EditOutlined,
-  EyeOutlined,
   PlusOutlined,
   SearchOutlined,
   SettingOutlined,
@@ -27,11 +25,11 @@ import {
 } from "../../shared/ajax/request";
 import { useEffect, useState } from "react";
 
-import { IMatterService } from "@/domain/matters/imatter-service";
 import { IProjectService } from "@/domain/projects/iproject-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
 import ProjectOperation from "./operation";
+import { searchFormItemDoubleRankLayout } from "@/constans/layout/optionlayout";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
 const ProjectPage = () => {
@@ -41,7 +39,7 @@ const ProjectPage = () => {
   );
   const [paginationConfig, setPaginationConfig] =
     useState<initPaginationConfig>(new initPaginationConfig());
-  const [loading, setloading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [tableData, setTableData] = useState<Array<any>>([]);
   const [formData] = Form.useForm();
 
@@ -117,7 +115,7 @@ const ProjectPage = () => {
             <Tooltip placement="top" title="项目概览">
               <SettingOutlined
                 style={{ color: "#108ee9", marginRight: 10, fontSize: 16 }}
-                onClick={() => {}}
+                onClick={() => { }}
               />
             </Tooltip>
             <Tooltip placement="top" title="删除">
@@ -216,11 +214,20 @@ const ProjectPage = () => {
       }
     });
   };
+
+  const onSearch = () => {
+    setPaginationConfig((Pagination) => {
+      Pagination.current = 1;
+      return Pagination;
+    });
+    getPageList();
+  };
+
   /**
    * 页面初始化获取数据
    */
   const getPageList = () => {
-    setloading(true);
+    setLoading(true);
     let param = {
       pageSize: paginationConfig.pageSize,
       pageIndex: paginationConfig.current,
@@ -236,10 +243,10 @@ const ProjectPage = () => {
           return item;
         });
         setTableData(rep.result.data);
-        setloading(false);
-      } else {
-        setloading(false);
+        setLoading(false);
       }
+    }).finally(() => {
+      setLoading(false);
     });
   };
 
@@ -256,29 +263,46 @@ const ProjectPage = () => {
   return (
     <div>
       <Spin spinning={loading}>
-        <Row>
-          <Form form={formData} name="horizontal_login" layout="inline">
-            <Form.Item name="name" label="项目名称">
-              <Input style={{ borderRadius: 8 }} />
-            </Form.Item>
-            <Button
-              type="primary"
-              shape="round"
-              htmlType="submit"
-              onClick={() => {
-                getPageList();
-              }}
-            >
-              <SearchOutlined />
-              查询
-            </Button>
-          </Form>
-        </Row>
+        <Form
+          form={formData}
+          name="horizontal_login"
+          layout="horizontal"
+          {...searchFormItemDoubleRankLayout}
+          onFinish={onSearch}
+        >
+          <Row>
+            <Col span="6">
+              <Form.Item name="name" label="项目名称：">
+                <Input
+                  style={{ borderRadius: 8 }}
+                  placeholder="请请输入项目名称"
+                />
+              </Form.Item>
+            </Col>
+
+          </Row>
+
+          <Row>
+            <Col span="6" style={{ textAlign: "center" }}>
+              <Button
+                type="primary"
+                shape="round"
+                htmlType="submit"
+                onClick={() => {
+                  getPageList();
+                }}
+              >
+                <SearchOutlined />
+                查询
+              </Button>
+            </Col>
+          </Row>
+        </Form>
         <Row>
           <Col span="24" style={{ textAlign: "right" }}>
             <Button
-              type="primary"
               shape="round"
+              type="primary"
               style={{ margin: "8px 8px" }}
               onClick={() => {
                 addChange();
@@ -296,6 +320,7 @@ const ProjectPage = () => {
               dataSource={tableData}
               pagination={pagination}
               scroll={{ y: 700 }}
+              size="small"
             />
           </Col>
         </Row>

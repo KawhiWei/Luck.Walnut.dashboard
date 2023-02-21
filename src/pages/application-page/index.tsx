@@ -171,18 +171,6 @@ const ApplicationPage = () => {
     },
   ];
 
-  /**
-   * 跳转到配置中心
-   * @param _appId
-   */
-  const goToConfig = (_appId: string) => {
-    history.push({
-      pathname: "/application/configcenterold",
-      state: {
-        appId: _appId,
-      },
-    });
-  };
   const goToApplicationDashboard = (_appId: string) => {
     history.push({
       pathname: "/application/dashboard",
@@ -292,7 +280,6 @@ const ApplicationPage = () => {
   const addChange = () => {
     setOperationElement(
       <Operation
-
         componentIntegrationArray={componentIntegrationArray}
         onCallbackEvent={clearElement}
         projectArray={projectArray}
@@ -340,7 +327,7 @@ const ApplicationPage = () => {
               </Form.Item>
             </Col>
             <Col span="6">
-              <Form.Item name="chinessName" label="应用中文名称：">
+              <Form.Item name="chineseName" label="应用中文名称：">
                 <Input
                   style={{ borderRadius: 8 }}
                   placeholder="请请输入应用标识"

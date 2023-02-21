@@ -45,7 +45,6 @@ const Operation = (props: IProp) => {
    * 页面初始化事件
    */
   useEffect(() => {
-    debugger
     onGetLoad();
     onGetDetailed();
   }, []);
@@ -96,7 +95,6 @@ const Operation = (props: IProp) => {
       _applicationPipelineService
         .getDetail(props.pipelineId)
         .then((rep) => {
-          console.log(rep);
           if (!rep.success) {
             message.error(rep.errorMessage, 3);
           } else {
@@ -112,6 +110,13 @@ const Operation = (props: IProp) => {
         .finally(() => {
           setLoading(false);
         });
+    } else {
+      setPipelineStageElement(
+        <PipelineStage
+          appId={props.appId}
+          operationType={props.operationType}
+        ></PipelineStage>
+      );
     }
 
 
@@ -122,7 +127,7 @@ const Operation = (props: IProp) => {
       <Drawer
         style={{ borderRadius: 6 }}
         maskClosable={false}
-        onClose={() => editOperationState(false)}
+        onClose={() => onCancel()}
         width="80%"
         title={
           <div
