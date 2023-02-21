@@ -20,15 +20,15 @@ interface IProp {
 const LayoutView = (props: IProp) => {
     const [routes] = useState(props.route.children);
     return (
-        <Layout className="sukt-layout">
+        <Layout className="luck-layout">
             <BrowserRouter>
                 <LayoutSider menus={menuList} defaultpath="/user"/>
                 <Layout>
                     <Layoutheader />
-                    <Layout.Content>
+                    <Layout.Content className="luck-layout-content" style={{ overflow: "auto" }}>
                         {renderRoutes(routes)}
                     </Layout.Content>
-                    <Layout.Footer className="sukt-layout__footer">VV大佬盛情出品</Layout.Footer>
+                    {/* <Layout.Footer className="luck-layout-footer">VV大佬盛情出品</Layout.Footer> */}
                 </Layout>
             </BrowserRouter>
         </Layout>

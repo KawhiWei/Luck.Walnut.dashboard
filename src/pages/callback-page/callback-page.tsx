@@ -40,7 +40,7 @@ const CallbackPage = (props: { history: any }) => {
 
   return (
     <>
-      {loading ? <Spin className="sukt-callback-loading" /> : <></>}
+      {loading ? <Spin className="luck-callback-loading" /> : <></>}
     </>
   )
 }

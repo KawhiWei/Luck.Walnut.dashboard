@@ -10,20 +10,20 @@ const isShow = (_children: IMenuOutput[]) => {
 }
 interface IProp {
   menus: IMenuOutput[]
-  defaultpath:any
+  defaultpath: any,
 
 }
 class Menus extends React.Component<IProp, any> {
-  renderMenu = (data: IMenuOutput[]):any => {
+  renderMenu = (data: IMenuOutput[]): any => {
     return data.map(item => {
       if (isShow(item.children)) {
-        return <Menu.SubMenu  key={item.id} title={item.name}>
+        return <Menu.SubMenu key={item.id} title={item.name}>
           {this.renderMenu(item.children)}
         </Menu.SubMenu>
       }
-      return item.isShow  ? (<Menu.Item key={item.id} title={item.name}> 
+      return item.isShow ? (<Menu.Item key={item.id} title={item.name}>
         <Link to={item.path}>{item.name}</Link>
-      </Menu.Item>): null
+      </Menu.Item>) : null
     })
   }
   componentWillMount() {
@@ -35,9 +35,9 @@ class Menus extends React.Component<IProp, any> {
   render() {
     return (
       <div>
-        <Menu mode="inline"  selectedKeys={[this.props.defaultpath]} theme="dark" >
-        {this.state.menuTreeNode}
-      </Menu>
+        <Menu mode="inline" theme={"dark"} selectedKeys={[this.props.defaultpath]} >
+          {this.state.menuTreeNode}
+        </Menu>
       </div>
 
     )

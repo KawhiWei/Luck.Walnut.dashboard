@@ -254,7 +254,7 @@ const EnvironmentPage = (props: any) => {
                                 <p>应用名称：{applicationData?.appId}</p>
                                 <p>中文名称：{applicationData?.chinessName}</p>
                                 <p>英文名称：{applicationData?.englishName}</p>
-                                <p>负责人：{applicationData?.linkMan}</p>
+                                <p>负责人{applicationData?.linkMan}</p>
                                 <p>状态：{applicationData?.status}</p>
                             </Card>
                         </div>
@@ -277,7 +277,7 @@ const EnvironmentPage = (props: any) => {
                         </Row>
                         <Row>
                             <Col span={24}>
-                                <Table bordered columns={columns} dataSource={tableData} loading={loading} pagination={pagination}  scroll={{ y: 550 }}/>
+                                <Table bordered columns={columns} dataSource={tableData} loading={loading} pagination={pagination}  scroll={{ y: 600 }}/>
                                 </Col>
                         </Row>
                     </Content>

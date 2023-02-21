@@ -108,7 +108,7 @@ const MatterPage = () => {
      const getTable = () => {
         setloading(true);
         let param = { pageSize: paginationConfig.pageSize, pageIndex: paginationConfig.current }
-        _matterService.getMatterList(param).then(rep=>{
+        _matterService.getPage(param).then(rep=>{
             if(rep.success){
                 setPaginationConfig((Pagination) => {
                     Pagination.total = rep.result.total;
@@ -149,7 +149,7 @@ const MatterPage = () => {
             </Row>
             <Row>
                 <Col span={24}>
-                    <Table size="small" columns={columns} dataSource={tableData}  pagination={pagination} scroll={{ y: 700 }} />
+                    <Table  columns={columns} dataSource={tableData}  pagination={pagination} scroll={{ y: 700 }} />
                     </Col>
             </Row>
         </Spin>

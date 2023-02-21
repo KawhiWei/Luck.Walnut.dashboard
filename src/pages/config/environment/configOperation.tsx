@@ -69,7 +69,7 @@ const ConfigOperation = (props: IProp) => {
             if (!rep.success) {
                 message.error(rep.errorMessage, 3)
             } else {
-                message.success("保存成功", 3)
+                message.success("保存成功",3)
                 props.onCallbackEvent && props.onCallbackEvent();
             }
         })
@@ -77,11 +77,11 @@ const ConfigOperation = (props: IProp) => {
 
     const onUpdate = (_param: any) => {
         setLoading(true)
-        props.id && _environmentService.updateAppConfiguration(props.envId, props.id, _param).then(rep => {
+        props.id && _environmentService.updateAppConfiguration(props.envId,props.id, _param).then(rep => {
             if (!rep.success) {
                 message.error(rep.errorMessage, 3)
             } else {
-                message.success("保存成功", 3)
+                message.success("保存成功",3)
                 onCancel();
             }
         })
@@ -138,12 +138,12 @@ const ConfigOperation = (props: IProp) => {
                     label="Key"
                     rules={[{ required: true }]}
                 >
-                    <Input  style={{ borderRadius: 6 }}/>
+                    <Input />
                 </Form.Item>
                 <Form.Item
                     name="type"
                     label="配置值格式">
-                    <Input  style={{ borderRadius: 6 }}/>
+                    <Input />
                 </Form.Item>
 
                 <Form.Item
@@ -158,20 +158,20 @@ const ConfigOperation = (props: IProp) => {
                     label="组"
                 // rules={[{ required: true }]}
                 >
-                    <Input  style={{ borderRadius: 6 }}/>
+                    <Input />
                 </Form.Item>
                 <Form.Item
                     name="value"
                     label="配置项Value"
                     rules={[{ required: true }]}
                 >
-                    <TextArea style={{ borderRadius: 6 }} rows={14} />
+                    <TextArea rows={14} />
                 </Form.Item>
                 <Row>
                     <Col span="24" style={{ textAlign: 'right' }}>
                         <Form.Item {...tailLayout}>
-                            <Button shape="round" onClick={() => onCancel()}>取消</Button>
-                            <Button shape="round" style={{ margin: '0 8px' }} type="primary" loading={loading} htmlType="submit">保存</Button>
+                            <Button onClick={() => onCancel()}>取消</Button>
+                            <Button style={{ margin: '0 8px' }} type="primary" loading={loading} htmlType="submit">保存</Button>
                         </Form.Item>
                     </Col>
                 </Row>

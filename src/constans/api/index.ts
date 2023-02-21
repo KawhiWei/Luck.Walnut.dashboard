@@ -18,3 +18,25 @@ export const MatterApi = {
 export const ProjectApi = {
   project: "/walnut/api/projects",
 }
+
+export const ComponentIntegrationApi = {
+  componentIntegration: "/walnut/api/component/integrations",
+}
+
+export const ApplicationPipelineApi = {
+  applicationpipeline: "/walnut/api/applicationpipelines",
+}
+
+
+export const BuildImageApi = {
+  buildImage: "/walnut/api/build/images",
+}
+
+
+export const KubernetesApi = {
+  cluster: "/kube/api/clusters",
+}
+
+export const DeploymentApi = {
+  deployments:"/kube/api/application/deployments",
+}
