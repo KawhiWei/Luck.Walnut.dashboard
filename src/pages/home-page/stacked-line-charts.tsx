@@ -75,7 +75,6 @@ const StackedLineCharts=() => {
   useEffect(() => {
     let getwidth=document.getElementById('stacked-line-charts')?.clientWidth;
     var myChart = echarts.init(document.getElementById('stacked-line-charts')!);
-    console.log(myChart)
     option && myChart.setOption(option);
     window.onresize = function () {
       //重置容器高宽
