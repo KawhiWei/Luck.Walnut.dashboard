@@ -1,3 +1,5 @@
+import "../drawer.less";
+
 import { BaseEditor, Descendant, createEditor } from "slate";
 import {
   Button,

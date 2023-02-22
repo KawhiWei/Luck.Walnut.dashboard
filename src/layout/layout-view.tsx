@@ -22,10 +22,10 @@ const LayoutView = (props: IProp) => {
     return (
         <Layout className="luck-layout">
             <BrowserRouter>
-                <LayoutSider menus={menuList} defaultpath="/user"/>
+                <LayoutSider menus={menuList} defaultpath="/user" />
                 <Layout>
                     <Layoutheader />
-                    <Layout.Content className="luck-layout-content" style={{ overflow: "auto" }}>
+                    <Layout.Content className="luck-layout-content"  >
                         {renderRoutes(routes)}
                     </Layout.Content>
                     {/* <Layout.Footer className="luck-layout-footer">VV大佬盛情出品</Layout.Footer> */}
