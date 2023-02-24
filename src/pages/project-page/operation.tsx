@@ -1,10 +1,7 @@
-import "../drawer.less";
-
 import { BaseEditor, Descendant, createEditor } from "slate";
 import {
   Button,
   Col,
-  DatePicker,
   Drawer,
   Form,
   Input,
@@ -13,6 +10,7 @@ import {
   Row,
   Select,
   Space,
+  DatePicker as TDatePicker,
   Upload,
   message,
 } from "antd";
@@ -36,7 +34,7 @@ import { UploadOutlined } from "@ant-design/icons";
 import moment from "moment";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
-const { RangePicker } = DatePicker;
+let DatePicker: any = TDatePicker;
 
 interface IProp {
   /**
@@ -195,7 +193,7 @@ const ProjectOperation = (props: IProp) => {
     console.log("Formatted Selected Time: ", dateString);
   };
 
-  function uploadOnChange({ file, fileList }: UploadChangeParam) {}
+  function uploadOnChange({ file, fileList }: UploadChangeParam) { }
 
   const onOk = (value: any) => {
     console.log("onOk: ", value);

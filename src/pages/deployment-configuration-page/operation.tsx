@@ -1,6 +1,6 @@
 import "../drawer.less";
 
-import { Button, Drawer, Form, Space } from "antd";
+import { Button, Col, Drawer, Form, Input, Row, Space } from "antd";
 import { useEffect, useState } from "react";
 
 import { IDeploymentConfigurationService } from "@/domain/deployment-configurations/ideployment-configuration-service";
@@ -120,6 +120,30 @@ const Operation = (props: IProp) => {
                 }
             >
                 <Form>
+                    <Row>
+                        <Col span="12">
+                            <Form.Item
+                                name="appId"
+                                label="应用唯一标识："
+                                rules={[{ required: true }]}
+                            >
+                                <Input
+                                    style={{ borderRadius: 6 }}
+                                    disabled={props.operationType === OperationTypeEnum.edit}
+                                />
+                            </Form.Item>
+                        </Col>
+                        <Col span="12">
+                            <Form.Item
+                                name="englishName"
+                                label="应用英文名"
+                                rules={[{ required: true }]}
+                            >
+                                <Input style={{ borderRadius: 6 }} />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+
 
                 </Form>
             </Drawer>
