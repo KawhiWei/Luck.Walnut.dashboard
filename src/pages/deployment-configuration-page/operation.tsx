@@ -1,12 +1,13 @@
 import "../drawer.less";
 
-import { Button, Col, Drawer, Form, Input, Row, Space } from "antd";
+import { Button, Card, Col, Drawer, Form, Input, Row, Space } from "antd";
 import { useEffect, useState } from "react";
 
 import { IDeploymentConfigurationService } from "@/domain/deployment-configurations/ideployment-configuration-service";
 import { IOperationConfig } from "@/shared/operation/operationConfig";
 import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
+import { formItemDoubleRankLayout } from "@/constans/layout/optionlayout";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
 interface IProp {
@@ -26,19 +27,27 @@ interface IProp {
     operationType: OperationTypeEnum;
 
     /**
-     * 操作类型
+     * 应用Id
      */
     appId: string;
 }
 
 const validateMessages = {
-
-}
+    required: "${label} 不可为空",
+    types: {
+        email: "${label} is not a valid email!",
+        number: "${label} is not a valid number!",
+    },
+    number: {
+        range: "${label} must be between ${min} and ${max}",
+    },
+};
 const Operation = (props: IProp) => {
     const _deploymentConfigurationService: IDeploymentConfigurationService = useHookProvider(IocTypes.DeploymentConfigurationService);
     const [operationState, setOperationState] = useState<IOperationConfig>({
         visible: false,
     });
+    const [formData] = Form.useForm();
     const [loading, setLoading] = useState<boolean>(false);
 
     /**
@@ -65,7 +74,13 @@ const Operation = (props: IProp) => {
                 break;
         }
     };
+    /**
+       * 底部栏OK事件
+       */
+    const onFinish = () => {
+        let param = formData.getFieldsValue();
 
+    };
     /**
      * 弹框取消事件
      */
@@ -117,35 +132,153 @@ const Operation = (props: IProp) => {
                             保存
                         </Button>
                     </Space>
-                }
-            >
-                <Form>
-                    <Row>
-                        <Col span="12">
-                            <Form.Item
-                                name="appId"
-                                label="应用唯一标识："
-                                rules={[{ required: true }]}
-                            >
-                                <Input
-                                    style={{ borderRadius: 6 }}
-                                    disabled={props.operationType === OperationTypeEnum.edit}
-                                />
-                            </Form.Item>
-                        </Col>
-                        <Col span="12">
-                            <Form.Item
-                                name="englishName"
-                                label="应用英文名"
-                                rules={[{ required: true }]}
-                            >
-                                <Input style={{ borderRadius: 6 }} />
-                            </Form.Item>
-                        </Col>
-                    </Row>
+                }>
 
-
-                </Form>
+                <Card title="基础配置" size="default" bordered={false}  >
+                    <Form
+                        {...formItemDoubleRankLayout}
+                        name="nest-messages"
+                        layout="horizontal"
+                        onFinish={onFinish}
+                        validateMessages={validateMessages}
+                    >
+                        <Row>
+                            <Col span="12">
+                                <Form.Item
+                                    name="name"
+                                    label="名称："
+                                    rules={[{ required: true }]}>
+                                    <Input style={{ borderRadius: 6 }} />
+                                </Form.Item>
+                            </Col>
+                            <Col span="12">
+                                <Form.Item
+                                    name="chineseName"
+                                    label="中文名称："
+                                    rules={[{ required: true }]}>
+                                    <Input style={{ borderRadius: 6 }} />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span="12">
+                                <Form.Item
+                                    name="environmentName"
+                                    label="部署环境："
+                                    rules={[{ required: true }]}
+                                >
+                                    <Input
+                                        style={{ borderRadius: 6 }}
+                                        disabled={props.operationType === OperationTypeEnum.edit}
+                                    />
+                                </Form.Item>
+                            </Col>
+                            <Col span="12">
+                                <Form.Item
+                                    name="applicationRuntimeType"
+                                    label="应用运行时类型："
+                                    rules={[{ required: true }]}>
+                                    <Input style={{ borderRadius: 6 }} />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span="12">
+                                <Form.Item
+                                    name="deploymentType"
+                                    label="部署类型："
+                                    rules={[{ required: true }]}
+                                >
+                                    <Input
+                                        style={{ borderRadius: 6 }}
+                                        disabled={props.operationType === OperationTypeEnum.edit}
+                                    />
+                                </Form.Item>
+                            </Col>
+                            <Col span="12">
+                                <Form.Item
+                                    name="kubernetesNameSpaceId"
+                                    label="命名空间："
+                                    rules={[{ required: true }]}
+                                >
+                                    <Input
+                                        style={{ borderRadius: 6 }}
+                                        disabled={props.operationType === OperationTypeEnum.edit}
+                                    />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span="12">
+                                <Form.Item
+                                    name="imagePullSecretId"
+                                    label="镜像拉取证书："
+                                    rules={[{ required: true }]}
+                                >
+                                    <Input
+                                        style={{ borderRadius: 6 }}
+                                        disabled={props.operationType === OperationTypeEnum.edit}
+                                    />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span="12">
+                                <Form.Item
+                                    name="replicas"
+                                    label="部署副本数量："
+                                    rules={[{ required: true }]}
+                                >
+                                    <Input
+                                        style={{ borderRadius: 6 }}
+                                        disabled={props.operationType === OperationTypeEnum.edit}
+                                    />
+                                </Form.Item>
+                            </Col>
+                            <Col span="12">
+                                <Form.Item
+                                    name="maxUnavailable"
+                                    label="最大不可用："
+                                    rules={[{ required: true }]}
+                                >
+                                    <Input
+                                        style={{ borderRadius: 6 }}
+                                        disabled={props.operationType === OperationTypeEnum.edit}
+                                    />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                    </Form>
+                </Card>
+                <Card title="容器配置" size="default" bordered={false}  >
+                    <Form
+                        {...formItemDoubleRankLayout}
+                    >
+                        <Row>
+                            <Col span="12">
+                                <Form.Item
+                                    name="appId"
+                                    label="应用唯一标识："
+                                    rules={[{ required: true }]}
+                                >
+                                    <Input
+                                        style={{ borderRadius: 6 }}
+                                        disabled={props.operationType === OperationTypeEnum.edit}
+                                    />
+                                </Form.Item>
+                            </Col>
+                            <Col span="12">
+                                <Form.Item
+                                    name="englishName"
+                                    label="应用英文名"
+                                    rules={[{ required: true }]}
+                                >
+                                    <Input style={{ borderRadius: 6 }} />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                    </Form>
+                </Card>
             </Drawer>
         </div>
     )
