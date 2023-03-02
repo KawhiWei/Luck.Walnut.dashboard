@@ -1,8 +1,10 @@
 import "../drawer.less";
 
-import { Button, Card, Col, Drawer, Form, Input, Row, Space } from "antd";
+import { Button, Card, Col, Drawer, Form, Input, InputNumber, Popconfirm, Row, Select, Space, Switch, Table, Typography } from "antd";
 import { useEffect, useState } from "react";
 
+import { ComponentEnumType } from "@/constans/enum/columnEnum";
+import { IContainerConfigurationOutputDto } from "@/domain/deployment-configurations/deployment-configuration-dto";
 import { IDeploymentConfigurationService } from "@/domain/deployment-configurations/ideployment-configuration-service";
 import { IOperationConfig } from "@/shared/operation/operationConfig";
 import { IocTypes } from "@/shared/config/ioc-types";
@@ -31,6 +33,18 @@ interface IProp {
      */
     appId: string;
 }
+interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
+    editing: boolean;
+    dataIndex: string;
+    title: any;
+    componentType: ComponentEnumType,
+    record: IContainerConfigurationOutputDto;
+    children: React.ReactNode;
+}
+
+
+
+
 
 const validateMessages = {
     required: "${label} 不可为空",
@@ -47,8 +61,267 @@ const Operation = (props: IProp) => {
     const [operationState, setOperationState] = useState<IOperationConfig>({
         visible: false,
     });
-    const [formData] = Form.useForm();
+    const [deploymentConfigurationFormData] = Form.useForm();
     const [loading, setLoading] = useState<boolean>(false);
+
+    /**
+     * 
+     */
+    const [containerConfigurationOperationType, setContainerConfigurationOperationType] = useState<OperationTypeEnum>(OperationTypeEnum.view);
+    const [containerConfigurationFormData] = Form.useForm();
+    const [ContainerConfigurationData, setContainerConfigurationData] = useState<Array<IContainerConfigurationOutputDto>>([
+        {
+            id: "64000d29aa331e36c1d1edc9",
+            containerName: "string",
+            restartPolicy: "string",
+            isInitContainer: false,
+            imagePullPolicy: "string",
+            image: "string",
+        },
+        {
+            id: "64000d29aa331e36c1d1edc8",
+            containerName: "string",
+            restartPolicy: "string",
+            isInitContainer: true,
+            imagePullPolicy: "string",
+            image: "string",
+        }
+
+    ]);
+    const [editingKey, setEditingKey] = useState("");
+
+
+
+    const columns = [
+        {
+            title: '容器名称',
+            dataIndex: 'containerName',
+            width: 110,
+            editable: true,
+            componentType: ComponentEnumType.textInput
+        },
+        {
+            title: '重启规则',
+            dataIndex: 'restartPolicy',
+            width: 110,
+            editable: true,
+            componentType: ComponentEnumType.select
+        },
+        {
+            title: '是否初始容器',
+            dataIndex: 'isInitContainer',
+            width: 130,
+            editable: true,
+            componentType: ComponentEnumType.switch,
+            render: (_: any, record: IContainerConfigurationOutputDto) => {
+                return (
+                    <Switch disabled={true} checked={record.isInitContainer}></Switch>
+                );
+            },
+        },
+        {
+            title: '镜像拉取规则',
+            dataIndex: 'imagePullPolicy',
+            width: 130,
+            editable: true,
+            componentType: ComponentEnumType.select
+        },
+
+        {
+            title: '操作',
+            dataIndex: 'operation',
+            render: (_: any, record: IContainerConfigurationOutputDto) => {
+                return isEditOrAdd(record.id) ? (
+                    <span>
+                        <Typography.Link onClick={() => save(record.id)} style={{ marginRight: 8 }}>
+                            保存
+                        </Typography.Link>
+                        <Popconfirm title="您确定取消编辑吗?" onConfirm={onContainerConfigurationCancel} okText="是" cancelText="否">
+                            <a>取消</a>
+                        </Popconfirm>
+                    </span>
+                ) : (
+                    <Typography.Link disabled={editingKey !== ''} onClick={() => editContainerConfiguration(record)}>
+                        编辑
+                    </Typography.Link>
+                );
+            },
+        },
+    ];
+
+
+    /**
+     * 
+     * @returns 
+     */
+    const isEditOrAdd = (_id: string) => {
+        return (containerConfigurationOperationType === OperationTypeEnum.add || containerConfigurationOperationType === OperationTypeEnum.edit) && editingKey == _id;
+    }
+
+    const mergedColumns = columns.map((col) => {
+        if (!col.editable) {
+            return col;
+        }
+        return {
+            ...col,
+            onCell: (record: IContainerConfigurationOutputDto) => ({
+                record,
+                componentType: col.componentType,
+                dataIndex: col.dataIndex,
+                title: col.title,
+                editing: isEditOrAdd(record.id),
+            }),
+        };
+    });
+
+    /**
+     * 当前单元格渲染组件
+     * @param param0 
+     * @returns 
+     */
+    const EditableCell: React.FC<EditableCellProps> = ({
+        editing,
+        dataIndex,
+        title,
+        record,
+        children,
+        componentType,
+        ...restProps
+    }) => {
+        return (
+            <td {...restProps}>
+                {editing ? (
+                    getComponents(componentType, title, dataIndex)
+                ) : (
+                    children
+                )}
+            </td>
+        );
+    };
+
+    /**
+     * 获取编辑行的表单组件
+     * @param componentType 
+     * @param title 
+     * @param columnName 
+     * @returns 
+     */
+    const getComponents = (componentType: ComponentEnumType, title: string, columnName: string) => {
+        switch (componentType) {
+            case ComponentEnumType.textInput:
+                return <Form.Item
+                    name={columnName}
+                    style={{ margin: 0 }}
+                    rules={[
+                        {
+                            required: true,
+                            message: `Please Input ${title}!`,
+                        },
+                    ]}
+                >
+                    <Input />
+                </Form.Item>;
+            case ComponentEnumType.select:
+                return <Form.Item
+                    name={columnName}
+                    style={{ margin: 0 }}
+                    rules={[
+                        {
+                            required: true,
+                            message: `Please Input ${title}!`,
+                        },
+                    ]}
+                >
+                    <Select>
+                        <Select.Option value="string">Demo</Select.Option>
+                    </Select>
+                </Form.Item>;
+            case ComponentEnumType.numBerInput:
+                return <Form.Item
+                    name={columnName}
+                    style={{ margin: 0 }}
+                    rules={[
+                        {
+                            required: true,
+                            message: `Please Input ${title}!`,
+                        },
+                    ]}
+                >
+                    <InputNumber />
+                </Form.Item>;
+            case ComponentEnumType.switch:
+                return <Form.Item
+                    name={columnName}
+                    style={{ margin: 0 }}
+                    valuePropName={"checked"}
+
+                    rules={[
+                        {
+                            required: true,
+                            message: `Please Input ${title}!`,
+                        },
+                    ]}
+                >
+                    <Switch />
+                </Form.Item>;
+            case ComponentEnumType.doubleTextInput:
+                return <Form.Item
+                    name={columnName}
+                    style={{ margin: 0 }}
+                    rules={[
+                        {
+                            required: true,
+                            message: `Please Input ${title}!`,
+                        },
+                    ]}
+                >
+                    <Input />
+                </Form.Item>;
+            case ComponentEnumType.doubleTextInput:
+                return <Form.Item
+                    name={columnName}
+                    style={{ margin: 0 }}
+                    rules={[
+                        {
+                            required: true,
+                            message: `Please Input ${title}!`,
+                        },
+                    ]}
+                >
+                    <InputNumber />
+                </Form.Item>;
+            default:
+                return null;
+        }
+
+    };
+
+    /**
+     * table可编辑行事件
+     * @param record 
+     */
+    const editContainerConfiguration = (record: IContainerConfigurationOutputDto) => {
+        containerConfigurationFormData.setFieldsValue(record);
+        setEditingKey(record.id);
+        setContainerConfigurationOperationType(OperationTypeEnum.edit)
+    };
+
+    /**
+     * table表格编辑行保存
+     * @param id 
+     */
+    const save = (id: string) => {
+
+        console.log(id, containerConfigurationFormData.getFieldsValue());
+
+    };
+
+    const onContainerConfigurationCancel = () => {
+        setEditingKey('');
+        setContainerConfigurationOperationType(OperationTypeEnum.view)
+    };
+
+
 
     /**
      * 初始化加载事件
@@ -56,6 +329,8 @@ const Operation = (props: IProp) => {
     useEffect(() => {
         onLoad();
     }, []);
+
+
 
     /**
      * 编辑获取一个表单
@@ -78,9 +353,10 @@ const Operation = (props: IProp) => {
        * 底部栏OK事件
        */
     const onFinish = () => {
-        let param = formData.getFieldsValue();
+        let param = deploymentConfigurationFormData.getFieldsValue();
 
     };
+
     /**
      * 弹框取消事件
      */
@@ -133,7 +409,6 @@ const Operation = (props: IProp) => {
                         </Button>
                     </Space>
                 }>
-
                 <Card title="基础配置" size="default" bordered={false}  >
                     <Form
                         {...formItemDoubleRankLayout}
@@ -251,32 +526,23 @@ const Operation = (props: IProp) => {
                     </Form>
                 </Card>
                 <Card title="容器配置" size="default" bordered={false}  >
-                    <Form
-                        {...formItemDoubleRankLayout}
-                    >
-                        <Row>
-                            <Col span="12">
-                                <Form.Item
-                                    name="appId"
-                                    label="应用唯一标识："
-                                    rules={[{ required: true }]}
-                                >
-                                    <Input
-                                        style={{ borderRadius: 6 }}
-                                        disabled={props.operationType === OperationTypeEnum.edit}
-                                    />
-                                </Form.Item>
-                            </Col>
-                            <Col span="12">
-                                <Form.Item
-                                    name="englishName"
-                                    label="应用英文名"
-                                    rules={[{ required: true }]}
-                                >
-                                    <Input style={{ borderRadius: 6 }} />
-                                </Form.Item>
-                            </Col>
-                        </Row>
+                    <Form form={containerConfigurationFormData} component={false}>
+                        <Table
+                            components={{
+                                body: {
+                                    cell: EditableCell,
+                                },
+                            }}
+                            bordered
+                            dataSource={ContainerConfigurationData}
+                            columns={mergedColumns}
+                            rowClassName="editable-row"
+                            pagination={{
+                                onChange: onContainerConfigurationCancel,
+                            }}
+                            size="small"
+                            scroll={{ x: 800 }}
+                        />
                     </Form>
                 </Card>
             </Drawer>

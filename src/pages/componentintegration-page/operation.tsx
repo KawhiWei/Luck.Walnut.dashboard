@@ -2,12 +2,14 @@ import {
   Button,
   Card,
   Col,
+  Drawer,
   Form,
   Input,
   Modal,
   Radio,
   Row,
   Select,
+  Space,
   message,
 } from "antd";
 import { ComponentCategoryMap, ComponentTypeMap } from "@/domain/componentintegration/componentintegration-map";
@@ -166,15 +168,41 @@ const Operation = (props: IProp) => {
 
   return (
     <div>
-      <Modal
-        width={"70%"}
-        getContainer={false}
-        title={operationState.title}
-        closable={false}
+      <Drawer
+        style={{ borderRadius: 6 }}
+        width="80%"
+        title={
+          <div
+            style={{
+              borderRadius: 10,
+            }}
+          >
+            {operationState.title}
+          </div>
+        }
+        onClose={() => onCancel()}
+        closable={true}
         open={operationState.visible}
-        footer={null}
-        onCancel={onCancel}
-      >
+        footer={
+          <Space style={{ float: "right" }}>
+            <Button
+              shape="round"
+              disabled={loading}
+              onClick={() => onCancel()}
+            >
+              取消
+            </Button>
+            <Button
+              shape="round"
+              style={{ margin: "0 8px" }}
+              type="primary"
+              loading={loading}
+              htmlType="submit"
+            >
+              保存
+            </Button>
+          </Space>
+        }>
         <Form
           {...formItemSingleRankLayout}
           form={formData}
@@ -269,30 +297,8 @@ const Operation = (props: IProp) => {
               </Form.Item>
             </Col>
           </Row>
-          <Row>
-            <Col span="24" style={{ textAlign: "right" }}>
-              <Form.Item {...tailLayout}>
-                <Button
-                  shape="round"
-                  disabled={loading}
-                  onClick={() => onCancel()}
-                >
-                  取消
-                </Button>
-                <Button
-                  shape="round"
-                  style={{ margin: "0 8px" }}
-                  type="primary"
-                  loading={loading}
-                  htmlType="submit"
-                >
-                  保存
-                </Button>
-              </Form.Item>
-            </Col>
-          </Row>
         </Form>
-      </Modal>
+      </Drawer>
     </div>
   );
 };

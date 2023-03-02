@@ -5,7 +5,7 @@ import { initPaginationConfig, tacitPagingProps } from "../../shared/ajax/reques
 import { useEffect, useState } from "react";
 
 import ConfigOperation from "../config/operation";
-import ConfigRelease from "./configRelease";
+import ConfigRelease from "../config/configRelease";
 import { IApplicationBaseDto } from "@/domain/applications/application-dto";
 import { IEnvironmentService } from "@/domain/environment/ienvironment-service";
 import { IocTypes } from "@/shared/config/ioc-types";

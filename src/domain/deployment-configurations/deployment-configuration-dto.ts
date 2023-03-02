@@ -53,13 +53,13 @@ export interface IDeploymentConfigurationOutputDto extends IDeploymentConfigurat
     /**
      * 应用容器配置列表
      */
-    applicationContainers: IApplicationContainerOutputDto[];
+    applicationContainers: IContainerConfigurationOutputDto[];
 }
 
 /**
  * 容器配置基础Dto
  */
-export interface IApplicationContainerBase {
+export interface IContainerConfigurationBase {
     /**
      * 容器名称
      */
@@ -83,28 +83,28 @@ export interface IApplicationContainerBase {
     /**
      * 准备完成探针配置
      */
-    readinessProbe: INessProbe;
+    readinessProbe?: INessProbe;
     /**
      * 存活探针配置
      */
-    liveNessProbe: INessProbe;
+    liveNessProbe?: INessProbe;
     /**
      * 容器Cpu资源限制
      */
-    cpuContainerResourceQuantity: IContainerResourceQuantity;
+    cpuContainerResourceQuantity?: IContainerResourceQuantity;
     
     /**
      * 容器内存资源限制
      */
-    memoryContainerResourceQuantity: IContainerResourceQuantity;
+    memoryContainerResourceQuantity?: IContainerResourceQuantity;
     /**
      * 环境变量
      */
-    environments: Map<Object, Object>;
+    environments?: Map<Object, Object>;
     /**
      * 容器端口配置
      */
-    containerPortConfigurations: IContainerPortConfiguration[];
+    containerPortConfigurations?: IContainerPortConfiguration[];
 }
 
 /**
@@ -143,13 +143,20 @@ export interface IContainerResourceQuantity {
  * 健康检查端口配置
  */
 export interface INessProbe {
+    /**
+     * 
+     */
     scheme: string;
+    /**
+     * 
+     */
     path: string;
     /**
      * 端口
      */
     port: number;
     /**
+     * 
      * 
      */
     initialDelaySeconds: number;
@@ -163,6 +170,6 @@ export interface INessProbe {
 /**
  * 容器输出Dto
  */
-export interface IApplicationContainerOutputDto extends IApplicationContainerBase, IEntity<string> {
+export interface IContainerConfigurationOutputDto extends IContainerConfigurationBase, IEntity<string> {
 
 }

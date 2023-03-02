@@ -10,25 +10,16 @@ import {
   Tag,
   message,
 } from "antd";
-import {
-  DeleteOutlined,
-  EditOutlined,
-  EyeOutlined,
-  PlusOutlined,
-  SearchOutlined,
-  SettingTwoTone,
-  WarningOutlined,
-} from "@ant-design/icons";
-import {
-  initPaginationConfig,
-  tacitPagingProps,
-} from "../../shared/ajax/request";
+import { initPaginationConfig, tacitPagingProps } from "@/shared/ajax/request";
 import { useEffect, useState } from "react";
 
 import { IEnvironmentService } from "@/domain/environment/ienvironment-service";
 import { IOperationConfig } from "@/shared/operation/operationConfig";
 import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
+import {
+  SearchOutlined,
+} from "@ant-design/icons";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
 interface IProp {
