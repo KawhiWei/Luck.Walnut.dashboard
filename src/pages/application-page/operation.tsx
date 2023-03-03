@@ -216,7 +216,6 @@ const Operation = (props: IProp) => {
               style={{ margin: "0 8px" }}
               type="primary"
               loading={loading}
-              htmlType="submit"
             >
               保存
             </Button>
@@ -249,7 +248,7 @@ const Operation = (props: IProp) => {
                 label="应用英文名"
                 rules={[{ required: true }]}
               >
-                <Input style={{ borderRadius: 6 }} />
+                <Input />
               </Form.Item>
             </Col>
           </Row>
@@ -260,7 +259,7 @@ const Operation = (props: IProp) => {
                 label="应用中文名："
                 rules={[{ required: true }]}
               >
-                <Input style={{ borderRadius: 6 }} />
+                <Input />
               </Form.Item>
             </Col>
             <Col span="12">
@@ -360,12 +359,12 @@ const Operation = (props: IProp) => {
                 label="负责人："
                 rules={[{ required: true }]}
               >
-                <Input style={{ borderRadius: 6 }} />
+                <Input />
               </Form.Item>
             </Col>
             <Col span="12">
               <Form.Item name="codeWarehouseAddress" label="代码仓库地址：">
-                <Input style={{ borderRadius: 6 }} />
+                <Input />
               </Form.Item>
             </Col>
           </Row>
@@ -377,8 +376,6 @@ const Operation = (props: IProp) => {
                 rules={[{ required: true }]}
               >
               </Form.Item>
-
-
             </Col>
             <Col span="12">
               <Form.Item
@@ -403,7 +400,7 @@ const Operation = (props: IProp) => {
           <Row>
             <Col span="12">
               <Form.Item name="describe" label="应用描述：">
-                <TextArea style={{ borderRadius: 6 }} rows={14}></TextArea>
+                <TextArea rows={14}></TextArea>
               </Form.Item>
             </Col>
           </Row>

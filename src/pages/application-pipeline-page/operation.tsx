@@ -90,7 +90,7 @@ const Operation = (props: IProp) => {
    *
    */
   const onGetDetailed = () => {
-    if (props.pipelineId && props.operationType == OperationTypeEnum.edit) {
+    if (props.pipelineId && props.operationType === OperationTypeEnum.edit) {
       setLoading(true);
       _applicationPipelineService
         .getDetail(props.pipelineId)

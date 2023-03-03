@@ -91,12 +91,12 @@ export interface IContainerConfigurationBase {
     /**
      * 容器Cpu资源限制
      */
-    cpuContainerResourceQuantity?: IContainerResourceQuantity;
-    
+    requests?: IContainerResourceQuantity;
+
     /**
      * 容器内存资源限制
      */
-    memoryContainerResourceQuantity?: IContainerResourceQuantity;
+    limits?: IContainerResourceQuantity;
     /**
      * 环境变量
      */
@@ -105,6 +105,21 @@ export interface IContainerConfigurationBase {
      * 容器端口配置
      */
     containerPortConfigurations?: IContainerPortConfiguration[];
+}
+
+
+/**
+ * 容器资源配置
+ */
+export interface IContainerResourceQuantity {
+    /**
+     * 
+     */
+    memory: string;
+    /**
+     * 
+     */
+    cpu: string;
 }
 
 /**
@@ -124,20 +139,7 @@ export interface IContainerPortConfiguration {
      */
     protocol: string;
 }
-/**
- * 容器资源配置
- */
-export interface IContainerResourceQuantity {
-    /**
-     * 
-     */
-    limit: string;
 
-    /**
-     * 
-     */
-    request: string;
-}
 
 /**
  * 健康检查端口配置

@@ -1,9 +1,13 @@
 import "../drawer.less";
 
-import { Badge, Button, Card, Col, Descriptions, Drawer, Form, Input, InputNumber, Popconfirm, Row, Select, Space, Switch, Table, Typography } from "antd";
+import { Button, Card, Col, Drawer, Form, Input, InputNumber, Popconfirm, Row, Select, Space, Switch, Table, Typography } from "antd";
 import { useEffect, useState } from "react";
 
 import { ComponentEnumType } from "@/constans/enum/columnEnum";
+import ContainerConfigurationOperation from "./container-configuration-operation";
+import {
+    EditOutlined,
+} from "@ant-design/icons";
 import { IContainerConfigurationOutputDto } from "@/domain/deployment-configurations/deployment-configuration-dto";
 import { IDeploymentConfigurationService } from "@/domain/deployment-configurations/ideployment-configuration-service";
 import { IOperationConfig } from "@/shared/operation/operationConfig";
@@ -11,6 +15,10 @@ import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
 import { formItemDoubleRankLayout } from "@/constans/layout/optionlayout";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
+
+// import "../description.less";
+
+
 
 interface IProp {
     /**
@@ -61,6 +69,8 @@ const Operation = (props: IProp) => {
     const [operationState, setOperationState] = useState<IOperationConfig>({
         visible: false,
     });
+
+    const [subContainerConfigurationElement, setContainerConfigurationElement] = useState<any>(null);
     const [deploymentConfigurationFormData] = Form.useForm();
     const [loading, setLoading] = useState<boolean>(false);
 
@@ -79,7 +89,14 @@ const Operation = (props: IProp) => {
             image: "string",
             readinessProbe: {
                 scheme: "test001",
-                path: "test002",
+                path: "api/application/dashboard",
+                port: 3000,
+                initialDelaySeconds: 2000,
+                periodSeconds: 2000,
+            },
+            liveNessProbe: {
+                scheme: "test003",
+                path: "api/application/dashboard",
                 port: 3000,
                 initialDelaySeconds: 2000,
                 periodSeconds: 2000,
@@ -94,7 +111,14 @@ const Operation = (props: IProp) => {
             image: "string",
             readinessProbe: {
                 scheme: "test003",
-                path: "test004",
+                path: "api/application/dashboard",
+                port: 3000,
+                initialDelaySeconds: 2000,
+                periodSeconds: 2000,
+            },
+            liveNessProbe: {
+                scheme: "test003",
+                path: "api/application/dashboard",
                 port: 3000,
                 initialDelaySeconds: 2000,
                 periodSeconds: 2000,
@@ -108,21 +132,21 @@ const Operation = (props: IProp) => {
         {
             title: '容器名称',
             dataIndex: 'containerName',
-            width: 110,
+            width: 200,
             editable: true,
             componentType: ComponentEnumType.textInput
         },
         {
             title: '重启规则',
             dataIndex: 'restartPolicy',
-            width: 110,
+            width: 140,
             editable: true,
             componentType: ComponentEnumType.select
         },
         {
             title: '是否初始容器',
             dataIndex: 'isInitContainer',
-            width: 130,
+            width: 200,
             editable: true,
             componentType: ComponentEnumType.switch,
             render: (_: any, record: IContainerConfigurationOutputDto) => {
@@ -134,54 +158,13 @@ const Operation = (props: IProp) => {
         {
             title: '镜像拉取规则',
             dataIndex: 'imagePullPolicy',
-            width: 130,
+            width: 200,
             editable: true,
             componentType: ComponentEnumType.select
         },
         {
-            title: '存活探针配置',
-            dataIndex: 'liveNessProbe',
-            width: 600,
-            editable: true,
-            componentType: ComponentEnumType.select,
-            render: (_: any, record: IContainerConfigurationOutputDto) => {
-                return (
-                    <span>
-                        <Descriptions column={1} size="small" bordered>
-                            <Descriptions.Item label="scheme"> {record.liveNessProbe?.scheme}</Descriptions.Item>
-                            <Descriptions.Item label="path">{record.liveNessProbe?.path}</Descriptions.Item>
-                            <Descriptions.Item label="port">{record.liveNessProbe?.port}</Descriptions.Item>
-                            <Descriptions.Item label="initialDelaySeconds">{record.liveNessProbe?.initialDelaySeconds}</Descriptions.Item>
-                            <Descriptions.Item label="periodSeconds">{record.liveNessProbe?.periodSeconds}</Descriptions.Item>
-                        </Descriptions>
-                    </span>
-                );
-            },
-        },
-        {
-            title: '准备检查配置',
-            dataIndex: 'readinessProbe',
-            width: 600,
-            editable: true,
-            componentType: ComponentEnumType.select,
-            render: (_: any, record: IContainerConfigurationOutputDto) => {
-                return (
-                    <span>
-                        <Descriptions column={1} size="small" bordered>
-                            <Descriptions.Item label="scheme"> {record.readinessProbe?.scheme}</Descriptions.Item>
-                            <Descriptions.Item label="path">{record.readinessProbe?.path}</Descriptions.Item>
-                            <Descriptions.Item label="port">{record.readinessProbe?.port}</Descriptions.Item>
-                            <Descriptions.Item label="initialDelaySeconds">{record.readinessProbe?.initialDelaySeconds}</Descriptions.Item>
-                            <Descriptions.Item label="periodSeconds">{record.readinessProbe?.periodSeconds}</Descriptions.Item>
-                        </Descriptions>
-                    </span>
-                );
-            },
-        },
-
-
-        {
             title: '操作',
+            width: 200,
             dataIndex: 'operation',
             render: (_: any, record: IContainerConfigurationOutputDto) => {
                 return isEditOrAdd(record.id) ? (
@@ -194,9 +177,16 @@ const Operation = (props: IProp) => {
                         </Popconfirm>
                     </span>
                 ) : (
-                    <Typography.Link disabled={editingKey !== ''} onClick={() => editContainerConfiguration(record)}>
+                    <span>
+                        {/* <Typography.Link disabled={editingKey !== ''} onClick={() => editContainerConfiguration(record)}>
                         编辑
-                    </Typography.Link>
+                    </Typography.Link> */}
+                        {/* <Typography.Link disabled={editingKey !== ''} onClick={() => editDrawerContainerConfiguration(record)}>
+                            Drawer编辑
+                        </Typography.Link> */}
+                        <EditOutlined style={{ color: "orange", fontSize: 20, }} onClick={() => editDrawerContainerConfiguration(record)} />
+                    </span>
+
                 );
             },
         },
@@ -208,7 +198,7 @@ const Operation = (props: IProp) => {
      * @returns 
      */
     const isEditOrAdd = (_id: string) => {
-        return (containerConfigurationOperationType === OperationTypeEnum.add || containerConfigurationOperationType === OperationTypeEnum.edit) && editingKey == _id;
+        return (containerConfigurationOperationType === OperationTypeEnum.add || containerConfigurationOperationType === OperationTypeEnum.edit) && editingKey === _id;
     }
 
     const mergedColumns = columns.map((col) => {
@@ -260,6 +250,7 @@ const Operation = (props: IProp) => {
      * @returns 
      */
     const getComponents = (componentType: ComponentEnumType, title: string, columnName: string) => {
+        console.log(columnName);
         switch (componentType) {
             case ComponentEnumType.textInput:
                 return <Form.Item
@@ -360,6 +351,29 @@ const Operation = (props: IProp) => {
     };
 
     /**
+     * table可编辑行事件
+     * @param record 
+     */
+    const editDrawerContainerConfiguration = (record: IContainerConfigurationOutputDto) => {
+
+        setContainerConfigurationElement(<ContainerConfigurationOperation
+
+            operationType={OperationTypeEnum.edit}
+            deploymentConfigurationId={""}
+            onCallbackEvent={clearElement}
+
+        ></ContainerConfigurationOperation>)
+
+
+        setContainerConfigurationOperationType(OperationTypeEnum.edit)
+    };
+
+
+    const clearElement = () => {
+        setContainerConfigurationElement(null);
+    };
+
+    /**
      * table表格编辑行保存
      * @param id 
      */
@@ -400,6 +414,7 @@ const Operation = (props: IProp) => {
                 editOperationState(true, "查看");
                 break;
             case OperationTypeEnum.edit:
+                editOperationState(true, "编辑");
                 props.id && console.log(1111)
                 break;
         }
@@ -409,7 +424,7 @@ const Operation = (props: IProp) => {
        */
     const onFinish = () => {
         let param = deploymentConfigurationFormData.getFieldsValue();
-
+        console.log(param)
     };
 
     /**
@@ -458,7 +473,7 @@ const Operation = (props: IProp) => {
                             style={{ margin: "0 8px" }}
                             type="primary"
                             loading={loading}
-                            htmlType="submit"
+                            onClick={() => onFinish()}
                         >
                             保存
                         </Button>
@@ -467,6 +482,7 @@ const Operation = (props: IProp) => {
                 <Card title="基础配置" size="default" bordered={false}  >
                     <Form
                         {...formItemDoubleRankLayout}
+                        form={deploymentConfigurationFormData}
                         name="nest-messages"
                         layout="horizontal"
                         onFinish={onFinish}
@@ -601,6 +617,7 @@ const Operation = (props: IProp) => {
                     </Form>
                 </Card>
             </Drawer>
+            {subContainerConfigurationElement}
         </div>
     )
 }

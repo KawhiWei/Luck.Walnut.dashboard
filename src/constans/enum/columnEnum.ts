@@ -1,7 +1,7 @@
 export enum ComponentEnumType {
     /**
- * tab页
- */
+     * tab页
+     */
     textInput = 0,
     /**
      * 下拉选择框
