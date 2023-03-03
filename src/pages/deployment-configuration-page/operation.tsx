@@ -1,6 +1,6 @@
 import "../drawer.less";
 
-import { Button, Card, Col, Drawer, Form, Input, InputNumber, Popconfirm, Row, Select, Space, Switch, Table, Typography } from "antd";
+import { Badge, Button, Card, Col, Descriptions, Drawer, Form, Input, InputNumber, Popconfirm, Row, Select, Space, Switch, Table, Typography } from "antd";
 import { useEffect, useState } from "react";
 
 import { ComponentEnumType } from "@/constans/enum/columnEnum";
@@ -77,6 +77,13 @@ const Operation = (props: IProp) => {
             isInitContainer: false,
             imagePullPolicy: "string",
             image: "string",
+            readinessProbe: {
+                scheme: "test001",
+                path: "test002",
+                port: 3000,
+                initialDelaySeconds: 2000,
+                periodSeconds: 2000,
+            }
         },
         {
             id: "64000d29aa331e36c1d1edc8",
@@ -85,12 +92,17 @@ const Operation = (props: IProp) => {
             isInitContainer: true,
             imagePullPolicy: "string",
             image: "string",
+            readinessProbe: {
+                scheme: "test003",
+                path: "test004",
+                port: 3000,
+                initialDelaySeconds: 2000,
+                periodSeconds: 2000,
+            }
         }
 
     ]);
     const [editingKey, setEditingKey] = useState("");
-
-
 
     const columns = [
         {
@@ -126,6 +138,47 @@ const Operation = (props: IProp) => {
             editable: true,
             componentType: ComponentEnumType.select
         },
+        {
+            title: '存活探针配置',
+            dataIndex: 'liveNessProbe',
+            width: 600,
+            editable: true,
+            componentType: ComponentEnumType.select,
+            render: (_: any, record: IContainerConfigurationOutputDto) => {
+                return (
+                    <span>
+                        <Descriptions column={1} size="small" bordered>
+                            <Descriptions.Item label="scheme"> {record.liveNessProbe?.scheme}</Descriptions.Item>
+                            <Descriptions.Item label="path">{record.liveNessProbe?.path}</Descriptions.Item>
+                            <Descriptions.Item label="port">{record.liveNessProbe?.port}</Descriptions.Item>
+                            <Descriptions.Item label="initialDelaySeconds">{record.liveNessProbe?.initialDelaySeconds}</Descriptions.Item>
+                            <Descriptions.Item label="periodSeconds">{record.liveNessProbe?.periodSeconds}</Descriptions.Item>
+                        </Descriptions>
+                    </span>
+                );
+            },
+        },
+        {
+            title: '准备检查配置',
+            dataIndex: 'readinessProbe',
+            width: 600,
+            editable: true,
+            componentType: ComponentEnumType.select,
+            render: (_: any, record: IContainerConfigurationOutputDto) => {
+                return (
+                    <span>
+                        <Descriptions column={1} size="small" bordered>
+                            <Descriptions.Item label="scheme"> {record.readinessProbe?.scheme}</Descriptions.Item>
+                            <Descriptions.Item label="path">{record.readinessProbe?.path}</Descriptions.Item>
+                            <Descriptions.Item label="port">{record.readinessProbe?.port}</Descriptions.Item>
+                            <Descriptions.Item label="initialDelaySeconds">{record.readinessProbe?.initialDelaySeconds}</Descriptions.Item>
+                            <Descriptions.Item label="periodSeconds">{record.readinessProbe?.periodSeconds}</Descriptions.Item>
+                        </Descriptions>
+                    </span>
+                );
+            },
+        },
+
 
         {
             title: '操作',
@@ -313,6 +366,8 @@ const Operation = (props: IProp) => {
     const save = (id: string) => {
 
         console.log(id, containerConfigurationFormData.getFieldsValue());
+        setEditingKey('');
+        setContainerConfigurationOperationType(OperationTypeEnum.view)
 
     };
 
