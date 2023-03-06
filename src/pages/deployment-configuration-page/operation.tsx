@@ -1,13 +1,14 @@
 import "../drawer.less";
 
 import { Button, Card, Col, Drawer, Form, Input, InputNumber, Popconfirm, Row, Select, Space, Switch, Table, Typography } from "antd";
+import {
+    EditOutlined,
+    PlusOutlined
+} from "@ant-design/icons";
 import { useEffect, useState } from "react";
 
 import { ComponentEnumType } from "@/constans/enum/columnEnum";
 import ContainerConfigurationOperation from "./container-configuration-operation";
-import {
-    EditOutlined,
-} from "@ant-design/icons";
 import { IContainerConfigurationOutputDto } from "@/domain/deployment-configurations/deployment-configuration-dto";
 import { IDeploymentConfigurationService } from "@/domain/deployment-configurations/ideployment-configuration-service";
 import { IOperationConfig } from "@/shared/operation/operationConfig";
@@ -365,7 +366,7 @@ const Operation = (props: IProp) => {
         ></ContainerConfigurationOperation>)
 
 
-        setContainerConfigurationOperationType(OperationTypeEnum.edit)
+        // setContainerConfigurationOperationType(OperationTypeEnum.edit)
     };
 
 
@@ -443,6 +444,20 @@ const Operation = (props: IProp) => {
     const editOperationState = (_visible: boolean, _title?: string) => {
         setOperationState({ visible: _visible, title: _title });
     };
+    /**
+     * 添加容器配置
+     */
+    const addChange = () => {
+
+        setContainerConfigurationElement(<ContainerConfigurationOperation
+            operationType={OperationTypeEnum.add}
+            deploymentConfigurationId={""}
+            onCallbackEvent={clearElement}
+
+        ></ContainerConfigurationOperation>)
+    };
+
+
     return (
         <div>
             <Drawer style={{ borderRadius: 6 }}
@@ -596,7 +611,19 @@ const Operation = (props: IProp) => {
                         </Row>
                     </Form>
                 </Card>
-                <Card title="容器配置" size="default" bordered={false}  >
+                <Card title="容器配置" size="default" bordered={false} extra={
+                    <Button
+                        shape="round"
+                        type="primary"
+                        style={{ margin: "8px 8px" }}
+                        onClick={() => {
+                            addChange();
+                        }}
+                    >
+                        <PlusOutlined />
+                        添加容器配置
+                    </Button>
+                }>
                     <Form form={containerConfigurationFormData} component={false}>
                         <Table
                             components={{

@@ -1,10 +1,13 @@
 import "../drawer.less";
 
-import { Badge, Button, Card, Col, Descriptions, Drawer, Form, Input, InputNumber, Popconfirm, Row, Select, Space, Switch, Table, Typography } from "antd";
+import { Button, Card, Col, Drawer, Form, Input, InputNumber, Row, Space, Switch } from "antd";
+import {
+    MinusCircleOutlined,
+    PlusOutlined
+} from "@ant-design/icons";
 import { useEffect, useState } from "react";
 
-import { ComponentEnumType } from "@/constans/enum/columnEnum";
-import { IContainerConfigurationOutputDto } from "@/domain/deployment-configurations/deployment-configuration-dto";
+import { IContainerConfigurationDto } from "@/domain/deployment-configurations/deployment-configuration-dto";
 import { IDeploymentConfigurationService } from "@/domain/deployment-configurations/ideployment-configuration-service";
 import { IOperationConfig } from "@/shared/operation/operationConfig";
 import { IocTypes } from "@/shared/config/ioc-types";
@@ -54,6 +57,12 @@ const ContainerConfigurationOperation = (props: IProp) => {
         visible: false,
     });
     const [loading, setLoading] = useState<boolean>(false);
+    const [containerConfigurationDto, setIContainerConfigurationDto] = useState<IContainerConfigurationDto>({
+        containerName: '',
+        restartPolicy: '',
+        isInitContainer: false,
+        imagePullPolicy: ''
+    });
     const [containerConfigurationFormData] = Form.useForm();
 
     /**
@@ -72,6 +81,7 @@ const ContainerConfigurationOperation = (props: IProp) => {
     const onLoad = () => {
         switch (props.operationType) {
             case OperationTypeEnum.add:
+                containerConfigurationFormData.setFieldsValue(containerConfigurationDto)
                 editOperationState(true, "添加");
                 break;
             case OperationTypeEnum.view:
@@ -87,8 +97,16 @@ const ContainerConfigurationOperation = (props: IProp) => {
        * 底部栏OK事件
        */
     const onFinish = () => {
-        let param = containerConfigurationFormData.getFieldsValue();
-        console.log(param)
+        containerConfigurationFormData.validateFields().then((values) => {
+
+
+
+
+        })
+        .catch((info) => 
+        {
+                console.log('Validate Failed:', info);
+        });
 
     };
 
@@ -106,7 +124,7 @@ const ContainerConfigurationOperation = (props: IProp) => {
      * @param _title
      */
     const editOperationState = (_visible: boolean, _title?: string) => {
-        setOperationState({ visible: _visible, title: _title });
+        setOperationState({ visible: _visible, title: _title + "容器配置" });
     };
     return (
         <div>
@@ -333,7 +351,36 @@ const ContainerConfigurationOperation = (props: IProp) => {
                         </Row>
                     </Card>
                     <Card title="环境变量" size="small" bordered={false}  >
-
+                        <Form.List name="environments">
+                            {(fields, { add, remove }) => (
+                                <>
+                                    {fields.map(({ key, name, ...restField }) => (
+                                        <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
+                                            <Form.Item
+                                                {...restField}
+                                                name={[name, 'key']}
+                                                label="Key："
+                                            >
+                                                <Input placeholder="请输入Key" />
+                                            </Form.Item>
+                                            <Form.Item
+                                                {...restField}
+                                                name={[name, 'value']}
+                                                label="Value："
+                                            >
+                                                <Input placeholder="请输入Value" />
+                                            </Form.Item>
+                                            <MinusCircleOutlined onClick={() => remove(name)} />
+                                        </Space>
+                                    ))}
+                                    <Form.Item>
+                                        <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                                            添加环境变量
+                                        </Button>
+                                    </Form.Item>
+                                </>
+                            )}
+                        </Form.List>
                     </Card>
                 </Form>
             </Drawer>

@@ -79,7 +79,7 @@ export interface IContainerConfigurationBase {
     /**
      * 镜像名称
      */
-    image: string;
+    image?: string;
     /**
      * 准备完成探针配置
      */
@@ -100,7 +100,7 @@ export interface IContainerConfigurationBase {
     /**
      * 环境变量
      */
-    environments?: Map<Object, Object>;
+    environments?: Object;
     /**
      * 容器端口配置
      */
@@ -173,5 +173,12 @@ export interface INessProbe {
  * 容器输出Dto
  */
 export interface IContainerConfigurationOutputDto extends IContainerConfigurationBase, IEntity<string> {
+
+}
+
+/**
+ * 容器输出Dto
+ */
+export interface IContainerConfigurationDto extends IContainerConfigurationBase{
 
 }
