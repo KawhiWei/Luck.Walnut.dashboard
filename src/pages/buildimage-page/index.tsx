@@ -1,15 +1,16 @@
-import {Col, Form, Row, Spin, Input, Button, Table, PaginationProps,Tooltip,Popconfirm, message} from 'antd';
-import {SearchOutlined, PlusOutlined,WarningOutlined,DeleteOutlined,EditOutlined, EyeOutlined} from "@ant-design/icons";
-import { useEffect, useState } from "react";
+import {Button, Col, Form, Input, PaginationProps, Popconfirm, Row, Spin, Table, Tooltip, message} from 'antd';
+import {DeleteOutlined, EditOutlined, EyeOutlined, PlusOutlined, SearchOutlined, WarningOutlined} from "@ant-design/icons";
 import {
     initPaginationConfig,
     tacitPagingProps,
-    } from "../../shared/ajax/request";
+} from "../../shared/ajax/request";
+import { useEffect, useState } from "react";
+
 import { IBuildImageService } from  "@/domain/buildimages/ibuildimage-service";
 import { IocTypes } from "@/shared/config/ioc-types";
-import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 import Operation from "./operation";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
+import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
 const BuildImagePage = () => {
 
@@ -60,6 +61,8 @@ const BuildImagePage = () => {
                             <Popconfirm
                                 placement="top"
                                 title="确认删除?"
+                                okText="确定"
+                                cancelText="取消"
                                 onConfirm={() => deleteRow(record.id)}
                                 icon={<WarningOutlined />}
                             >

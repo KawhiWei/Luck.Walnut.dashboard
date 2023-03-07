@@ -100,13 +100,13 @@ const ContainerConfigurationOperation = (props: IProp) => {
         containerConfigurationFormData.validateFields().then((values) => {
 
 
-
+            console.log(values)
+            console.log('验证通过')
 
         })
-        .catch((info) => 
-        {
-                console.log('Validate Failed:', info);
-        });
+            .catch((error) => {
+                console.log('Validate Failed:', error);
+            });
 
     };
 

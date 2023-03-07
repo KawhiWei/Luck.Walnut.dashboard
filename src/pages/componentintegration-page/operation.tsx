@@ -97,15 +97,26 @@ const Operation = (props: IProp) => {
    * 底部栏OK事件
    */
   const onFinish = () => {
-    let param = formData.getFieldsValue();
-    switch (props.operationType) {
-      case OperationTypeEnum.add:
-        onAdd(param);
-        break;
-      case OperationTypeEnum.edit:
-        onUpdate(param);
-        break;
-    }
+    formData.validateFields().then((values) => {
+
+      let param = formData.getFieldsValue();
+      switch (props.operationType) {
+        case OperationTypeEnum.add:
+          onAdd(param);
+          break;
+        case OperationTypeEnum.edit:
+          onUpdate(param);
+          break;
+      }
+      console.log(values)
+      console.log('验证通过')
+
+    })
+      .catch((error) => {
+        console.log('Validate Failed:', error);
+      });
+
+
   };
 
   const onAdd = (_param: any) => {
@@ -197,7 +208,7 @@ const Operation = (props: IProp) => {
               style={{ margin: "0 8px" }}
               type="primary"
               loading={loading}
-              htmlType="submit"
+              onClick={() => onFinish()}
             >
               保存
             </Button>
@@ -208,7 +219,6 @@ const Operation = (props: IProp) => {
           form={formData}
           name="nest-messages"
           layout="horizontal"
-          onFinish={onFinish}
           validateMessages={validateMessages}
         >
           <Row>

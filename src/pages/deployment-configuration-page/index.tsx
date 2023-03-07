@@ -57,12 +57,16 @@ const DeploymentConfigurationPage = (props: IProp) => {
             dataIndex: "appId",
         },
         {
-            title: "部署环境",
-            dataIndex: "environmentName",
+            title: "名称",
+            dataIndex: "name",
         },
         {
             title: "中文名称",
             dataIndex: "chineseName",
+        },
+        {
+            title: "部署环境",
+            dataIndex: "environmentName",
         },
         {
             title: "应用运行时",
@@ -71,11 +75,6 @@ const DeploymentConfigurationPage = (props: IProp) => {
         {
             title: "部署类型",
             dataIndex: "deploymentTypeName",
-        },
-
-        {
-            title: "名称",
-            dataIndex: "name",
         },
         {
             title: "命名空间",
@@ -104,6 +103,8 @@ const DeploymentConfigurationPage = (props: IProp) => {
                             <Popconfirm
                                 placement="top"
                                 title="确认删除?"
+                                okText="确定"
+                                cancelText="取消"
                                 onConfirm={() => deleteRow(record.id)}
                                 icon={<WarningOutlined />}
                             >

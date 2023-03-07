@@ -57,6 +57,14 @@ export interface IDeploymentConfigurationOutputDto extends IDeploymentConfigurat
 }
 
 /**
+ * 输出Dto
+ */
+export interface IDeploymentConfigurationDto extends IDeploymentConfigurationBaseDto{
+}
+
+
+
+/**
  * 容器配置基础Dto
  */
 export interface IContainerConfigurationBase {

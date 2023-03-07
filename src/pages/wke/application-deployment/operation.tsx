@@ -151,7 +151,7 @@ const Operation = (props: IProp) => {
     const onAdd = (_param: any) => {
         setLoading(true);
         _applicationService
-            .addApplication(_param)
+            .createApplication(_param)
             .then((rep) => {
                 if (!rep.success) {
                     message.error(rep.errorMessage, 3);
@@ -167,7 +167,7 @@ const Operation = (props: IProp) => {
     const onUpdate = (_param: any) => {
         props.id &&
             _applicationService
-                .update(props.id, _param)
+                .updateApplication(props.id, _param)
                 .then((rep) => {
                     if (!rep.success) {
                         message.error(rep.errorMessage, 3);

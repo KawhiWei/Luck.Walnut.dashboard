@@ -1,15 +1,15 @@
 import "../drawer.less";
 
-import { Button, Card, Col, Drawer, Form, Input, InputNumber, Popconfirm, Row, Select, Space, Switch, Table, Typography } from "antd";
+import { Button, Card, Col, Drawer, Form, Input, InputNumber, Popconfirm, Row, Select, Space, Switch, Table, Typography, message } from "antd";
 import {
     EditOutlined,
     PlusOutlined
 } from "@ant-design/icons";
+import { IContainerConfigurationDto, IContainerConfigurationOutputDto, IDeploymentConfigurationDto } from "@/domain/deployment-configurations/deployment-configuration-dto";
 import { useEffect, useState } from "react";
 
 import { ComponentEnumType } from "@/constans/enum/columnEnum";
 import ContainerConfigurationOperation from "./container-configuration-operation";
-import { IContainerConfigurationOutputDto } from "@/domain/deployment-configurations/deployment-configuration-dto";
 import { IDeploymentConfigurationService } from "@/domain/deployment-configurations/ideployment-configuration-service";
 import { IOperationConfig } from "@/shared/operation/operationConfig";
 import { IocTypes } from "@/shared/config/ioc-types";
@@ -127,6 +127,19 @@ const Operation = (props: IProp) => {
         }
 
     ]);
+
+    const [deploymentConfigurationData, setDeploymentConfigurationData] = useState<IDeploymentConfigurationDto>({
+        name: "aaa",
+        environmentName: "aaa",
+        applicationRuntimeType: 0,
+        deploymentType: 0,
+        chineseName: "aaa",
+        appId: "aaa",
+        kubernetesNameSpaceId: "aaa",
+        replicas: 1,
+        maxUnavailable: 0,
+        imagePullSecretId: "asdas"
+    });
     const [editingKey, setEditingKey] = useState("");
 
     const columns = [
@@ -409,6 +422,7 @@ const Operation = (props: IProp) => {
     const onLoad = () => {
         switch (props.operationType) {
             case OperationTypeEnum.add:
+                deploymentConfigurationFormData.setFieldsValue(deploymentConfigurationData)
                 editOperationState(true, "添加");
                 break;
             case OperationTypeEnum.view:
@@ -424,8 +438,42 @@ const Operation = (props: IProp) => {
        * 底部栏OK事件
        */
     const onFinish = () => {
-        let param = deploymentConfigurationFormData.getFieldsValue();
-        console.log(param)
+        deploymentConfigurationFormData.validateFields().then((_deploymentConfiguration: IDeploymentConfigurationDto) => {
+            _deploymentConfiguration.appId = props.appId;
+            _deploymentConfiguration.kubernetesNameSpaceId = "test";
+            console.log(_deploymentConfiguration)
+            debugger
+            console.log('验证通过')
+
+            switch (props.operationType) {
+                case OperationTypeEnum.add:
+                    onCreate(_deploymentConfiguration);
+                    break;
+                case OperationTypeEnum.edit:
+                    break;
+            }
+
+
+        }).catch((error) => { });
+    };
+
+
+    /**
+     * 弹框取消事件
+     */
+    const onCreate = (_deploymentConfiguration: IDeploymentConfigurationDto) => {
+        setLoading(true);
+        _deploymentConfigurationService.createDeploymentConfiguration(_deploymentConfiguration).then(rep => {
+            debugger
+            if (!rep.success) {
+                message.error(rep.errorMessage, 3);
+            } else {
+                message.success("保存成功", 3);
+                props.onCallbackEvent && props.onCallbackEvent();
+            }
+        }).finally(() => {
+            setLoading(false);
+        });
     };
 
     /**
@@ -590,7 +638,7 @@ const Operation = (props: IProp) => {
                                     label="部署副本数量："
                                     rules={[{ required: true }]}
                                 >
-                                    <Input
+                                    <InputNumber
                                         style={{ borderRadius: 6 }}
                                         disabled={props.operationType === OperationTypeEnum.edit}
                                     />
@@ -602,7 +650,7 @@ const Operation = (props: IProp) => {
                                     label="最大不可用："
                                     rules={[{ required: true }]}
                                 >
-                                    <Input
+                                    <InputNumber
                                         style={{ borderRadius: 6 }}
                                         disabled={props.operationType === OperationTypeEnum.edit}
                                     />

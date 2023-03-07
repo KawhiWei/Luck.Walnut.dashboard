@@ -19,7 +19,7 @@ export interface IApplicationService {
     * 添加应用
     * @param  
     */
-    addApplication(_param: any): Promise<IServerReturn<any>>;
+    createApplication(_param: any): Promise<IServerReturn<any>>;
 
     /**
      * 获取详情
@@ -31,7 +31,7 @@ export interface IApplicationService {
     * 获取详情
     * @param _id 
     */
-    update(_id: string, _param: any): Promise<IServerReturn<any>>;
+    updateApplication(_id: string, _param: any): Promise<IServerReturn<any>>;
 
     /**
      * 应用仪表盘明细

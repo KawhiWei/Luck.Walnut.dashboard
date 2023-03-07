@@ -18,13 +18,13 @@ export class ApplicationService extends BaseService implements IApplicationServi
     getApplicationDashboardDetail(_appId: string): Promise<IServerReturn<any>> {
         return this.dataRequest.getRequest(`${ApplicationApi.application}/${_appId}/dashboard`)
     }
-    update(_id: string, _param: any): Promise<IServerReturn<any>> {
+    updateApplication(_id: string, _param: any): Promise<IServerReturn<any>> {
         return this.dataRequest.putRequest(`${ApplicationApi.application}/${_id}`, _param)
     }
     getDetail(_id: string): Promise<IServerReturn<any>> {
         return this.dataRequest.getRequest(`${ApplicationApi.application}/${_id}`)
     }
-    addApplication(_param: any): Promise<IServerReturn<any>> {
+    createApplication(_param: any): Promise<IServerReturn<any>> {
         return this.dataRequest.postRequest(`${ApplicationApi.application}`, _param)
     }
 

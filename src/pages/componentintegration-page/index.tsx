@@ -157,6 +157,8 @@ const ComponentIntegrationPage = () => {
               <Popconfirm
                 placement="top"
                 title="确认删除?"
+                okText="确定"
+                cancelText="取消"
                 onConfirm={() => deleteRow(record.id)}
                 icon={<WarningOutlined />}
               >

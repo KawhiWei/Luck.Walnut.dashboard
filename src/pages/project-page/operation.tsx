@@ -150,18 +150,31 @@ const ProjectOperation = (props: IProp) => {
   /**
    * 底部栏OK事件
    */
-  const onFinish = (value: any) => {
-    value.planStartTime = moment(value.planStartTime).format("yyyy-MM-DD");
-    value.planEndTime = moment(value.planEndTime).format("yyyy-MM-DD");
-    switch (props.operationType) {
-      case OperationTypeEnum.add:
-        onCreate(value);
-        break;
-      case OperationTypeEnum.edit:
-        onUpdate(value);
-        break;
-    }
-    setLoading(false);
+  const onFinish = () => {
+
+    formData.validateFields().then((values) => {
+      setLoading(false);
+      let param = formData.getFieldsValue();
+      param.planStartTime = moment(param.planStartTime).format("yyyy-MM-DD");
+      param.planEndTime = moment(param.planEndTime).format("yyyy-MM-DD");
+      switch (props.operationType) {
+        case OperationTypeEnum.add:
+          onCreate(param);
+
+          break;
+        case OperationTypeEnum.edit:
+          onUpdate(param);
+          break;
+      }
+      console.log(values)
+      console.log('验证通过')
+
+    })
+      .catch((error) => {
+        console.log('Validate Failed:', error);
+      });
+
+
   };
 
   const onCreate = (_param: any) => {
@@ -230,7 +243,7 @@ const ProjectOperation = (props: IProp) => {
               style={{ margin: "0 8px" }}
               type="primary"
               loading={loading}
-              htmlType="submit"
+              onClick={() => onFinish()}
             >
               保存
             </Button>

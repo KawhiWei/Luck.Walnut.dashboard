@@ -79,15 +79,21 @@ const Operation = (props: IProp) => {
     };
 
     const onFinish = () => {
-        let param = formData.getFieldsValue();
-        switch (props.operationType) {
-            case OperationTypeEnum.add:
-                onAdd(param);
-                break;
-            case OperationTypeEnum.edit:
-                onUpdate(param);
-                break;
-        }
+        formData.validateFields().then((values) => {
+
+            let param = formData.getFieldsValue();
+            switch (props.operationType) {
+                case OperationTypeEnum.add:
+                    onAdd(param);
+                    break;
+                case OperationTypeEnum.edit:
+                    onUpdate(param);
+                    break;
+            }
+        })
+            .catch((error) => {
+                console.log('Validate Failed:', error);
+            });
     }
     const onAdd = (_param: any) => {
         setLoading(true);
@@ -148,7 +154,7 @@ const Operation = (props: IProp) => {
                             style={{ margin: "0 8px" }}
                             type="primary"
                             loading={loading}
-                            htmlType="submit"
+                            onClick={() => onFinish()}
                         >
                             保存
                         </Button>

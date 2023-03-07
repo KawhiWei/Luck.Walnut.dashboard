@@ -1,4 +1,4 @@
-import { Button, Card, Col, Form, Row, Spin, Tag, message } from "antd";
+import { Button, Card, Col, Form, Popconfirm, Row, Spin, Tag, Tooltip, message } from "antd";
 import {
   CheckCircleOutlined,
   CloudUploadOutlined,
@@ -9,6 +9,7 @@ import {
   PlusOutlined,
   ReloadOutlined,
   SyncOutlined,
+  WarningOutlined
 } from "@ant-design/icons";
 import {
   IApplicationPipelineBaseDto,
@@ -39,7 +40,7 @@ interface IProp {
    */
   appId?: string;
 
-  
+
 }
 
 /***
@@ -187,7 +188,20 @@ const PipelinePage = (props: IProp) => {
       ></ExecutedHistory>
     );
   };
-
+  //  {/* <Tooltip placement="top" title="删除">
+  //                         <Popconfirm
+  //                           placement="top"
+  //                           title="确认删除?"
+  //                           onConfirm={() => onDelete(item.id)}
+  //                           icon={<WarningOutlined />}
+  //                         > */}
+  //                           <DeleteOutlined
+  //                             style={{
+  //                               color: "red",
+  //                               fontSize: 20,
+  //                             }} />,
+  //                         {/* </Popconfirm>
+  //                       </Tooltip> */}
   /**
    * 处理标签
    * @param _projectStatus
@@ -276,6 +290,7 @@ const PipelinePage = (props: IProp) => {
                 <Card
                   title={item.name}
                   actions={[
+
                     <PlayCircleOutlined
                       style={{
                         fontSize: 20,
@@ -300,13 +315,12 @@ const PipelinePage = (props: IProp) => {
                     <HistoryOutlined
                       onClick={() => onShowExecutedHistory(item.id)}
                     />,
+
                     <DeleteOutlined
                       style={{
                         color: "red",
                         fontSize: 20,
-                      }}
-                      onClick={() => onDelete(item.id)}
-                    />,
+                      }} />,
                   ]}
                 >
                   <Row style={{ marginBottom: 10 }}>
