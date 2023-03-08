@@ -1,14 +1,14 @@
 import "../drawer.less";
 
-import { Button, Card, Col, Drawer, Form, Input, InputNumber, Row, Space, Switch } from "antd";
+import { Button, Card, Col, Drawer, Form, Input, InputNumber, Row, Space, Switch, message } from "antd";
 import {
     MinusCircleOutlined,
     PlusOutlined
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 
-import { IContainerConfigurationDto } from "@/domain/deployment-configurations/deployment-configuration-dto";
 import { IDeploymentConfigurationService } from "@/domain/deployment-configurations/ideployment-configuration-service";
+import { IDeploymentContainerConfigurationDto } from "@/domain/deployment-configurations/deployment-configuration-dto";
 import { IOperationConfig } from "@/shared/operation/operationConfig";
 import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
@@ -38,7 +38,7 @@ interface IProp {
     /**
      * 部署配置Id
      */
-    deploymentConfigurationId: string;
+    deploymentId: string;
 }
 
 const validateMessages = {
@@ -57,7 +57,7 @@ const ContainerConfigurationOperation = (props: IProp) => {
         visible: false,
     });
     const [loading, setLoading] = useState<boolean>(false);
-    const [containerConfigurationDto, setIContainerConfigurationDto] = useState<IContainerConfigurationDto>({
+    const [deploymentContainerConfiguration, setDeploymentContainerConfiguration] = useState<IDeploymentContainerConfigurationDto>({
         containerName: '',
         restartPolicy: '',
         isInitContainer: false,
@@ -81,34 +81,86 @@ const ContainerConfigurationOperation = (props: IProp) => {
     const onLoad = () => {
         switch (props.operationType) {
             case OperationTypeEnum.add:
-                containerConfigurationFormData.setFieldsValue(containerConfigurationDto)
+                containerConfigurationFormData.setFieldsValue(deploymentContainerConfiguration)
                 editOperationState(true, "添加");
+                break;
+            case OperationTypeEnum.edit:
+                props.id && onGetDeploymentContainerConfigurationDetail(props.id)
                 break;
             case OperationTypeEnum.view:
                 editOperationState(true, "查看");
                 break;
-            case OperationTypeEnum.edit:
-                editOperationState(true, "编辑");
-                props.id && console.log(1111)
-                break;
         }
     };
+
+    const onGetDeploymentContainerConfigurationDetail = (_id: string) => {
+        _deploymentConfigurationService.getDeploymentContainerConfigurationDetail(_id).then(rep => {
+            if (rep.success) {
+                containerConfigurationFormData.setFieldsValue(rep.result);
+                editOperationState(true, "编辑");
+            } else {
+                message.error(rep.errorMessage, 3);
+            }
+        })
+
+    }
     /**
        * 底部栏OK事件
        */
     const onFinish = () => {
-        containerConfigurationFormData.validateFields().then((values) => {
-
-
-            console.log(values)
-            console.log('验证通过')
-
+        console.log(props)
+        containerConfigurationFormData.validateFields().then((_deploymentContainer: IDeploymentContainerConfigurationDto) => {
+            console.log(_deploymentContainer)
+            switch (props.operationType) {
+                case OperationTypeEnum.add:
+                    onCreate(props.deploymentId, _deploymentContainer);
+                    break;
+                case OperationTypeEnum.edit:
+                    props.id && onUpdate(props.deploymentId, props.id, _deploymentContainer)
+                    break;
+            }
         })
             .catch((error) => {
                 console.log('Validate Failed:', error);
             });
 
     };
+
+    /**
+     * 弹框取消事件
+     */
+    const onCreate = (_deploymentId: string, _params: IDeploymentContainerConfigurationDto) => {
+        setLoading(true);
+        _deploymentConfigurationService.createDeploymentContainerConfiguration(_deploymentId, _params).then(rep => {
+            if (!rep.success) {
+                message.error(rep.errorMessage, 3);
+            } else {
+                message.success("保存成功", 3);
+                props.onCallbackEvent && props.onCallbackEvent();
+            }
+        }).finally(() => {
+            setLoading(false);
+        });
+    };
+
+
+    /**
+     * 修改事件
+     */
+    const onUpdate = (_deploymentId: string, _id: string, _deploymentContainer: IDeploymentContainerConfigurationDto) => {
+        setLoading(true);
+        _deploymentConfigurationService.updateDeploymentContainerConfiguration(_deploymentId, _id, _deploymentContainer).then(rep => {
+            if (!rep.success) {
+                message.error(rep.errorMessage, 3);
+            } else {
+                message.success("保存成功", 3);
+                props.onCallbackEvent && props.onCallbackEvent();
+            }
+        }).finally(() => {
+            setLoading(false);
+        });
+    };
+
 
     /**
      * 弹框取消事件

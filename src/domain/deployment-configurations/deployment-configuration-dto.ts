@@ -45,7 +45,11 @@ export interface IDeploymentConfigurationBaseDto {
      */
     imagePullSecretId: string;
 }
-
+/**
+ * 输出Dto
+ */
+export interface IDeploymentConfigurationDto extends IDeploymentConfigurationBaseDto{
+}
 /**
  * 输出Dto
  */
@@ -53,21 +57,17 @@ export interface IDeploymentConfigurationOutputDto extends IDeploymentConfigurat
     /**
      * 应用容器配置列表
      */
-    applicationContainers: IContainerConfigurationOutputDto[];
+    deploymentContainerConfigurations: IDeploymentContainerConfigurationOutputDto[];
 }
 
-/**
- * 输出Dto
- */
-export interface IDeploymentConfigurationDto extends IDeploymentConfigurationBaseDto{
-}
+
 
 
 
 /**
  * 容器配置基础Dto
  */
-export interface IContainerConfigurationBase {
+export interface IDeploymentContainerConfigurationBase {
     /**
      * 容器名称
      */
@@ -180,13 +180,13 @@ export interface INessProbe {
 /**
  * 容器输出Dto
  */
-export interface IContainerConfigurationOutputDto extends IContainerConfigurationBase, IEntity<string> {
+export interface IDeploymentContainerConfigurationOutputDto extends IDeploymentContainerConfigurationBase, IEntity<string> {
 
 }
 
 /**
  * 容器输出Dto
  */
-export interface IContainerConfigurationDto extends IContainerConfigurationBase{
+export interface IDeploymentContainerConfigurationDto extends IDeploymentContainerConfigurationBase{
 
 }

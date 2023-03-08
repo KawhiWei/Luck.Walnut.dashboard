@@ -1,11 +1,13 @@
 import "../drawer.less";
 
-import { Button, Card, Col, Drawer, Form, Input, InputNumber, Popconfirm, Row, Select, Space, Switch, Table, Typography, message } from "antd";
+import { Button, Card, Col, Drawer, Form, Input, InputNumber, Popconfirm, Row, Select, Space, Switch, Table, Tooltip, Typography, message } from "antd";
 import {
+    DeleteOutlined,
     EditOutlined,
-    PlusOutlined
+    PlusOutlined,
+    WarningOutlined
 } from "@ant-design/icons";
-import { IContainerConfigurationDto, IContainerConfigurationOutputDto, IDeploymentConfigurationDto } from "@/domain/deployment-configurations/deployment-configuration-dto";
+import { IDeploymentConfigurationDto, IDeploymentContainerConfigurationDto, IDeploymentContainerConfigurationOutputDto } from "@/domain/deployment-configurations/deployment-configuration-dto";
 import { useEffect, useState } from "react";
 
 import { ComponentEnumType } from "@/constans/enum/columnEnum";
@@ -14,6 +16,7 @@ import { IDeploymentConfigurationService } from "@/domain/deployment-configurati
 import { IOperationConfig } from "@/shared/operation/operationConfig";
 import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
+import _ from "lodash";
 import { formItemDoubleRankLayout } from "@/constans/layout/optionlayout";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
@@ -42,18 +45,6 @@ interface IProp {
      */
     appId: string;
 }
-interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
-    editing: boolean;
-    dataIndex: string;
-    title: any;
-    componentType: ComponentEnumType,
-    record: IContainerConfigurationOutputDto;
-    children: React.ReactNode;
-}
-
-
-
-
 
 const validateMessages = {
     required: "${label} 不可为空",
@@ -75,95 +66,39 @@ const Operation = (props: IProp) => {
     const [deploymentConfigurationFormData] = Form.useForm();
     const [loading, setLoading] = useState<boolean>(false);
 
-    /**
-     * 
-     */
-    const [containerConfigurationOperationType, setContainerConfigurationOperationType] = useState<OperationTypeEnum>(OperationTypeEnum.view);
     const [containerConfigurationFormData] = Form.useForm();
-    const [ContainerConfigurationData, setContainerConfigurationData] = useState<Array<IContainerConfigurationOutputDto>>([
-        {
-            id: "64000d29aa331e36c1d1edc9",
-            containerName: "string",
-            restartPolicy: "string",
-            isInitContainer: false,
-            imagePullPolicy: "string",
-            image: "string",
-            readinessProbe: {
-                scheme: "test001",
-                path: "api/application/dashboard",
-                port: 3000,
-                initialDelaySeconds: 2000,
-                periodSeconds: 2000,
-            },
-            liveNessProbe: {
-                scheme: "test003",
-                path: "api/application/dashboard",
-                port: 3000,
-                initialDelaySeconds: 2000,
-                periodSeconds: 2000,
-            }
-        },
-        {
-            id: "64000d29aa331e36c1d1edc8",
-            containerName: "string",
-            restartPolicy: "string",
-            isInitContainer: true,
-            imagePullPolicy: "string",
-            image: "string",
-            readinessProbe: {
-                scheme: "test003",
-                path: "api/application/dashboard",
-                port: 3000,
-                initialDelaySeconds: 2000,
-                periodSeconds: 2000,
-            },
-            liveNessProbe: {
-                scheme: "test003",
-                path: "api/application/dashboard",
-                port: 3000,
-                initialDelaySeconds: 2000,
-                periodSeconds: 2000,
-            }
-        }
-
-    ]);
+    const [containerConfigurationDataArray, setContainerConfigurationArray] = useState<Array<IDeploymentContainerConfigurationOutputDto>>([]);
 
     const [deploymentConfigurationData, setDeploymentConfigurationData] = useState<IDeploymentConfigurationDto>({
-        name: "aaa",
-        environmentName: "aaa",
+        name: "",
+        environmentName: "",
         applicationRuntimeType: 0,
         deploymentType: 0,
-        chineseName: "aaa",
-        appId: "aaa",
-        kubernetesNameSpaceId: "aaa",
+        chineseName: "",
+        appId: "",
+        kubernetesNameSpaceId: "",
         replicas: 1,
         maxUnavailable: 0,
-        imagePullSecretId: "asdas"
+        imagePullSecretId: ""
     });
-    const [editingKey, setEditingKey] = useState("");
 
     const columns = [
         {
             title: '容器名称',
             dataIndex: 'containerName',
             width: 200,
-            editable: true,
-            componentType: ComponentEnumType.textInput
         },
         {
             title: '重启规则',
             dataIndex: 'restartPolicy',
             width: 140,
-            editable: true,
-            componentType: ComponentEnumType.select
+
         },
         {
             title: '是否初始容器',
             dataIndex: 'isInitContainer',
             width: 200,
-            editable: true,
-            componentType: ComponentEnumType.switch,
-            render: (_: any, record: IContainerConfigurationOutputDto) => {
+            render: (_: any, record: IDeploymentContainerConfigurationOutputDto) => {
                 return (
                     <Switch disabled={true} checked={record.isInitContainer}></Switch>
                 );
@@ -174,236 +109,79 @@ const Operation = (props: IProp) => {
             dataIndex: 'imagePullPolicy',
             width: 200,
             editable: true,
-            componentType: ComponentEnumType.select
         },
         {
             title: '操作',
             width: 200,
             dataIndex: 'operation',
-            render: (_: any, record: IContainerConfigurationOutputDto) => {
-                return isEditOrAdd(record.id) ? (
-                    <span>
-                        <Typography.Link onClick={() => save(record.id)} style={{ marginRight: 8 }}>
-                            保存
-                        </Typography.Link>
-                        <Popconfirm title="您确定取消编辑吗?" onConfirm={onContainerConfigurationCancel} okText="是" cancelText="否">
-                            <a>取消</a>
-                        </Popconfirm>
-                    </span>
-                ) : (
-                    <span>
-                        {/* <Typography.Link disabled={editingKey !== ''} onClick={() => editContainerConfiguration(record)}>
-                        编辑
-                    </Typography.Link> */}
-                        {/* <Typography.Link disabled={editingKey !== ''} onClick={() => editDrawerContainerConfiguration(record)}>
-                            Drawer编辑
-                        </Typography.Link> */}
-                        <EditOutlined style={{ color: "orange", fontSize: 20, }} onClick={() => editDrawerContainerConfiguration(record)} />
-                    </span>
-
-                );
+            render: (_: any, record: IDeploymentContainerConfigurationOutputDto) => {
+                return (
+                    <div className="table-operation">
+                        <Tooltip placement="top" title="编辑">
+                            <EditOutlined
+                                style={{ color: "orange", marginRight: 10, fontSize: 16 }}
+                                onClick={() => editContainerConfigurationRow(record.id)} />
+                        </Tooltip>
+                        <Tooltip placement="top" title="删除">
+                            <Popconfirm
+                                placement="top"
+                                title="确认删除?"
+                                okText="确定"
+                                cancelText="取消"
+                                onConfirm={() => deleteContainerConfigurationRow(record.id)}
+                                icon={<WarningOutlined />}
+                            >
+                                <DeleteOutlined style={{ color: "red", fontSize: 16 }} />
+                            </Popconfirm>
+                        </Tooltip>
+                    </div>
+                )
             },
         },
     ];
 
-
-    /**
-     * 
-     * @returns 
+    /***
+     * 修改一个容器配置
      */
-    const isEditOrAdd = (_id: string) => {
-        return (containerConfigurationOperationType === OperationTypeEnum.add || containerConfigurationOperationType === OperationTypeEnum.edit) && editingKey === _id;
+    const editContainerConfigurationRow = (_id: string) => {
+        if (props.operationType === OperationTypeEnum.edit && props.id) {
+            setContainerConfigurationElement(<ContainerConfigurationOperation
+                operationType={OperationTypeEnum.edit}
+                deploymentId={props.id}
+                id={_id}
+                onCallbackEvent={onContainerConfigurationCallBack}></ContainerConfigurationOperation>)
+        }
+
     }
 
-    const mergedColumns = columns.map((col) => {
-        if (!col.editable) {
-            return col;
-        }
-        return {
-            ...col,
-            onCell: (record: IContainerConfigurationOutputDto) => ({
-                record,
-                componentType: col.componentType,
-                dataIndex: col.dataIndex,
-                title: col.title,
-                editing: isEditOrAdd(record.id),
-            }),
-        };
-    });
+    /**
+     * 删除容器配置
+     * @param _id 
+     */
+    const deleteContainerConfigurationRow = (_id: string) => {
+        props.id && _deploymentConfigurationService.deleteDeploymentContainerConfiguration(props.id, _id).then(res => {
+            if (!res.success) {
+                message.error(res.errorMessage, 3);
+            } else {
+                onGetDeploymentConfigurationDetail();
+            }
+        });
+    }
 
     /**
-     * 当前单元格渲染组件
-     * @param param0 
-     * @returns 
+     * 清空子组件
      */
-    const EditableCell: React.FC<EditableCellProps> = ({
-        editing,
-        dataIndex,
-        title,
-        record,
-        children,
-        componentType,
-        ...restProps
-    }) => {
-        return (
-            <td {...restProps}>
-                {editing ? (
-                    getComponents(componentType, title, dataIndex)
-                ) : (
-                    children
-                )}
-            </td>
-        );
-    };
-
-    /**
-     * 获取编辑行的表单组件
-     * @param componentType 
-     * @param title 
-     * @param columnName 
-     * @returns 
-     */
-    const getComponents = (componentType: ComponentEnumType, title: string, columnName: string) => {
-        console.log(columnName);
-        switch (componentType) {
-            case ComponentEnumType.textInput:
-                return <Form.Item
-                    name={columnName}
-                    style={{ margin: 0 }}
-                    rules={[
-                        {
-                            required: true,
-                            message: `Please Input ${title}!`,
-                        },
-                    ]}
-                >
-                    <Input />
-                </Form.Item>;
-            case ComponentEnumType.select:
-                return <Form.Item
-                    name={columnName}
-                    style={{ margin: 0 }}
-                    rules={[
-                        {
-                            required: true,
-                            message: `Please Input ${title}!`,
-                        },
-                    ]}
-                >
-                    <Select>
-                        <Select.Option value="string">Demo</Select.Option>
-                    </Select>
-                </Form.Item>;
-            case ComponentEnumType.numBerInput:
-                return <Form.Item
-                    name={columnName}
-                    style={{ margin: 0 }}
-                    rules={[
-                        {
-                            required: true,
-                            message: `Please Input ${title}!`,
-                        },
-                    ]}
-                >
-                    <InputNumber />
-                </Form.Item>;
-            case ComponentEnumType.switch:
-                return <Form.Item
-                    name={columnName}
-                    style={{ margin: 0 }}
-                    valuePropName={"checked"}
-
-                    rules={[
-                        {
-                            required: true,
-                            message: `Please Input ${title}!`,
-                        },
-                    ]}
-                >
-                    <Switch />
-                </Form.Item>;
-            case ComponentEnumType.doubleTextInput:
-                return <Form.Item
-                    name={columnName}
-                    style={{ margin: 0 }}
-                    rules={[
-                        {
-                            required: true,
-                            message: `Please Input ${title}!`,
-                        },
-                    ]}
-                >
-                    <Input />
-                </Form.Item>;
-            case ComponentEnumType.doubleTextInput:
-                return <Form.Item
-                    name={columnName}
-                    style={{ margin: 0 }}
-                    rules={[
-                        {
-                            required: true,
-                            message: `Please Input ${title}!`,
-                        },
-                    ]}
-                >
-                    <InputNumber />
-                </Form.Item>;
-            default:
-                return null;
-        }
-
-    };
-
-    /**
-     * table可编辑行事件
-     * @param record 
-     */
-    const editContainerConfiguration = (record: IContainerConfigurationOutputDto) => {
-        containerConfigurationFormData.setFieldsValue(record);
-        setEditingKey(record.id);
-        setContainerConfigurationOperationType(OperationTypeEnum.edit)
-    };
-
-    /**
-     * table可编辑行事件
-     * @param record 
-     */
-    const editDrawerContainerConfiguration = (record: IContainerConfigurationOutputDto) => {
-
-        setContainerConfigurationElement(<ContainerConfigurationOperation
-
-            operationType={OperationTypeEnum.edit}
-            deploymentConfigurationId={""}
-            onCallbackEvent={clearElement}
-
-        ></ContainerConfigurationOperation>)
-
-
-        // setContainerConfigurationOperationType(OperationTypeEnum.edit)
-    };
-
-
     const clearElement = () => {
         setContainerConfigurationElement(null);
     };
 
     /**
-     * table表格编辑行保存
-     * @param id 
+     * 容器配置组件回调事件
      */
-    const save = (id: string) => {
-
-        console.log(id, containerConfigurationFormData.getFieldsValue());
-        setEditingKey('');
-        setContainerConfigurationOperationType(OperationTypeEnum.view)
-
+    const onContainerConfigurationCallBack = () => {
+        clearElement();
+        onGetDeploymentConfigurationDetail()
     };
-
-    const onContainerConfigurationCancel = () => {
-        setEditingKey('');
-        setContainerConfigurationOperationType(OperationTypeEnum.view)
-    };
-
 
 
     /**
@@ -412,8 +190,6 @@ const Operation = (props: IProp) => {
     useEffect(() => {
         onLoad();
     }, []);
-
-
 
     /**
      * 编辑获取一个表单
@@ -425,46 +201,73 @@ const Operation = (props: IProp) => {
                 deploymentConfigurationFormData.setFieldsValue(deploymentConfigurationData)
                 editOperationState(true, "添加");
                 break;
+            case OperationTypeEnum.edit:
+                props.id && onGetDeploymentConfigurationDetail()
+                break;
             case OperationTypeEnum.view:
                 editOperationState(true, "查看");
                 break;
-            case OperationTypeEnum.edit:
-                editOperationState(true, "编辑");
-                props.id && console.log(1111)
-                break;
+
         }
     };
+
+    /**
+     * 查询配置详情
+     */
+    const onGetDeploymentConfigurationDetail = () => {
+        props.id && _deploymentConfigurationService.getDeploymentConfigurationDetail(props.id).then(rep => {
+            if (rep.success) {
+                deploymentConfigurationFormData.setFieldsValue(rep.result);
+                setContainerConfigurationArray(rep.result.deploymentContainerConfigurations);
+                editOperationState(true, "编辑");
+            } else {
+                message.error(rep.errorMessage, 3);
+            }
+        })
+    }
+
     /**
        * 底部栏OK事件
        */
     const onFinish = () => {
-        deploymentConfigurationFormData.validateFields().then((_deploymentConfiguration: IDeploymentConfigurationDto) => {
-            _deploymentConfiguration.appId = props.appId;
-            _deploymentConfiguration.kubernetesNameSpaceId = "test";
-            console.log(_deploymentConfiguration)
-            debugger
-            console.log('验证通过')
-
+        deploymentConfigurationFormData.validateFields().then((_deployment: IDeploymentConfigurationDto) => {
+            _deployment.appId = props.appId;
+            _deployment.kubernetesNameSpaceId = "test";
             switch (props.operationType) {
                 case OperationTypeEnum.add:
-                    onCreate(_deploymentConfiguration);
+                    onCreate(_deployment);
                     break;
                 case OperationTypeEnum.edit:
+                    props.id && onUpdate(props.id, _deployment)
                     break;
             }
-
-
         }).catch((error) => { });
+    };
+
+    /**
+     * 修改事件
+     */
+    const onUpdate = (_id: string, _deployment: IDeploymentConfigurationDto) => {
+        setLoading(true);
+        _deploymentConfigurationService.updateDeploymentConfiguration(_id, _deployment).then(rep => {
+            if (!rep.success) {
+                message.error(rep.errorMessage, 3);
+            } else {
+                message.success("保存成功", 3);
+                props.onCallbackEvent && props.onCallbackEvent();
+            }
+        }).finally(() => {
+            setLoading(false);
+        });
     };
 
 
     /**
      * 弹框取消事件
      */
-    const onCreate = (_deploymentConfiguration: IDeploymentConfigurationDto) => {
+    const onCreate = (_deployment: IDeploymentConfigurationDto) => {
         setLoading(true);
-        _deploymentConfigurationService.createDeploymentConfiguration(_deploymentConfiguration).then(rep => {
-            debugger
+        _deploymentConfigurationService.createDeploymentConfiguration(_deployment).then(rep => {
             if (!rep.success) {
                 message.error(rep.errorMessage, 3);
             } else {
@@ -490,25 +293,27 @@ const Operation = (props: IProp) => {
      * @param _title
      */
     const editOperationState = (_visible: boolean, _title?: string) => {
-        setOperationState({ visible: _visible, title: _title });
+        setOperationState({ visible: _visible, title: _title + '部署配置' });
     };
     /**
      * 添加容器配置
      */
     const addChange = () => {
+        if (props.id) {
+            setContainerConfigurationElement(<ContainerConfigurationOperation
+                operationType={OperationTypeEnum.add}
+                deploymentId={props.id}
+                onCallbackEvent={onContainerConfigurationCallBack}
 
-        setContainerConfigurationElement(<ContainerConfigurationOperation
-            operationType={OperationTypeEnum.add}
-            deploymentConfigurationId={""}
-            onCallbackEvent={clearElement}
+            ></ContainerConfigurationOperation>)
+        }
 
-        ></ContainerConfigurationOperation>)
     };
 
 
     return (
         <div>
-            <Drawer style={{ borderRadius: 6 }}
+            <Drawer
                 width="80%"
                 title={
                     <div
@@ -548,7 +353,6 @@ const Operation = (props: IProp) => {
                         form={deploymentConfigurationFormData}
                         name="nest-messages"
                         layout="horizontal"
-                        onFinish={onFinish}
                         validateMessages={validateMessages}
                     >
                         <Row>
@@ -557,7 +361,7 @@ const Operation = (props: IProp) => {
                                     name="name"
                                     label="名称："
                                     rules={[{ required: true }]}>
-                                    <Input style={{ borderRadius: 6 }} />
+                                    <Input />
                                 </Form.Item>
                             </Col>
                             <Col span="12">
@@ -565,7 +369,7 @@ const Operation = (props: IProp) => {
                                     name="chineseName"
                                     label="中文名称："
                                     rules={[{ required: true }]}>
-                                    <Input style={{ borderRadius: 6 }} />
+                                    <Input />
                                 </Form.Item>
                             </Col>
                         </Row>
@@ -576,32 +380,7 @@ const Operation = (props: IProp) => {
                                     label="部署环境："
                                     rules={[{ required: true }]}
                                 >
-                                    <Input
-                                        style={{ borderRadius: 6 }}
-                                        disabled={props.operationType === OperationTypeEnum.edit}
-                                    />
-                                </Form.Item>
-                            </Col>
-                            <Col span="12">
-                                <Form.Item
-                                    name="applicationRuntimeType"
-                                    label="应用运行时类型："
-                                    rules={[{ required: true }]}>
-                                    <Input style={{ borderRadius: 6 }} />
-                                </Form.Item>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span="12">
-                                <Form.Item
-                                    name="deploymentType"
-                                    label="部署类型："
-                                    rules={[{ required: true }]}
-                                >
-                                    <Input
-                                        style={{ borderRadius: 6 }}
-                                        disabled={props.operationType === OperationTypeEnum.edit}
-                                    />
+                                    <Input />
                                 </Form.Item>
                             </Col>
                             <Col span="12">
@@ -610,12 +389,30 @@ const Operation = (props: IProp) => {
                                     label="命名空间："
                                     rules={[{ required: true }]}
                                 >
-                                    <Input
-                                        style={{ borderRadius: 6 }}
-                                        disabled={props.operationType === OperationTypeEnum.edit}
-                                    />
+                                    <Input />
                                 </Form.Item>
                             </Col>
+
+                        </Row>
+                        <Row>
+                            <Col span="12">
+                                <Form.Item
+                                    name="applicationRuntimeType"
+                                    label="应用运行时类型："
+                                    rules={[{ required: true }]}>
+                                    <Input />
+                                </Form.Item>
+                            </Col>
+                            <Col span="12">
+                                <Form.Item
+                                    name="deploymentType"
+                                    label="部署类型："
+                                    rules={[{ required: true }]}
+                                >
+                                    <Input />
+                                </Form.Item>
+                            </Col>
+
                         </Row>
                         <Row>
                             <Col span="12">
@@ -624,10 +421,7 @@ const Operation = (props: IProp) => {
                                     label="镜像拉取证书："
                                     rules={[{ required: true }]}
                                 >
-                                    <Input
-                                        style={{ borderRadius: 6 }}
-                                        disabled={props.operationType === OperationTypeEnum.edit}
-                                    />
+                                    <Input />
                                 </Form.Item>
                             </Col>
                         </Row>
@@ -638,10 +432,7 @@ const Operation = (props: IProp) => {
                                     label="部署副本数量："
                                     rules={[{ required: true }]}
                                 >
-                                    <InputNumber
-                                        style={{ borderRadius: 6 }}
-                                        disabled={props.operationType === OperationTypeEnum.edit}
-                                    />
+                                    <InputNumber />
                                 </Form.Item>
                             </Col>
                             <Col span="12">
@@ -650,10 +441,7 @@ const Operation = (props: IProp) => {
                                     label="最大不可用："
                                     rules={[{ required: true }]}
                                 >
-                                    <InputNumber
-                                        style={{ borderRadius: 6 }}
-                                        disabled={props.operationType === OperationTypeEnum.edit}
-                                    />
+                                    <InputNumber />
                                 </Form.Item>
                             </Col>
                         </Row>
@@ -664,28 +452,19 @@ const Operation = (props: IProp) => {
                         shape="round"
                         type="primary"
                         style={{ margin: "8px 8px" }}
+                        disabled={props.operationType === OperationTypeEnum.add}
                         onClick={() => {
                             addChange();
-                        }}
-                    >
+                        }}>
                         <PlusOutlined />
                         添加容器配置
                     </Button>
                 }>
                     <Form form={containerConfigurationFormData} component={false}>
                         <Table
-                            components={{
-                                body: {
-                                    cell: EditableCell,
-                                },
-                            }}
                             bordered
-                            dataSource={ContainerConfigurationData}
-                            columns={mergedColumns}
-                            rowClassName="editable-row"
-                            pagination={{
-                                onChange: onContainerConfigurationCancel,
-                            }}
+                            dataSource={containerConfigurationDataArray}
+                            columns={columns}
                             size="small"
                             scroll={{ x: 800 }}
                         />

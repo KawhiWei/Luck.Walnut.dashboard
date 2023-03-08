@@ -4,7 +4,7 @@ import { BuildImageService } from "@/domain/buildimages/buildimage-service";
 import { ClusterService } from "@/domain/kubernetes/clusters/cluster-service";
 import { ComponentIntegrationService } from "@/domain/componentintegration/componentintegration-service";
 import { Container } from "inversify";
-import { DeploymentConfigurationService } from "@/domain/deployment-configurations/deployment-configuration-service";
+import DeploymentConfigurationService from "@/domain/deployment-configurations/deployment-configuration-service";
 import { DoveLogService } from "@/domain/logs/dovelog-service";
 import { EnvironmentService } from "@/domain/environment/environment-service";
 import { IApplicationPipelineService } from "@/domain/applicationpipelines/iapplicationpipeline-service";

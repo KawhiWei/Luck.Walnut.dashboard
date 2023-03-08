@@ -12,6 +12,7 @@ import {
 } from "antd";
 import {
     DeleteOutlined,
+    EditOutlined,
     PlusOutlined,
     ReloadOutlined,
     WarningOutlined
@@ -27,7 +28,6 @@ import { IDeploymentConfigurationService } from "@/domain/deployment-configurati
 import { IocTypes } from "@/shared/config/ioc-types";
 import Operation from "./operation";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
-import { id } from "inversify";
 import { searchFormItemDoubleRankLayout } from "@/constans/layout/optionlayout";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
@@ -99,6 +99,11 @@ const DeploymentConfigurationPage = (props: IProp) => {
             render: (text: any, record: any) => {
                 return (
                     <div className="table-operation">
+                        <Tooltip placement="top" title="编辑">
+                            <EditOutlined
+                                style={{ color: "orange", marginRight: 10, fontSize: 16 }}
+                                onClick={() => editRow(record.id)} />
+                        </Tooltip>
                         <Tooltip placement="top" title="删除">
                             <Popconfirm
                                 placement="top"
@@ -156,7 +161,7 @@ const DeploymentConfigurationPage = (props: IProp) => {
             pageSize: paginationConfig.pageSize,
             pageIndex: paginationConfig.current,
         }
-        _deploymentConfigurationService.getPage("luck.walnut", _param).then((x) => {
+        _deploymentConfigurationService.getDeploymentConfigurationPageList("luck.walnut", _param).then((x) => {
             if (x.success) {
                 setTableData(x.result.data);
             }
@@ -173,11 +178,11 @@ const DeploymentConfigurationPage = (props: IProp) => {
      * 修改一个配置
      */
     const editRow = (_id: string) => {
-        setOperationElement(<Operation operationType={OperationTypeEnum.add} appId={props.appId} id={_id} onCallbackEvent={clearElement}></Operation>)
+        setOperationElement(<Operation operationType={OperationTypeEnum.edit} appId={props.appId} id={_id} onCallbackEvent={clearElement}></Operation>)
     }
 
     const deleteRow = (_id: string) => {
-        _deploymentConfigurationService.delete(_id).then(res => {
+        _deploymentConfigurationService.deleteDeploymentConfiguration(_id).then(res => {
             if (!res.success) {
                 message.error(res.errorMessage, 3);
             } else {

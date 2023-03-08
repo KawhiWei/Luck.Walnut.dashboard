@@ -38,5 +38,5 @@ export const KubernetesApi = {
 }
 
 export const DeploymentApi = {
-  deployments:"/kube/api/application/deployments",
+  deployments:"/kube/api/deployments",
 }
