@@ -40,7 +40,7 @@ export default class DeploymentConfigurationService extends BaseService implemen
      * @returns 
      */
     updateDeploymentConfiguration(_id: string, _params: IDeploymentConfigurationDto): Promise<IServerReturn<any>> {
-        return this.dataRequest.postRequest(`${DeploymentApi.deployments}`, _params)
+        return this.dataRequest.putRequest(`${DeploymentApi.deployments}/${_id}`, _params)
     }
 
     /**
