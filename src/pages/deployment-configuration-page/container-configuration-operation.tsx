@@ -108,9 +108,7 @@ const ContainerConfigurationOperation = (props: IProp) => {
        * 底部栏OK事件
        */
     const onFinish = () => {
-        console.log(props)
         containerConfigurationFormData.validateFields().then((_deploymentContainer: IDeploymentContainerConfigurationDto) => {
-            console.log(_deploymentContainer)
             switch (props.operationType) {
                 case OperationTypeEnum.add:
                     onCreate(props.deploymentId, _deploymentContainer);
