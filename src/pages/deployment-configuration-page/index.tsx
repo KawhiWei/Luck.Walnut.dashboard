@@ -11,6 +11,7 @@ import {
     message
 } from "antd";
 import {
+    CloudUploadOutlined,
     DeleteOutlined,
     EditOutlined,
     PlusOutlined,
@@ -99,6 +100,11 @@ const DeploymentConfigurationPage = (props: IProp) => {
             render: (text: any, record: any) => {
                 return (
                     <div className="table-operation">
+                        <Tooltip placement="top" title="发布">
+                            <CloudUploadOutlined
+                                style={{ color: "#1677ff", marginRight: 10, fontSize: 16 }}
+                                onClick={() => publishDeploymentConfiguration(record.id)} />
+                        </Tooltip>
                         <Tooltip placement="top" title="编辑">
                             <EditOutlined
                                 style={{ color: "orange", marginRight: 10, fontSize: 16 }}
@@ -181,6 +187,15 @@ const DeploymentConfigurationPage = (props: IProp) => {
         setOperationElement(<Operation operationType={OperationTypeEnum.edit} appId={props.appId} id={_id} onCallbackEvent={clearElement}></Operation>)
     }
 
+    /***
+     * 发布一个部署配置
+     */
+    const publishDeploymentConfiguration = (_id: string) => {
+
+
+        console.log('发布应用')
+
+    }
     const deleteRow = (_id: string) => {
         _deploymentConfigurationService.deleteDeploymentConfiguration(_id).then(res => {
             if (!res.success) {

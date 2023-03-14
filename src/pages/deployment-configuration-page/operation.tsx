@@ -1,16 +1,16 @@
 import "../drawer.less";
 
-import { Button, Card, Col, Drawer, Form, Input, InputNumber, Popconfirm, Row, Select, Space, Switch, Table, Tooltip, Typography, message } from "antd";
+import { Button, Card, Col, Drawer, Form, Input, InputNumber, Popconfirm, Row, Space, Switch, Table, Tooltip, message } from "antd";
 import {
+    CloudUploadOutlined,
     DeleteOutlined,
     EditOutlined,
     PlusOutlined,
     WarningOutlined
 } from "@ant-design/icons";
-import { IDeploymentConfigurationDto, IDeploymentContainerConfigurationDto, IDeploymentContainerConfigurationOutputDto } from "@/domain/deployment-configurations/deployment-configuration-dto";
+import { IDeploymentConfigurationDto, IDeploymentContainerConfigurationOutputDto } from "@/domain/deployment-configurations/deployment-configuration-dto";
 import { useEffect, useState } from "react";
 
-import { ComponentEnumType } from "@/constans/enum/columnEnum";
 import ContainerConfigurationOperation from "./container-configuration-operation";
 import { IDeploymentConfigurationService } from "@/domain/deployment-configurations/ideployment-configuration-service";
 import { IOperationConfig } from "@/shared/operation/operationConfig";
@@ -117,7 +117,7 @@ const Operation = (props: IProp) => {
             render: (_: any, record: IDeploymentContainerConfigurationOutputDto) => {
                 return (
                     <div className="table-operation">
-                        <Tooltip placement="top" title="编辑">
+                        <Tooltip placement="top" title="发布">
                             <EditOutlined
                                 style={{ color: "orange", marginRight: 10, fontSize: 16 }}
                                 onClick={() => editContainerConfigurationRow(record.id)} />
@@ -153,6 +153,7 @@ const Operation = (props: IProp) => {
         }
 
     }
+
 
     /**
      * 删除容器配置
