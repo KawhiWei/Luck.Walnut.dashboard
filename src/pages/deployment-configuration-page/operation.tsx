@@ -8,7 +8,7 @@ import {
     PlusOutlined,
     WarningOutlined
 } from "@ant-design/icons";
-import { IDeploymentConfigurationDto, IDeploymentContainerConfigurationOutputDto } from "@/domain/deployment-configurations/deployment-configuration-dto";
+import { IDeploymentConfigurationDto, IMasterContainerConfigurationOutputDto } from "@/domain/deployment-configurations/deployment-configuration-dto";
 import { useEffect, useState } from "react";
 
 import ContainerConfigurationOperation from "./container-configuration-operation";
@@ -67,7 +67,7 @@ const Operation = (props: IProp) => {
     const [loading, setLoading] = useState<boolean>(false);
 
     const [containerConfigurationFormData] = Form.useForm();
-    const [containerConfigurationDataArray, setContainerConfigurationArray] = useState<Array<IDeploymentContainerConfigurationOutputDto>>([]);
+    const [containerConfigurationDataArray, setContainerConfigurationArray] = useState<Array<IMasterContainerConfigurationOutputDto>>([]);
 
     const [deploymentConfigurationData, setDeploymentConfigurationData] = useState<IDeploymentConfigurationDto>({
         name: "",
@@ -98,7 +98,7 @@ const Operation = (props: IProp) => {
             title: '是否初始容器',
             dataIndex: 'isInitContainer',
             width: 200,
-            render: (_: any, record: IDeploymentContainerConfigurationOutputDto) => {
+            render: (_: any, record: IMasterContainerConfigurationOutputDto) => {
                 return (
                     <Switch disabled={true} checked={record.isInitContainer}></Switch>
                 );
@@ -114,7 +114,7 @@ const Operation = (props: IProp) => {
             title: '操作',
             width: 200,
             dataIndex: 'operation',
-            render: (_: any, record: IDeploymentContainerConfigurationOutputDto) => {
+            render: (_: any, record: IMasterContainerConfigurationOutputDto) => {
                 return (
                     <div className="table-operation">
                         <Tooltip placement="top" title="发布">

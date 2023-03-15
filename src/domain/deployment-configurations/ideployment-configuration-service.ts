@@ -1,4 +1,4 @@
-import { IDeploymentConfigurationDto, IDeploymentConfigurationOutputDto, IDeploymentContainerConfigurationDto, IDeploymentContainerConfigurationOutputDto } from "./deployment-configuration-dto";
+import { IDeploymentConfigurationDto, IDeploymentConfigurationOutputDto, IMasterContainerConfigurationDto, IMasterContainerConfigurationOutputDto } from "./deployment-configuration-dto";
 import { IServerPageReturn, IServerReturn } from "@/shared/entity";
 
 export interface IDeploymentConfigurationService {
@@ -45,7 +45,7 @@ export interface IDeploymentConfigurationService {
      * 创建一个容器配置
      * @param _params 
      */
-    createDeploymentContainerConfiguration(_deploymentId: string, _params: IDeploymentContainerConfigurationDto): Promise<IServerReturn<any>>;
+    createDeploymentContainerConfiguration(_deploymentId: string, _params: IMasterContainerConfigurationDto): Promise<IServerReturn<any>>;
 
     /**
      * 修改一个容器配置
@@ -53,7 +53,7 @@ export interface IDeploymentConfigurationService {
      * @param _id 
      * @param _params 
      */
-    updateDeploymentContainerConfiguration(_deploymentId: string, _id: string, _params: IDeploymentContainerConfigurationDto): Promise<IServerReturn<any>>;
+    updateDeploymentContainerConfiguration(_deploymentId: string, _id: string, _params: IMasterContainerConfigurationDto): Promise<IServerReturn<any>>;
 
 
     /**
@@ -62,7 +62,7 @@ export interface IDeploymentConfigurationService {
      * @param _params 
      * @returns 
      */
-    getDeploymentContainerConfigurationDetail(_id: string): Promise<IServerReturn<IDeploymentContainerConfigurationOutputDto>>;
+    getDeploymentContainerConfigurationDetail(_id: string): Promise<IServerReturn<IMasterContainerConfigurationOutputDto>>;
 
 
     /**
@@ -71,7 +71,7 @@ export interface IDeploymentConfigurationService {
      * @param _params 
      * @returns 
      */
-    getDeploymentContainerConfigurationListDeploymentId(_deploymentId: string): Promise<IServerReturn<Array<IDeploymentContainerConfigurationOutputDto>>>;
+    getDeploymentContainerConfigurationListDeploymentId(_deploymentId: string): Promise<IServerReturn<Array<IMasterContainerConfigurationOutputDto>>>;
 
     /**
      * 删除一个容器配置

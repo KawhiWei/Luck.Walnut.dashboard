@@ -46,7 +46,7 @@ export interface IDeploymentConfigurationBaseDto {
     imagePullSecretId: string;
 }
 /**
- * 输出Dto
+ * DeploymentConfiguration输入Dto
  */
 export interface IDeploymentConfigurationDto extends IDeploymentConfigurationBaseDto{
 }
@@ -57,17 +57,31 @@ export interface IDeploymentConfigurationOutputDto extends IDeploymentConfigurat
     /**
      * 应用容器配置列表
      */
-    deploymentContainerConfigurations: IDeploymentContainerConfigurationOutputDto[];
+    deploymentContainerConfigurations: IMasterContainerConfigurationOutputDto[];
 }
 
+/**
+ * 应用部署配置Dto
+ */
+export interface IDeploymentInputDto {
+    /**
+     * 部署配置
+     */
+    deploymentConfiguration: IDeploymentConfigurationDto;
 
+    /**
+     * 容器配置Dto
+     */
+    masterContainerConfiguration : IMasterContainerConfigurationDto
+    
+}
 
 
 
 /**
  * 容器配置基础Dto
  */
-export interface IDeploymentContainerConfigurationBase {
+export interface IMasterContainerConfigurationBase {
     /**
      * 容器名称
      */
@@ -115,7 +129,19 @@ export interface IDeploymentContainerConfigurationBase {
     containerPortConfigurations?: IContainerPortConfiguration[];
 }
 
+/**
+ * 容器输出Dto
+ */
+export interface IMasterContainerConfigurationOutputDto extends IMasterContainerConfigurationBase, IEntity<string> {
 
+}
+
+/**
+ * 容器输入Dto
+ */
+export interface IMasterContainerConfigurationDto extends IMasterContainerConfigurationBase{
+
+}
 /**
  * 容器资源配置
  */
@@ -177,16 +203,3 @@ export interface INessProbe {
 }
 
 
-/**
- * 容器输出Dto
- */
-export interface IDeploymentContainerConfigurationOutputDto extends IDeploymentContainerConfigurationBase, IEntity<string> {
-
-}
-
-/**
- * 容器输出Dto
- */
-export interface IDeploymentContainerConfigurationDto extends IDeploymentContainerConfigurationBase{
-
-}

@@ -8,7 +8,7 @@ import {
 import { useEffect, useState } from "react";
 
 import { IDeploymentConfigurationService } from "@/domain/deployment-configurations/ideployment-configuration-service";
-import { IDeploymentContainerConfigurationDto } from "@/domain/deployment-configurations/deployment-configuration-dto";
+import { IMasterContainerConfigurationDto } from "@/domain/deployment-configurations/deployment-configuration-dto";
 import { IOperationConfig } from "@/shared/operation/operationConfig";
 import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
@@ -57,7 +57,7 @@ const ContainerConfigurationOperation = (props: IProp) => {
         visible: false,
     });
     const [loading, setLoading] = useState<boolean>(false);
-    const [deploymentContainerConfiguration, setDeploymentContainerConfiguration] = useState<IDeploymentContainerConfigurationDto>({
+    const [deploymentContainerConfiguration, setDeploymentContainerConfiguration] = useState<IMasterContainerConfigurationDto>({
         containerName: '',
         restartPolicy: '',
         isInitContainer: false,
@@ -108,7 +108,7 @@ const ContainerConfigurationOperation = (props: IProp) => {
        * 底部栏OK事件
        */
     const onFinish = () => {
-        containerConfigurationFormData.validateFields().then((_deploymentContainer: IDeploymentContainerConfigurationDto) => {
+        containerConfigurationFormData.validateFields().then((_deploymentContainer: IMasterContainerConfigurationDto) => {
             switch (props.operationType) {
                 case OperationTypeEnum.add:
                     onCreate(props.deploymentId, _deploymentContainer);
@@ -127,7 +127,7 @@ const ContainerConfigurationOperation = (props: IProp) => {
     /**
      * 弹框取消事件
      */
-    const onCreate = (_deploymentId: string, _params: IDeploymentContainerConfigurationDto) => {
+    const onCreate = (_deploymentId: string, _params: IMasterContainerConfigurationDto) => {
         setLoading(true);
         _deploymentConfigurationService.createDeploymentContainerConfiguration(_deploymentId, _params).then(rep => {
             if (!rep.success) {
@@ -145,7 +145,7 @@ const ContainerConfigurationOperation = (props: IProp) => {
     /**
      * 修改事件
      */
-    const onUpdate = (_deploymentId: string, _id: string, _deploymentContainer: IDeploymentContainerConfigurationDto) => {
+    const onUpdate = (_deploymentId: string, _id: string, _deploymentContainer: IMasterContainerConfigurationDto) => {
         setLoading(true);
         _deploymentConfigurationService.updateDeploymentContainerConfiguration(_deploymentId, _id, _deploymentContainer).then(rep => {
             if (!rep.success) {

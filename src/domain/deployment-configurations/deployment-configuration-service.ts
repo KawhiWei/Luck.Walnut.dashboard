@@ -1,4 +1,4 @@
-import { IDeploymentConfigurationDto, IDeploymentConfigurationOutputDto, IDeploymentContainerConfigurationDto, IDeploymentContainerConfigurationOutputDto } from "./deployment-configuration-dto";
+import { IDeploymentConfigurationDto, IDeploymentConfigurationOutputDto, IMasterContainerConfigurationDto, IMasterContainerConfigurationOutputDto } from "./deployment-configuration-dto";
 import { IServerPageReturn, IServerReturn } from "@/shared/entity";
 
 import BaseService from "@/shared/service/BaseService/BaseService";
@@ -65,7 +65,7 @@ export default class DeploymentConfigurationService extends BaseService implemen
      * @param _params 
      * @returns 
      */
-    createDeploymentContainerConfiguration(_deploymentId: string, _params: IDeploymentContainerConfigurationDto): Promise<IServerReturn<any>> {
+    createDeploymentContainerConfiguration(_deploymentId: string, _params: IMasterContainerConfigurationDto): Promise<IServerReturn<any>> {
         return this.dataRequest.postRequest(`${DeploymentApi.deployments}/${_deploymentId}/container`, _params)
     }
 
@@ -76,7 +76,7 @@ export default class DeploymentConfigurationService extends BaseService implemen
      * @param _params 
      * @returns 
      */
-    updateDeploymentContainerConfiguration(_deploymentId: string, _id: string, _params: IDeploymentContainerConfigurationDto): Promise<IServerReturn<any>> {
+    updateDeploymentContainerConfiguration(_deploymentId: string, _id: string, _params: IMasterContainerConfigurationDto): Promise<IServerReturn<any>> {
         return this.dataRequest.putRequest(`${DeploymentApi.deployments}/${_deploymentId}/${_id}/container`, _params)
     }
 
@@ -87,7 +87,7 @@ export default class DeploymentConfigurationService extends BaseService implemen
      * @param _params 
      * @returns 
      */
-    getDeploymentContainerConfigurationDetail(_id: string): Promise<IServerReturn<IDeploymentContainerConfigurationOutputDto>> {
+    getDeploymentContainerConfigurationDetail(_id: string): Promise<IServerReturn<IMasterContainerConfigurationOutputDto>> {
         return this.dataRequest.getRequest(`${DeploymentApi.deployments}/${_id}/container`)
     }
 
@@ -97,7 +97,7 @@ export default class DeploymentConfigurationService extends BaseService implemen
      * @param _deploymentId 
      * @returns 
      */
-    getDeploymentContainerConfigurationListDeploymentId(_deploymentId: string): Promise<IServerReturn<IDeploymentContainerConfigurationOutputDto[]>> {
+    getDeploymentContainerConfigurationListDeploymentId(_deploymentId: string): Promise<IServerReturn<IMasterContainerConfigurationOutputDto[]>> {
         return this.dataRequest.getRequest(`${DeploymentApi.deployments}/${_deploymentId}/container/list`)
     }
 
