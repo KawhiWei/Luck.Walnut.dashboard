@@ -2,13 +2,13 @@ import "../drawer.less";
 
 import { Button, Card, Col, Drawer, Form, Input, InputNumber, Popconfirm, Row, Space, Switch, Table, Tooltip, message } from "antd";
 import {
-    CloudUploadOutlined,
     DeleteOutlined,
     EditOutlined,
+    MinusCircleOutlined,
     PlusOutlined,
     WarningOutlined
 } from "@ant-design/icons";
-import { IDeploymentConfigurationDto, IMasterContainerConfigurationOutputDto } from "@/domain/deployment-configurations/deployment-configuration-dto";
+import { IDeploymentConfigurationDto, IDeploymentInputDto, IMasterContainerConfigurationDto, IMasterContainerConfigurationOutputDto } from "@/domain/deployment-configurations/deployment-configuration-dto";
 import { useEffect, useState } from "react";
 
 import ContainerConfigurationOperation from "./container-configuration-operation";
@@ -44,6 +44,10 @@ interface IProp {
      * 应用Id
      */
     appId: string;
+    /**
+     * 主容器配置Id
+     */
+    masterContainerConfigurationId?: string
 }
 
 const validateMessages = {
@@ -66,8 +70,12 @@ const Operation = (props: IProp) => {
     const [deploymentConfigurationFormData] = Form.useForm();
     const [loading, setLoading] = useState<boolean>(false);
 
-    const [containerConfigurationFormData] = Form.useForm();
-    const [containerConfigurationDataArray, setContainerConfigurationArray] = useState<Array<IMasterContainerConfigurationOutputDto>>([]);
+    const [masterContainerConfiguration, setMasterContainerConfiguration] = useState<IMasterContainerConfigurationDto>({
+        containerName: '',
+        restartPolicy: '',
+        isInitContainer: false,
+        imagePullPolicy: ''
+    });
 
     const [deploymentConfigurationData, setDeploymentConfigurationData] = useState<IDeploymentConfigurationDto>({
         name: "",
@@ -81,6 +89,10 @@ const Operation = (props: IProp) => {
         maxUnavailable: 0,
         imagePullSecretId: ""
     });
+
+
+    const [masterContainerConfigurationFormData] = Form.useForm();
+    const [containerConfigurationDataArray, setContainerConfigurationArray] = useState<Array<IMasterContainerConfigurationOutputDto>>([]);
 
     const columns = [
         {
@@ -200,6 +212,7 @@ const Operation = (props: IProp) => {
         switch (props.operationType) {
             case OperationTypeEnum.add:
                 deploymentConfigurationFormData.setFieldsValue(deploymentConfigurationData)
+                masterContainerConfigurationFormData.setFieldsValue(masterContainerConfiguration)
                 editOperationState(true, "添加");
                 break;
             case OperationTypeEnum.edit:
@@ -232,16 +245,27 @@ const Operation = (props: IProp) => {
        */
     const onFinish = () => {
         deploymentConfigurationFormData.validateFields().then((_deployment: IDeploymentConfigurationDto) => {
-            _deployment.appId = props.appId;
-            _deployment.kubernetesNameSpaceId = "test";
-            switch (props.operationType) {
-                case OperationTypeEnum.add:
-                    onCreate(_deployment);
-                    break;
-                case OperationTypeEnum.edit:
-                    props.id && onUpdate(props.id, _deployment)
-                    break;
-            }
+
+            masterContainerConfigurationFormData.validateFields().then((_masterContainer: IMasterContainerConfigurationDto) => {
+                _deployment.appId = props.appId;
+                _deployment.kubernetesNameSpaceId = "test";
+
+                let param = {
+                    deploymentConfiguration: _deployment,
+                    masterContainerConfiguration: _masterContainer
+                }
+                console.log(param)
+                switch (props.operationType) {
+                    case OperationTypeEnum.add:
+                        onCreate(_deployment);
+                        break;
+                    case OperationTypeEnum.edit:
+                        props.id && onUpdate(props.id, _deployment)
+                        break;
+                }
+            }).catch((error) => { })
+
+
         }).catch((error) => { });
     };
 
@@ -448,7 +472,7 @@ const Operation = (props: IProp) => {
                         </Row>
                     </Form>
                 </Card>
-                <Card title="容器配置" size="default" bordered={false} extra={
+                {/* <Card title="容器配置" size="default" bordered={false} extra={
                     <Button
                         shape="round"
                         type="primary"
@@ -461,7 +485,6 @@ const Operation = (props: IProp) => {
                         添加容器配置
                     </Button>
                 }>
-                    <Form form={containerConfigurationFormData} component={false}>
                         <Table
                             bordered
                             dataSource={containerConfigurationDataArray}
@@ -469,10 +492,232 @@ const Operation = (props: IProp) => {
                             size="small"
                             scroll={{ x: 800 }}
                         />
+                </Card> */}
+                <Card title="容器配置" size="default" bordered={false} >
+                    <Form
+                        {...formItemDoubleRankLayout}
+                        form={masterContainerConfigurationFormData}
+                        name="nest-messages"
+                        layout="horizontal"
+                        onFinish={onFinish}
+                        validateMessages={validateMessages}
+                    >
+                        <Card title="容器基础配置" size="small" bordered={false}  >
+                            <Row>
+                                <Col span="12">
+                                    <Form.Item
+                                        name="containerName"
+                                        label="容器名称："
+                                        rules={[{ required: true }]}>
+                                        <Input />
+                                    </Form.Item>
+                                </Col>
+                                <Col span="12">
+                                    <Form.Item
+                                        name="restartPolicy"
+                                        label="重启规则："
+                                        rules={[{ required: true }]}>
+                                        <Input />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col span="12">
+                                    <Form.Item
+                                        name="isInitContainer"
+                                        label="是否初始容器："
+                                        rules={[{ required: true }]}
+                                        valuePropName={"checked"}
+                                    >
+                                        <Switch />
+                                    </Form.Item>
+                                </Col>
+                                <Col span="12">
+                                    <Form.Item
+                                        name="imagePullPolicy"
+                                        label="镜像拉取规则："
+                                        rules={[{ required: true }]}>
+                                        <Input />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                        </Card>
+                        <Card title="存活探针配置" size="small" bordered={false}  >
+                            <Row>
+                                <Col span="12">
+                                    <Form.Item
+                                        name={["readinessProbe", "scheme"]}
+                                        label="方案："
+                                    >
+                                        <Input
+                                        />
+                                    </Form.Item>
+                                </Col>
+                                <Col span="12">
+                                    <Form.Item
+                                        name={["readinessProbe", "path"]}
+                                        label="路径："
+                                    >
+                                        <Input />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col span="12">
+                                    <Form.Item
+                                        name={["readinessProbe", "port"]}
+                                        label="端口："
+                                    >
+                                        <InputNumber />
+                                    </Form.Item>
+                                </Col>
+                                <Col span="12">
+                                    <Form.Item
+                                        name={["readinessProbe", "initialDelaySeconds"]}
+                                        label="延迟时间："
+                                    >
+                                        <InputNumber />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col span="12">
+                                    <Form.Item
+                                        name={["readinessProbe", "periodSeconds"]}
+                                        label="间隔时间："
+                                    >
+                                        <InputNumber />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                        </Card>
+                        <Card title="准备探针配置" size="small" bordered={false}  >
+                            <Row>
+                                <Col span="12">
+                                    <Form.Item
+                                        name={["liveNessProbe", "scheme"]}
+                                        label="方案："
+                                    >
+                                        <Input
+                                        />
+                                    </Form.Item>
+                                </Col>
+                                <Col span="12">
+                                    <Form.Item
+                                        name={["liveNessProbe", "path"]}
+                                        label="路径："
+                                    >
+                                        <Input />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col span="12">
+                                    <Form.Item
+                                        name={["liveNessProbe", "port"]}
+                                        label="端口："
+                                    >
+                                        <InputNumber />
+                                    </Form.Item>
+                                </Col>
+                                <Col span="12">
+                                    <Form.Item
+                                        name={["liveNessProbe", "initialDelaySeconds"]}
+                                        label="延迟时间："
+                                    >
+                                        <InputNumber />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col span="12">
+                                    <Form.Item
+                                        name={["liveNessProbe", "periodSeconds"]}
+                                        label="间隔时间："
+                                    >
+                                        <InputNumber />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                        </Card>
+                        <Card title="limit资源配置" size="small" bordered={false}  >
+                            <Row>
+                                <Col span="12">
+                                    <Form.Item
+                                        name={["limits", "cpu"]}
+                                        label="Cpu："
+                                    >
+                                        <Input
+                                        />
+                                    </Form.Item>
+                                </Col>
+                                <Col span="12">
+                                    <Form.Item
+                                        name={["limits", "memory"]}
+                                        label="Memory："
+                                    >
+                                        <Input />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                        </Card>
+                        <Card title="request资源配置" size="small" bordered={false}  >
+                            <Row>
+                                <Col span="12">
+                                    <Form.Item
+                                        name={["requests", "cpu"]}
+                                        label="Cpu："
+                                    >
+                                        <Input
+                                        />
+                                    </Form.Item>
+                                </Col>
+                                <Col span="12">
+                                    <Form.Item
+                                        name={["requests", "memory"]}
+                                        label="Memory："
+                                    >
+                                        <Input />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                        </Card>
+                        <Card title="环境变量" size="small" bordered={false}  >
+                            <Form.List name="environments">
+                                {(fields, { add, remove }) => (
+                                    <>
+                                        {fields.map(({ key, name, ...restField }) => (
+                                            <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
+                                                <Form.Item
+                                                    {...restField}
+                                                    name={[name, 'key']}
+                                                    label="Key："
+                                                >
+                                                    <Input placeholder="请输入Key" />
+                                                </Form.Item>
+                                                <Form.Item
+                                                    {...restField}
+                                                    name={[name, 'value']}
+                                                    label="Value："
+                                                >
+                                                    <Input placeholder="请输入Value" />
+                                                </Form.Item>
+                                                <MinusCircleOutlined onClick={() => remove(name)} />
+                                            </Space>
+                                        ))}
+                                        <Form.Item>
+                                            <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                                                添加环境变量
+                                            </Button>
+                                        </Form.Item>
+                                    </>
+                                )}
+                            </Form.List>
+                        </Card>
                     </Form>
                 </Card>
             </Drawer>
-            {subContainerConfigurationElement}
+            {/* {subContainerConfigurationElement} */}
         </div>
     )
 }
