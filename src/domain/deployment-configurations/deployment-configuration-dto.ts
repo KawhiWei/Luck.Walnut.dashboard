@@ -48,17 +48,33 @@ export interface IDeploymentConfigurationBaseDto {
 /**
  * DeploymentConfiguration输入Dto
  */
-export interface IDeploymentConfigurationDto extends IDeploymentConfigurationBaseDto{
+export interface IDeploymentConfigurationDto extends IDeploymentConfigurationBaseDto {
 }
 /**
- * 输出Dto
+ * 配置对象输出Dto
  */
 export interface IDeploymentConfigurationOutputDto extends IDeploymentConfigurationBaseDto, IEntity<string> {
     /**
      * 应用容器配置列表
      */
-    deploymentContainerConfigurations: IMasterContainerConfigurationOutputDto[];
+    masterContainerId: string;
 }
+
+/**
+ * 输出Dto
+ */
+export interface IDeploymentOutputDto {
+    /**
+ * 部署配置
+ */
+    deploymentConfiguration: IDeploymentConfigurationOutputDto;
+
+    /**
+     * 容器配置Dto
+     */
+    masterContainerConfiguration: IMasterContainerConfigurationOutputDto
+}
+
 
 /**
  * 应用部署配置Dto
@@ -72,8 +88,8 @@ export interface IDeploymentInputDto {
     /**
      * 容器配置Dto
      */
-    masterContainerConfiguration : IMasterContainerConfigurationDto
-    
+    masterContainerConfiguration: IMasterContainerConfigurationDto
+
 }
 
 
@@ -139,7 +155,7 @@ export interface IMasterContainerConfigurationOutputDto extends IMasterContainer
 /**
  * 容器输入Dto
  */
-export interface IMasterContainerConfigurationDto extends IMasterContainerConfigurationBase{
+export interface IMasterContainerConfigurationDto extends IMasterContainerConfigurationBase {
 
 }
 /**

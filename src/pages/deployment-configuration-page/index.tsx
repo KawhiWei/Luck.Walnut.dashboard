@@ -97,7 +97,7 @@ const DeploymentConfigurationPage = (props: IProp) => {
             title: "操作",
             dataIndex: "id",
             key: "id",
-            render: (text: any, record: any) => {
+            render: (text: any, record: IDeploymentConfigurationOutputDto) => {
                 return (
                     <div className="table-operation">
                         <Tooltip placement="top" title="发布">
@@ -108,7 +108,7 @@ const DeploymentConfigurationPage = (props: IProp) => {
                         <Tooltip placement="top" title="编辑">
                             <EditOutlined
                                 style={{ color: "orange", marginRight: 10, fontSize: 16 }}
-                                onClick={() => editRow(record.id)} />
+                                onClick={() => editRow(record.id, record.masterContainerId)} />
                         </Tooltip>
                         <Tooltip placement="top" title="删除">
                             <Popconfirm
@@ -183,8 +183,8 @@ const DeploymentConfigurationPage = (props: IProp) => {
     /***
      * 修改一个配置
      */
-    const editRow = (_id: string) => {
-        setOperationElement(<Operation operationType={OperationTypeEnum.edit} appId={props.appId} id={_id} onCallbackEvent={clearElement}></Operation>)
+    const editRow = (_id: string, _masterContainerId: string) => {
+        setOperationElement(<Operation operationType={OperationTypeEnum.edit} appId={props.appId} id={_id} masterContainerId={_masterContainerId} onCallbackEvent={clearElement}></Operation>)
     }
 
     /***

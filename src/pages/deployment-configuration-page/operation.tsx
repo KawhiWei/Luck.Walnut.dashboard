@@ -47,7 +47,7 @@ interface IProp {
     /**
      * 主容器配置Id
      */
-    masterContainerConfigurationId?: string
+    masterContainerId?: string
 }
 
 const validateMessages = {
@@ -216,7 +216,7 @@ const Operation = (props: IProp) => {
                 editOperationState(true, "添加");
                 break;
             case OperationTypeEnum.edit:
-                props.id && onGetDeploymentConfigurationDetail()
+                onGetDeploymentConfigurationDetail()
                 break;
             case OperationTypeEnum.view:
                 editOperationState(true, "查看");
@@ -229,10 +229,12 @@ const Operation = (props: IProp) => {
      * 查询配置详情
      */
     const onGetDeploymentConfigurationDetail = () => {
-        props.id && _deploymentConfigurationService.getDeploymentConfigurationDetail(props.id).then(rep => {
+        (props.id && props.masterContainerId) && _deploymentConfigurationService.getDeploymentConfigurationDetail(props.id, props.masterContainerId).then(rep => {
             if (rep.success) {
-                deploymentConfigurationFormData.setFieldsValue(rep.result);
-                setContainerConfigurationArray(rep.result.deploymentContainerConfigurations);
+                console.log(rep)
+                deploymentConfigurationFormData.setFieldsValue(rep.result.deploymentConfiguration);
+                masterContainerConfigurationFormData.setFieldsValue(rep.result.masterContainerConfiguration)
+                // setContainerConfigurationArray(rep.result);
                 editOperationState(true, "编辑");
             } else {
                 message.error(rep.errorMessage, 3);
@@ -257,10 +259,11 @@ const Operation = (props: IProp) => {
                 console.log(param)
                 switch (props.operationType) {
                     case OperationTypeEnum.add:
-                        onCreate(_deployment);
+                        onCreate(param);
                         break;
                     case OperationTypeEnum.edit:
-                        props.id && onUpdate(props.id, _deployment)
+                        // props.id && onUpdate(props.id, _deployment)
+                        props.id && onUpdateDeployment(param)
                         break;
                 }
             }).catch((error) => { })
@@ -286,13 +289,29 @@ const Operation = (props: IProp) => {
         });
     };
 
+    /**
+     * 修改事件
+     */
+    const onUpdateDeployment = (_deployment: IDeploymentInputDto) => {
+        setLoading(true);
+        (props.id && props.masterContainerId) && _deploymentConfigurationService.updateDeployment(props.id, props.masterContainerId, _deployment).then(rep => {
+            if (!rep.success) {
+                message.error(rep.errorMessage, 3);
+            } else {
+                message.success("保存成功", 3);
+                props.onCallbackEvent && props.onCallbackEvent();
+            }
+        }).finally(() => {
+            setLoading(false);
+        });
+    };
 
     /**
      * 弹框取消事件
      */
-    const onCreate = (_deployment: IDeploymentConfigurationDto) => {
+    const onCreate = (_param: IDeploymentInputDto) => {
         setLoading(true);
-        _deploymentConfigurationService.createDeploymentConfiguration(_deployment).then(rep => {
+        _deploymentConfigurationService.createDeploymentConfiguration(_param).then(rep => {
             if (!rep.success) {
                 message.error(rep.errorMessage, 3);
             } else {

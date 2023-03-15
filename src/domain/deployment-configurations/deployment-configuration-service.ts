@@ -1,4 +1,4 @@
-import { IDeploymentConfigurationDto, IDeploymentConfigurationOutputDto, IMasterContainerConfigurationDto, IMasterContainerConfigurationOutputDto } from "./deployment-configuration-dto";
+import { IDeploymentConfigurationDto, IDeploymentConfigurationOutputDto, IDeploymentInputDto, IDeploymentOutputDto, IMasterContainerConfigurationDto, IMasterContainerConfigurationOutputDto } from "./deployment-configuration-dto";
 import { IServerPageReturn, IServerReturn } from "@/shared/entity";
 
 import BaseService from "@/shared/service/BaseService/BaseService";
@@ -30,7 +30,7 @@ export default class DeploymentConfigurationService extends BaseService implemen
      * @param _params 
      * @returns 
      */
-    createDeploymentConfiguration(_params: IDeploymentConfigurationDto): Promise<IServerReturn<any>> {
+    createDeploymentConfiguration(_params: IDeploymentInputDto): Promise<IServerReturn<any>> {
         return this.dataRequest.postRequest(`${DeploymentApi.deployments}`, _params)
     }
 
@@ -42,14 +42,23 @@ export default class DeploymentConfigurationService extends BaseService implemen
     updateDeploymentConfiguration(_id: string, _params: IDeploymentConfigurationDto): Promise<IServerReturn<any>> {
         return this.dataRequest.putRequest(`${DeploymentApi.deployments}/${_id}`, _params)
     }
+    /**
+     * 修改部署
+     * @param _params 
+     * @returns 
+     */
+    updateDeployment(_deploymentId: string, _masterContainerId: string, _params: IDeploymentInputDto): Promise<IServerReturn<any>> {
+        return this.dataRequest.putRequest(`${DeploymentApi.deployments}/${_deploymentId}/${_masterContainerId}`, _params)
+    }
+
 
     /**
      * 根据Id获取一个部署
      * @param _params 
      * @returns 
      */
-    getDeploymentConfigurationDetail(_id: string): Promise<IServerReturn<IDeploymentConfigurationOutputDto>> {
-        return this.dataRequest.getRequest(`${DeploymentApi.deployments}/${_id}`)
+    getDeploymentConfigurationDetail(_deploymentId: string, _masterContainerId: string): Promise<IServerReturn<IDeploymentOutputDto>> {
+        return this.dataRequest.getRequest(`${DeploymentApi.deployments}/${_deploymentId}/${_masterContainerId}`)
     }
 
 

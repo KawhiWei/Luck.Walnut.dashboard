@@ -1,4 +1,4 @@
-import { IDeploymentConfigurationDto, IDeploymentConfigurationOutputDto, IMasterContainerConfigurationDto, IMasterContainerConfigurationOutputDto } from "./deployment-configuration-dto";
+import { IDeploymentConfigurationDto, IDeploymentConfigurationOutputDto, IDeploymentInputDto, IDeploymentOutputDto, IMasterContainerConfigurationDto, IMasterContainerConfigurationOutputDto } from "./deployment-configuration-dto";
 import { IServerPageReturn, IServerReturn } from "@/shared/entity";
 
 export interface IDeploymentConfigurationService {
@@ -19,14 +19,14 @@ export interface IDeploymentConfigurationService {
      * 创建一个部署
      * @param _params 
      */
-    createDeploymentConfiguration(_params: IDeploymentConfigurationDto): Promise<IServerReturn<any>>;
+    createDeploymentConfiguration(_params: IDeploymentInputDto): Promise<IServerReturn<any>>;
 
 
     /**
      * 根据Id获取一个部署
      * @param _id 
      */
-    getDeploymentConfigurationDetail(_id: string): Promise<IServerReturn<IDeploymentConfigurationOutputDto>>;
+    getDeploymentConfigurationDetail(_deploymentId: string, _masterContainerId: string): Promise<IServerReturn<IDeploymentOutputDto>>;
 
     /**
      * 修改部署
@@ -34,6 +34,15 @@ export interface IDeploymentConfigurationService {
      * @returns 
      */
     updateDeploymentConfiguration(_id: string, _params: IDeploymentConfigurationDto): Promise<IServerReturn<any>>;
+
+
+    /**
+     * 
+     * @param _deploymentId 
+     * @param _masterContainerId 
+     * @param _params 
+     */
+    updateDeployment(_deploymentId: string, _masterContainerId: string, _params: IDeploymentInputDto): Promise<IServerReturn<any>>;
 
 
 
