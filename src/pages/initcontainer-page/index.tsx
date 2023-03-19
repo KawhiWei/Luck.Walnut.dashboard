@@ -127,7 +127,6 @@ const InitContainerConfigurationPage = (props: any) => {
             pageIndex: paginationConfig.current,
         }
         _initContainerService.getInitContainerConfigurationPageList(_param).then((rep) => {
-            console.log(rep)
             if (rep.success) {
                 setTableData(rep.result.data);
             }

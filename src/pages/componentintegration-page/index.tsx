@@ -27,7 +27,7 @@ import {
 } from "../../shared/ajax/request";
 import { useEffect, useState } from "react";
 
-import { ComponentTypeMap } from "@/domain/componentintegration/componentintegration-map";
+import { ComponentTypeMap } from "@/domain/maps/componentintegration-map";
 import { IComponentIntegrationService } from "@/domain/componentintegration/icomponentintegration-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import Operation from "./operation";

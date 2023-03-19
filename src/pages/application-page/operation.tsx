@@ -3,7 +3,7 @@ import "../drawer.less";
 import {
   ApplicationLevelMap,
   ApplicationStateMap,
-} from "@/domain/applications/application-map";
+} from "@/domain/maps/application-map";
 import {
   Button,
   Col,
@@ -154,11 +154,8 @@ const Operation = (props: IProp) => {
           onUpdate(param);
           break;
       }
-      console.log(values)
-      console.log('验证通过')
     })
       .catch((error) => {
-        // console.log('Validate Failed:', error);
       });
 
 

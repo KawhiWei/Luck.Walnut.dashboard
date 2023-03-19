@@ -44,6 +44,11 @@ export interface IDeploymentConfigurationBaseDto {
      * 镜像拉取证书
      */
     imagePullSecretId: string;
+
+    /**
+     * 绑定初始容器
+     */
+    initContainers: Array<string>;
 }
 /**
  * DeploymentConfiguration输入Dto

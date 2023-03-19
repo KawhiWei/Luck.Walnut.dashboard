@@ -1,4 +1,4 @@
-import { ApplicationLevelEnum, ApplicationStateEnum } from "./applicationstate-enum";
+import { ApplicationLevelEnum, ApplicationStateEnum } from "../applications/applicationstate-enum";
 
 /**
  * 状态列表下来选择数组

@@ -12,7 +12,7 @@ import {
   Space,
   message,
 } from "antd";
-import { ComponentCategoryMap, ComponentTypeMap } from "@/domain/componentintegration/componentintegration-map";
+import { ComponentCategoryMap, ComponentTypeMap } from "@/domain/maps/componentintegration-map";
 import {
   DeleteOutlined,
   EditOutlined,
@@ -108,12 +108,9 @@ const Operation = (props: IProp) => {
           onUpdate(param);
           break;
       }
-      console.log(values)
-      console.log('验证通过')
 
     })
       .catch((error) => {
-        console.log('Validate Failed:', error);
       });
 
 

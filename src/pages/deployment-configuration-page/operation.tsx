@@ -1,6 +1,6 @@
 import "../drawer.less";
 
-import { Button, Card, Col, Drawer, Form, Input, InputNumber, Popconfirm, Row, Space, Switch, Table, Tooltip, message } from "antd";
+import { Button, Card, Col, Drawer, Form, Input, InputNumber, Popconfirm, Row, Select, Space, Switch, Table, Tooltip, message } from "antd";
 import {
     DeleteOutlined,
     EditOutlined,
@@ -9,10 +9,13 @@ import {
     WarningOutlined
 } from "@ant-design/icons";
 import { IDeploymentConfigurationDto, IDeploymentInputDto, IMasterContainerConfigurationInputDto, IMasterContainerConfigurationOutputDto } from "@/domain/deployment-configurations/deployment-configuration-dto";
+import { ImagePullPolicyTypeMap, RestartPolicyTypeMap } from "@/domain/maps/container-map";
 import { useEffect, useState } from "react";
 
 import ContainerConfigurationOperation from "./container-configuration-operation";
 import { IDeploymentConfigurationService } from "@/domain/deployment-configurations/ideployment-configuration-service";
+import { IInitContainerConfigurationOutputDto } from "@/domain/init-container-configurations/iinit-container-service-dto";
+import { IInitContainerService } from "@/domain/init-container-configurations/iinit-container-service";
 import { IOperationConfig } from "@/shared/operation/operationConfig";
 import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
@@ -62,21 +65,14 @@ const validateMessages = {
 };
 const Operation = (props: IProp) => {
     const _deploymentConfigurationService: IDeploymentConfigurationService = useHookProvider(IocTypes.DeploymentConfigurationService);
+    const _initContainerService: IInitContainerService = useHookProvider(IocTypes.InitContainerService);
     const [operationState, setOperationState] = useState<IOperationConfig>({
         visible: false,
     });
-
-    const [subContainerConfigurationElement, setContainerConfigurationElement] = useState<any>(null);
     const [deploymentConfigurationFormData] = Form.useForm();
+    const [masterContainerConfigurationFormData] = Form.useForm();
     const [loading, setLoading] = useState<boolean>(false);
-
-    const [masterContainerConfiguration, setMasterContainerConfiguration] = useState<IMasterContainerConfigurationInputDto>({
-        containerName: '',
-        restartPolicy: '',
-        isInitContainer: false,
-        imagePullPolicy: ''
-    });
-
+    const [initContainerData, setInitContainerData] = useState<Array<IInitContainerConfigurationOutputDto>>([]);
     const [deploymentConfigurationData, setDeploymentConfigurationData] = useState<IDeploymentConfigurationDto>({
         name: "",
         environmentName: "",
@@ -87,114 +83,17 @@ const Operation = (props: IProp) => {
         kubernetesNameSpaceId: "",
         replicas: 1,
         maxUnavailable: 0,
-        imagePullSecretId: ""
+        imagePullSecretId: "",
+        initContainers: []
+    });
+    const [masterContainerConfiguration, setMasterContainerConfiguration] = useState<IMasterContainerConfigurationInputDto>({
+        containerName: '',
+        restartPolicy: 'always',
+        isInitContainer: false,
+        imagePullPolicy: 'Always'
     });
 
 
-    const [masterContainerConfigurationFormData] = Form.useForm();
-    const [containerConfigurationDataArray, setContainerConfigurationArray] = useState<Array<IMasterContainerConfigurationOutputDto>>([]);
-
-    const columns = [
-        {
-            title: '容器名称',
-            dataIndex: 'containerName',
-            width: 200,
-        },
-        {
-            title: '重启规则',
-            dataIndex: 'restartPolicy',
-            width: 140,
-
-        },
-        {
-            title: '是否初始容器',
-            dataIndex: 'isInitContainer',
-            width: 200,
-            render: (_: any, record: IMasterContainerConfigurationOutputDto) => {
-                return (
-                    <Switch disabled={true} checked={record.isInitContainer}></Switch>
-                );
-            },
-        },
-        {
-            title: '镜像拉取规则',
-            dataIndex: 'imagePullPolicy',
-            width: 200,
-            editable: true,
-        },
-        {
-            title: '操作',
-            width: 200,
-            dataIndex: 'operation',
-            render: (_: any, record: IMasterContainerConfigurationOutputDto) => {
-                return (
-                    <div className="table-operation">
-                        <Tooltip placement="top" title="发布">
-                            <EditOutlined
-                                style={{ color: "orange", marginRight: 10, fontSize: 16 }}
-                                onClick={() => editContainerConfigurationRow(record.id)} />
-                        </Tooltip>
-                        <Tooltip placement="top" title="删除">
-                            <Popconfirm
-                                placement="top"
-                                title="确认删除?"
-                                okText="确定"
-                                cancelText="取消"
-                                onConfirm={() => deleteContainerConfigurationRow(record.id)}
-                                icon={<WarningOutlined />}
-                            >
-                                <DeleteOutlined style={{ color: "red", fontSize: 16 }} />
-                            </Popconfirm>
-                        </Tooltip>
-                    </div>
-                )
-            },
-        },
-    ];
-
-    /***
-     * 修改一个容器配置
-     */
-    const editContainerConfigurationRow = (_id: string) => {
-        if (props.operationType === OperationTypeEnum.edit && props.id) {
-            setContainerConfigurationElement(<ContainerConfigurationOperation
-                operationType={OperationTypeEnum.edit}
-                deploymentId={props.id}
-                id={_id}
-                onCallbackEvent={onContainerConfigurationCallBack}></ContainerConfigurationOperation>)
-        }
-
-    }
-
-
-    /**
-     * 删除容器配置
-     * @param _id 
-     */
-    const deleteContainerConfigurationRow = (_id: string) => {
-        props.id && _deploymentConfigurationService.deleteDeploymentContainerConfiguration(props.id, _id).then(res => {
-            if (!res.success) {
-                message.error(res.errorMessage, 3);
-            } else {
-                onGetDeploymentConfigurationDetail();
-            }
-        });
-    }
-
-    /**
-     * 清空子组件
-     */
-    const clearElement = () => {
-        setContainerConfigurationElement(null);
-    };
-
-    /**
-     * 容器配置组件回调事件
-     */
-    const onContainerConfigurationCallBack = () => {
-        clearElement();
-        onGetDeploymentConfigurationDetail()
-    };
 
 
     /**
@@ -209,6 +108,7 @@ const Operation = (props: IProp) => {
      * @param _id
      */
     const onLoad = () => {
+        onGetInitContainerList();
         switch (props.operationType) {
             case OperationTypeEnum.add:
                 deploymentConfigurationFormData.setFieldsValue(deploymentConfigurationData)
@@ -224,6 +124,15 @@ const Operation = (props: IProp) => {
 
         }
     };
+    /**
+     * 查询配置详情
+     */
+    const onGetInitContainerList = () => {
+        _initContainerService.getInitContainerConfigurationList().then(rep => {
+            setInitContainerData(rep.result)
+        })
+    }
+
 
     /**
      * 查询配置详情
@@ -231,10 +140,8 @@ const Operation = (props: IProp) => {
     const onGetDeploymentConfigurationDetail = () => {
         (props.id && props.masterContainerId) && _deploymentConfigurationService.getDeploymentConfigurationDetail(props.id, props.masterContainerId).then(rep => {
             if (rep.success) {
-                console.log(rep)
                 deploymentConfigurationFormData.setFieldsValue(rep.result.deploymentConfiguration);
                 masterContainerConfigurationFormData.setFieldsValue(rep.result.masterContainerConfiguration)
-                // setContainerConfigurationArray(rep.result);
                 editOperationState(true, "编辑");
             } else {
                 message.error(rep.errorMessage, 3);
@@ -243,26 +150,23 @@ const Operation = (props: IProp) => {
     }
 
     /**
-       * 底部栏OK事件
-       */
+     * 底部栏OK事件
+     */
     const onFinish = () => {
         deploymentConfigurationFormData.validateFields().then((_deployment: IDeploymentConfigurationDto) => {
 
             masterContainerConfigurationFormData.validateFields().then((_masterContainer: IMasterContainerConfigurationInputDto) => {
                 _deployment.appId = props.appId;
                 _deployment.kubernetesNameSpaceId = "test";
-
                 let param = {
                     deploymentConfiguration: _deployment,
                     masterContainerConfiguration: _masterContainer
                 }
-                console.log(param)
                 switch (props.operationType) {
                     case OperationTypeEnum.add:
                         onCreate(param);
                         break;
                     case OperationTypeEnum.edit:
-                        // props.id && onUpdate(props.id, _deployment)
                         props.id && onUpdateDeployment(param)
                         break;
                 }
@@ -270,23 +174,6 @@ const Operation = (props: IProp) => {
 
 
         }).catch((error) => { });
-    };
-
-    /**
-     * 修改事件
-     */
-    const onUpdate = (_id: string, _deployment: IDeploymentConfigurationDto) => {
-        setLoading(true);
-        _deploymentConfigurationService.updateDeploymentConfiguration(_id, _deployment).then(rep => {
-            if (!rep.success) {
-                message.error(rep.errorMessage, 3);
-            } else {
-                message.success("保存成功", 3);
-                props.onCallbackEvent && props.onCallbackEvent();
-            }
-        }).finally(() => {
-            setLoading(false);
-        });
     };
 
     /**
@@ -339,21 +226,6 @@ const Operation = (props: IProp) => {
     const editOperationState = (_visible: boolean, _title?: string) => {
         setOperationState({ visible: _visible, title: _title + '部署配置' });
     };
-    /**
-     * 添加容器配置
-     */
-    const addChange = () => {
-        if (props.id) {
-            setContainerConfigurationElement(<ContainerConfigurationOperation
-                operationType={OperationTypeEnum.add}
-                deploymentId={props.id}
-                onCallbackEvent={onContainerConfigurationCallBack}
-
-            ></ContainerConfigurationOperation>)
-        }
-
-    };
-
 
     return (
         <div>
@@ -468,6 +340,25 @@ const Operation = (props: IProp) => {
                                     <Input />
                                 </Form.Item>
                             </Col>
+                            <Col span="12">
+                                <Form.Item
+                                    name="initContainers"
+                                    label="绑定初始容器："
+                                >
+                                    <Select allowClear={true}
+                                        mode="multiple"
+                                        placeholder="请选择绑定初始容器">
+                                        {initContainerData.map((item: IInitContainerConfigurationOutputDto) => {
+                                            return (
+                                                <Select.Option value={item.id}>
+                                                    {item.containerName}
+                                                </Select.Option>
+                                            );
+                                        })}
+                                    </Select>
+
+                                </Form.Item>
+                            </Col>
                         </Row>
                         <Row>
                             <Col span="12">
@@ -491,27 +382,6 @@ const Operation = (props: IProp) => {
                         </Row>
                     </Form>
                 </Card>
-                {/* <Card title="容器配置" size="default" bordered={false} extra={
-                    <Button
-                        shape="round"
-                        type="primary"
-                        style={{ margin: "8px 8px" }}
-                        disabled={props.operationType === OperationTypeEnum.add}
-                        onClick={() => {
-                            addChange();
-                        }}>
-                        <PlusOutlined />
-                        添加容器配置
-                    </Button>
-                }>
-                        <Table
-                            bordered
-                            dataSource={containerConfigurationDataArray}
-                            columns={columns}
-                            size="small"
-                            scroll={{ x: 800 }}
-                        />
-                </Card> */}
                 <Card title="容器配置" size="default" bordered={false} >
                     <Form
                         {...formItemDoubleRankLayout}
@@ -533,16 +403,6 @@ const Operation = (props: IProp) => {
                                 </Col>
                                 <Col span="12">
                                     <Form.Item
-                                        name="restartPolicy"
-                                        label="重启规则："
-                                        rules={[{ required: true }]}>
-                                        <Input />
-                                    </Form.Item>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col span="12">
-                                    <Form.Item
                                         name="isInitContainer"
                                         label="是否初始容器："
                                         rules={[{ required: true }]}
@@ -551,12 +411,47 @@ const Operation = (props: IProp) => {
                                         <Switch />
                                     </Form.Item>
                                 </Col>
+                            </Row>
+                            <Row>
+                                <Col span="12">
+                                    <Form.Item
+                                        name="restartPolicy"
+                                        label="重启规则："
+                                        rules={[{ required: true }]}>
+                                        <Select
+                                            allowClear={true}
+                                            placeholder="请选择重启规则"
+                                            defaultValue="always"
+                                        >
+                                            {RestartPolicyTypeMap.map((item: any) => {
+                                                return (
+                                                    <Select.Option value={item.key}>
+                                                        {item.value}
+                                                    </Select.Option>
+                                                );
+                                            })}
+                                        </Select>
+                                    </Form.Item>
+
+                                </Col>
                                 <Col span="12">
                                     <Form.Item
                                         name="imagePullPolicy"
                                         label="镜像拉取规则："
                                         rules={[{ required: true }]}>
-                                        <Input />
+                                        <Select
+                                            allowClear={true}
+                                            placeholder="请选择镜像拉取规则"
+                                            defaultValue="Always"
+                                        >
+                                            {ImagePullPolicyTypeMap.map((item: any) => {
+                                                return (
+                                                    <Select.Option value={item.key}>
+                                                        {item.value}
+                                                    </Select.Option>
+                                                );
+                                            })}
+                                        </Select>
                                     </Form.Item>
                                 </Col>
                             </Row>
@@ -736,7 +631,6 @@ const Operation = (props: IProp) => {
                     </Form>
                 </Card>
             </Drawer>
-            {/* {subContainerConfigurationElement} */}
         </div>
     )
 }

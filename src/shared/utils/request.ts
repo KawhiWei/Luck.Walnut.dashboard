@@ -63,7 +63,7 @@ service.interceptors.response.use(
       success: false,
       errorMessage: errorText
     };
-    error.data=data;
+    error.data = data;
     return Promise.reject(error);
   }
 );

@@ -1,7 +1,7 @@
 import {
   ApplicationLevelMap,
   ApplicationStateMap,
-} from "@/domain/applications/application-map";
+} from "@/domain/maps/application-map";
 import {
   Button,
   Col,
@@ -180,7 +180,6 @@ const SavePipeLine = (props: IProp) => {
           pipelineScript: props.stageList,
           componentIntegrationId: form.componentIntegrationId,
         };
-        console.log(props.pipelineInfo?.id);
         _applicationPipelineService
           .update(props.pipelineInfo ? props.pipelineInfo.id : "", data)
           .then((rep) => {

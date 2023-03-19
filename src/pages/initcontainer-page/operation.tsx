@@ -1,6 +1,7 @@
 import "../drawer.less";
 
-import { Button, Card, Col, Drawer, Form, Input, InputNumber, Row, Space, Switch, message } from "antd";
+import { Button, Card, Col, Drawer, Form, Input, InputNumber, Row, Select, Space, Switch, message } from "antd";
+import { ImagePullPolicyTypeMap, RestartPolicyTypeMap } from "@/domain/maps/container-map";
 import {
     MinusCircleOutlined,
     PlusOutlined
@@ -56,9 +57,9 @@ const InitContainerConfigurationPage = (props: IProp) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [deploymentContainerConfiguration, setDeploymentContainerConfiguration] = useState<IInitContainerConfigurationInputDto>({
         containerName: '',
-        restartPolicy: '',
+        restartPolicy: 'always',
         isInitContainer: false,
-        imagePullPolicy: ''
+        imagePullPolicy: 'Always'
     });
     const [containerConfigurationFormData] = Form.useForm();
 
@@ -116,7 +117,6 @@ const InitContainerConfigurationPage = (props: IProp) => {
             }
         })
             .catch((error) => {
-                console.log('Validate Failed:', error);
             });
 
     };
@@ -227,32 +227,49 @@ const InitContainerConfigurationPage = (props: IProp) => {
                                     <Input />
                                 </Form.Item>
                             </Col>
+                        </Row>
+                        <Row>
+
                             <Col span="12">
                                 <Form.Item
                                     name="restartPolicy"
                                     label="重启规则："
                                     rules={[{ required: true }]}>
-                                    <Input />
+                                    <Select
+                                        allowClear={true}
+                                        placeholder="请选择重启规则"
+                                        defaultValue="always"
+                                    >
+                                        {RestartPolicyTypeMap.map((item: any) => {
+                                            return (
+                                                <Select.Option value={item.key}>
+                                                    {item.value}
+                                                </Select.Option>
+                                            );
+                                        })}
+                                    </Select>
                                 </Form.Item>
+
                             </Col>
-                        </Row>
-                        <Row>
-                            <Col span="12">
-                                <Form.Item
-                                    name="isInitContainer"
-                                    label="是否初始容器："
-                                    rules={[{ required: true }]}
-                                    valuePropName={"checked"}
-                                >
-                                    <Switch />
-                                </Form.Item>
-                            </Col>
+
                             <Col span="12">
                                 <Form.Item
                                     name="imagePullPolicy"
                                     label="镜像拉取规则："
                                     rules={[{ required: true }]}>
-                                    <Input />
+                                    <Select
+                                        allowClear={true}
+                                        placeholder="请选择镜像拉取规则"
+                                        defaultValue="Always"
+                                    >
+                                        {ImagePullPolicyTypeMap.map((item: any) => {
+                                            return (
+                                                <Select.Option value={item.key}>
+                                                    {item.value}
+                                                </Select.Option>
+                                            );
+                                        })}
+                                    </Select>
                                 </Form.Item>
                             </Col>
                         </Row>

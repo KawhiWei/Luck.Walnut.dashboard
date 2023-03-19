@@ -119,7 +119,7 @@ const ContainerConfigurationOperation = (props: IProp) => {
             }
         })
             .catch((error) => {
-                console.log('Validate Failed:', error);
+                
             });
 
     };

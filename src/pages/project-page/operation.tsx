@@ -126,7 +126,6 @@ const ProjectOperation = (props: IProp) => {
         break;
       case OperationTypeEnum.edit:
         // props.id && _applicationService.getPageList(props.id).then(rep => {
-        //     console.log(rep)
         //     if (rep.success) {
         //         formData.setFieldsValue(rep.result);
         //         editOperationState(true, "修改")
@@ -166,12 +165,9 @@ const ProjectOperation = (props: IProp) => {
           onUpdate(param);
           break;
       }
-      console.log(values)
-      console.log('验证通过')
 
     })
       .catch((error) => {
-        console.log('Validate Failed:', error);
       });
 
 
@@ -202,14 +198,11 @@ const ProjectOperation = (props: IProp) => {
   };
 
   const onChange = (value: any, dateString: any) => {
-    console.log("Selected Time: ", value);
-    console.log("Formatted Selected Time: ", dateString);
   };
 
   function uploadOnChange({ file, fileList }: UploadChangeParam) { }
 
   const onOk = (value: any) => {
-    console.log("onOk: ", value);
     value = moment(value).format("YYYY-MM-DD"); //这么解决的
   };
 

@@ -1,4 +1,4 @@
-import { ComponentCategoryEnum, ComponentLinkTypeEnum } from "./componentintegration-enum";
+import { ComponentCategoryEnum, ComponentLinkTypeEnum } from "../componentintegration/componentintegration-enum";
 
 export const ComponentTypeMap = [
     {

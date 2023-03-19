@@ -92,7 +92,7 @@ const Operation = (props: IProp) => {
             }
         })
             .catch((error) => {
-                console.log('Validate Failed:', error);
+                
             });
     }
     const onAdd = (_param: any) => {

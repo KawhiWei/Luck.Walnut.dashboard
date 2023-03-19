@@ -233,7 +233,6 @@ const PipelineStage = (props: IProp) => {
       return stageItem;
     });
     setStageList((current) => [...current]);
-    console.log(stageList);
     clearStepOperationElement();
   };
 

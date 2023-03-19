@@ -30,7 +30,7 @@ import {
 } from "../../shared/ajax/request";
 import { useEffect, useState } from "react";
 
-import { ApplicationStateMap } from "@/domain/applications/application-map";
+import { ApplicationStateMap } from "@/domain/maps/application-map";
 import ApplicationStateTag from "./applicationStateTag";
 import { IApplicationBaseDto } from "@/domain/applications/application-dto";
 import { IApplicationService } from "@/domain/applications/iapplication-service";

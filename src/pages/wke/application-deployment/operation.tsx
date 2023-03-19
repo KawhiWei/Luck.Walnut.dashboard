@@ -1,7 +1,7 @@
 import {
     ApplicationLevelMap,
     ApplicationStateMap,
-} from "@/domain/applications/application-map";
+} from "@/domain/maps/application-map";
 import {
     Button,
     Col,
