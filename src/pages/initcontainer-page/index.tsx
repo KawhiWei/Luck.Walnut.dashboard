@@ -1,440 +1,207 @@
-import "../drawer.less";
-
-import { Button, Card, Col, Drawer, Form, Input, InputNumber, Row, Space, Switch, message } from "antd";
 import {
-    MinusCircleOutlined,
-    PlusOutlined
+    Button,
+    Col,
+    Form,
+    PaginationProps,
+    Popconfirm,
+    Row,
+    Spin,
+    Table,
+    Tooltip,
+    message
+} from "antd";
+import {
+    CloudUploadOutlined,
+    DeleteOutlined,
+    EditOutlined,
+    PlusOutlined,
+    ReloadOutlined,
+    WarningOutlined
 } from "@ant-design/icons";
+import {
+    initPaginationConfig,
+    tacitPagingProps,
+} from "../../shared/ajax/request";
 import { useEffect, useState } from "react";
 
-import { IDeploymentConfigurationService } from "@/domain/deployment-configurations/ideployment-configuration-service";
-import { IMasterContainerConfigurationDto } from "@/domain/deployment-configurations/deployment-configuration-dto";
-import { IOperationConfig } from "@/shared/operation/operationConfig";
+import { IInitContainerConfigurationOutputDto } from "@/domain/init-container-configurations/iinit-container-service-dto";
+import { IInitContainerService } from "@/domain/init-container-configurations/iinit-container-service";
 import { IocTypes } from "@/shared/config/ioc-types";
+import Operation from "./operation";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
-import { formItemDoubleRankLayout } from "@/constans/layout/optionlayout";
+import { searchFormItemDoubleRankLayout } from "@/constans/layout/optionlayout";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
-// import "../description.less";
-
-
-
-interface IProp {
-    /**
-     * 操作成功回调事件
-     */
-    onCallbackEvent?: any;
-
-    /**
-     * id
-     */
-    id?: string;
-
-    /**
-     * 操作类型
-     */
-    operationType: OperationTypeEnum;
-
-    /**
-     * 部署配置Id
-     */
-    deploymentId: string;
-}
-
-const validateMessages = {
-    required: "${label} 不可为空",
-    types: {
-        email: "${label} is not a valid email!",
-        number: "${label} is not a valid number!",
-    },
-    number: {
-        range: "${label} must be between ${min} and ${max}",
-    },
-};
-const InitContainerConfigurationPage = (props: IProp) => {
-    const _deploymentConfigurationService: IDeploymentConfigurationService = useHookProvider(IocTypes.DeploymentConfigurationService);
-    const [operationState, setOperationState] = useState<IOperationConfig>({
-        visible: false,
-    });
+const InitContainerConfigurationPage = (props: any) => {
     const [loading, setLoading] = useState<boolean>(false);
-    const [deploymentContainerConfiguration, setDeploymentContainerConfiguration] = useState<IMasterContainerConfigurationDto>({
-        containerName: '',
-        restartPolicy: '',
-        isInitContainer: false,
-        imagePullPolicy: ''
-    });
-    const [containerConfigurationFormData] = Form.useForm();
-
-    /**
-     * 初始化加载事件
-     */
+    const [formData] = Form.useForm();
+    const [tableData, setTableData] = useState<Array<IInitContainerConfigurationOutputDto>>();
+    const [subOperationElement, setOperationElement] = useState<any>(null);
+    const [paginationConfig, setPaginationConfig] =
+        useState<initPaginationConfig>(new initPaginationConfig());
+    const _initContainerService: IInitContainerService = useHookProvider(IocTypes.InitContainerService);
     useEffect(() => {
-        onLoad();
-    }, []);
+        getPageList();
+    }, [paginationConfig])
 
-
-
-    /**
-     * 编辑获取一个表单
-     * @param _id
-     */
-    const onLoad = () => {
-        switch (props.operationType) {
-            case OperationTypeEnum.add:
-                containerConfigurationFormData.setFieldsValue(deploymentContainerConfiguration)
-                editOperationState(true, "添加");
-                break;
-            case OperationTypeEnum.edit:
-                props.id && onGetDeploymentContainerConfigurationDetail(props.id)
-                break;
-            case OperationTypeEnum.view:
-                editOperationState(true, "查看");
-                break;
+    const columns = [
+        {
+            title: "容器名称",
+            dataIndex: "containerName",
+        },
+        {
+            title: "重启策略",
+            dataIndex: "restartPolicy",
+        },
+        {
+            title: "镜像拉取策略",
+            dataIndex: "imagePullPolicy",
+        },
+        {
+            title: "操作",
+            dataIndex: "id",
+            key: "id",
+            render: (text: any, record: IInitContainerConfigurationOutputDto) => {
+                return (
+                    <div className="table-operation">
+                        <Tooltip placement="top" title="编辑">
+                            <EditOutlined
+                                style={{ color: "orange", marginRight: 10, fontSize: 16 }}
+                                onClick={() => editRow(record.id)} />
+                        </Tooltip>
+                        <Tooltip placement="top" title="删除">
+                            <Popconfirm
+                                placement="top"
+                                title="确认删除?"
+                                okText="确定"
+                                cancelText="取消"
+                                onConfirm={() => deleteRow(record.id)}
+                                icon={<WarningOutlined />}
+                            >
+                                <DeleteOutlined style={{ color: "red", fontSize: 16 }} />
+                            </Popconfirm>
+                        </Tooltip>
+                    </div>
+                )
+            }
         }
-    };
 
-    const onGetDeploymentContainerConfigurationDetail = (_id: string) => {
-        _deploymentConfigurationService.getDeploymentContainerConfigurationDetail(_id).then(rep => {
-            if (rep.success) {
-                containerConfigurationFormData.setFieldsValue(rep.result);
-                editOperationState(true, "编辑");
-            } else {
-                message.error(rep.errorMessage, 3);
-            }
-        })
-
-    }
-    /**
-       * 底部栏OK事件
-       */
-    const onFinish = () => {
-        containerConfigurationFormData.validateFields().then((_deploymentContainer: IMasterContainerConfigurationDto) => {
-            switch (props.operationType) {
-                case OperationTypeEnum.add:
-                    onCreate(props.deploymentId, _deploymentContainer);
-                    break;
-                case OperationTypeEnum.edit:
-                    props.id && onUpdate(props.deploymentId, props.id, _deploymentContainer)
-                    break;
-            }
-        })
-            .catch((error) => {
-                console.log('Validate Failed:', error);
+    ]
+    const pagination: PaginationProps = {
+        ...tacitPagingProps,
+        total: paginationConfig.total,
+        current: paginationConfig.current,
+        pageSize: paginationConfig.pageSize,
+        showTotal: (total) => {
+            return `共 ${total} 条`;
+        },
+        onShowSizeChange: (current: number, pageSize: number) => {
+            setPaginationConfig(Pagination => {
+                Pagination.pageSize = pageSize;
+                Pagination.current = current;
+                return Pagination;
             });
+            getPageList();
+        },
+        onChange: (page: number, pageSize?: number) => {
+            setPaginationConfig((Pagination) => {
+                Pagination.current = page;
+                if (pageSize) {
+                    Pagination.pageSize = pageSize;
+                }
+                return Pagination;
+            });
+            getPageList();
+        }
+    }
 
-    };
+    const onSearch = () => {
+        getPageList();
+    }
 
-    /**
-     * 弹框取消事件
-     */
-    const onCreate = (_deploymentId: string, _params: IMasterContainerConfigurationDto) => {
+    const getPageList = () => {
         setLoading(true);
-        _deploymentConfigurationService.createDeploymentContainerConfiguration(_deploymentId, _params).then(rep => {
-            if (!rep.success) {
-                message.error(rep.errorMessage, 3);
-            } else {
-                message.success("保存成功", 3);
-                props.onCallbackEvent && props.onCallbackEvent();
+        let param = formData.getFieldsValue();
+        let _param = {
+            pageSize: paginationConfig.pageSize,
+            pageIndex: paginationConfig.current,
+        }
+        _initContainerService.getInitContainerConfigurationPageList(_param).then((rep) => {
+            console.log(rep)
+            if (rep.success) {
+                setTableData(rep.result.data);
             }
         }).finally(() => {
             setLoading(false);
-        });
-    };
+        })
+        setLoading(false);
+    }
+    const addChange = () => {
+        setOperationElement(<Operation operationType={OperationTypeEnum.add} onCallbackEvent={clearElement}></Operation>)
+    }
 
-
-    /**
-     * 修改事件
+    /***
+     * 修改一个配置
      */
-    const onUpdate = (_deploymentId: string, _id: string, _deploymentContainer: IMasterContainerConfigurationDto) => {
-        setLoading(true);
-        _deploymentConfigurationService.updateDeploymentContainerConfiguration(_deploymentId, _id, _deploymentContainer).then(rep => {
-            if (!rep.success) {
-                message.error(rep.errorMessage, 3);
+    const editRow = (_id: string) => {
+        setOperationElement(<Operation operationType={OperationTypeEnum.edit} id={_id} onCallbackEvent={clearElement}></Operation>)
+    }
+
+    const deleteRow = (_id: string) => {
+        _initContainerService.deleteInitContainerConfiguration(_id).then(res => {
+            if (!res.success) {
+                message.error(res.errorMessage, 3);
             } else {
-                message.success("保存成功", 3);
-                props.onCallbackEvent && props.onCallbackEvent();
+                getPageList();
             }
-        }).finally(() => {
-            setLoading(false);
         });
+    }
+    const clearElement = () => {
+        setOperationElement(null);
+        getPageList();
     };
 
-
-    /**
-     * 弹框取消事件
-     */
-    const onCancel = () => {
-        editOperationState(false);
-        props.onCallbackEvent && props.onCallbackEvent();
-    };
-
-    /**
-     * 修改弹框属性
-     * @param _visible
-     * @param _title
-     */
-    const editOperationState = (_visible: boolean, _title?: string) => {
-        setOperationState({ visible: _visible, title: _title + "容器配置" });
-    };
     return (
         <div>
-            <Drawer style={{ borderRadius: 6 }}
-                width="60%"
-                title={
-                    <div
-                        style={{
-                            borderRadius: 10,
-                        }}
-                    >
-                        {operationState.title}
-                    </div>
-                }
-                onClose={() => onCancel()}
-                closable={true}
-                open={operationState.visible}
-                footer={
-                    <Space style={{ float: "right" }}>
-                        <Button
-                            shape="round"
-                            disabled={loading}
-                            onClick={() => onCancel()}
-                        >
-                            取消
-                        </Button>
-                        <Button
-                            shape="round"
-                            style={{ margin: "0 8px" }}
-                            type="primary"
-                            loading={loading}
-                            onClick={() => onFinish()}
-                        >
-                            保存
-                        </Button>
-                    </Space>
-                }>
-                <Form
-                    {...formItemDoubleRankLayout}
-                    form={containerConfigurationFormData}
-                    name="nest-messages"
+            <Spin spinning={loading}>
+                <Form form={formData}
+                    name="query"
                     layout="horizontal"
-                    onFinish={onFinish}
-                    validateMessages={validateMessages}
+                    {...searchFormItemDoubleRankLayout}
+                    onFinish={onSearch}
                 >
-                    <Card title="容器基础配置" size="small" bordered={false}  >
-                        <Row>
-                            <Col span="12">
-                                <Form.Item
-                                    name="containerName"
-                                    label="容器名称："
-                                    rules={[{ required: true }]}>
-                                    <Input />
-                                </Form.Item>
-                            </Col>
-                            <Col span="12">
-                                <Form.Item
-                                    name="restartPolicy"
-                                    label="重启规则："
-                                    rules={[{ required: true }]}>
-                                    <Input />
-                                </Form.Item>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span="12">
-                                <Form.Item
-                                    name="isInitContainer"
-                                    label="是否初始容器："
-                                    rules={[{ required: true }]}
-                                    valuePropName={"checked"}
-                                >
-                                    <Switch />
-                                </Form.Item>
-                            </Col>
-                            <Col span="12">
-                                <Form.Item
-                                    name="imagePullPolicy"
-                                    label="镜像拉取规则："
-                                    rules={[{ required: true }]}>
-                                    <Input />
-                                </Form.Item>
-                            </Col>
-                        </Row>
-                    </Card>
-                    <Card title="存活探针配置" size="small" bordered={false}  >
-                        <Row>
-                            <Col span="12">
-                                <Form.Item
-                                    name={["readinessProbe", "scheme"]}
-                                    label="方案："
-                                >
-                                    <Input
-                                    />
-                                </Form.Item>
-                            </Col>
-                            <Col span="12">
-                                <Form.Item
-                                    name={["readinessProbe", "path"]}
-                                    label="路径："
-                                >
-                                    <Input />
-                                </Form.Item>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span="12">
-                                <Form.Item
-                                    name={["readinessProbe", "port"]}
-                                    label="端口："
-                                >
-                                    <InputNumber />
-                                </Form.Item>
-                            </Col>
-                            <Col span="12">
-                                <Form.Item
-                                    name={["readinessProbe", "initialDelaySeconds"]}
-                                    label="延迟时间："
-                                >
-                                    <InputNumber />
-                                </Form.Item>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span="12">
-                                <Form.Item
-                                    name={["readinessProbe", "periodSeconds"]}
-                                    label="间隔时间："
-                                >
-                                    <InputNumber />
-                                </Form.Item>
-                            </Col>
-                        </Row>
-                    </Card>
-                    <Card title="准备探针配置" size="small" bordered={false}  >
-                        <Row>
-                            <Col span="12">
-                                <Form.Item
-                                    name={["liveNessProbe", "scheme"]}
-                                    label="方案："
-                                >
-                                    <Input
-                                    />
-                                </Form.Item>
-                            </Col>
-                            <Col span="12">
-                                <Form.Item
-                                    name={["liveNessProbe", "path"]}
-                                    label="路径："
-                                >
-                                    <Input />
-                                </Form.Item>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span="12">
-                                <Form.Item
-                                    name={["liveNessProbe", "port"]}
-                                    label="端口："
-                                >
-                                    <InputNumber />
-                                </Form.Item>
-                            </Col>
-                            <Col span="12">
-                                <Form.Item
-                                    name={["liveNessProbe", "initialDelaySeconds"]}
-                                    label="延迟时间："
-                                >
-                                    <InputNumber />
-                                </Form.Item>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span="12">
-                                <Form.Item
-                                    name={["liveNessProbe", "periodSeconds"]}
-                                    label="间隔时间："
-                                >
-                                    <InputNumber />
-                                </Form.Item>
-                            </Col>
-                        </Row>
-                    </Card>
-                    <Card title="limit资源配置" size="small" bordered={false}  >
-                        <Row>
-                            <Col span="12">
-                                <Form.Item
-                                    name={["limits", "cpu"]}
-                                    label="Cpu："
-                                >
-                                    <Input
-                                    />
-                                </Form.Item>
-                            </Col>
-                            <Col span="12">
-                                <Form.Item
-                                    name={["limits", "memory"]}
-                                    label="Memory："
-                                >
-                                    <Input />
-                                </Form.Item>
-                            </Col>
-                        </Row>
-                    </Card>
-                    <Card title="request资源配置" size="small" bordered={false}  >
-                        <Row>
-                            <Col span="12">
-                                <Form.Item
-                                    name={["requests", "cpu"]}
-                                    label="Cpu："
-                                >
-                                    <Input
-                                    />
-                                </Form.Item>
-                            </Col>
-                            <Col span="12">
-                                <Form.Item
-                                    name={["requests", "memory"]}
-                                    label="Memory："
-                                >
-                                    <Input />
-                                </Form.Item>
-                            </Col>
-                        </Row>
-                    </Card>
-                    <Card title="环境变量" size="small" bordered={false}  >
-                        <Form.List name="environments">
-                            {(fields, { add, remove }) => (
-                                <>
-                                    {fields.map(({ key, name, ...restField }) => (
-                                        <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
-                                            <Form.Item
-                                                {...restField}
-                                                name={[name, 'key']}
-                                                label="Key："
-                                            >
-                                                <Input placeholder="请输入Key" />
-                                            </Form.Item>
-                                            <Form.Item
-                                                {...restField}
-                                                name={[name, 'value']}
-                                                label="Value："
-                                            >
-                                                <Input placeholder="请输入Value" />
-                                            </Form.Item>
-                                            <MinusCircleOutlined onClick={() => remove(name)} />
-                                        </Space>
-                                    ))}
-                                    <Form.Item>
-                                        <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
-                                            添加环境变量
-                                        </Button>
-                                    </Form.Item>
-                                </>
-                            )}
-                        </Form.List>
-                    </Card>
+                    <Row>
+                        <Col span="24" style={{ textAlign: "right" }}>
+                            <ReloadOutlined
+                                style={{ textAlign: "right", marginRight: 10, fontSize: 16 }}
+                                onClick={() => {
+                                    onSearch();
+                                }}
+                            />
+                            <Button
+                                shape="round"
+                                type="primary"
+                                style={{ margin: "8px 8px" }}
+                                onClick={() => {
+                                    addChange();
+                                }}
+                            >
+                                <PlusOutlined />
+                                添加初始容器配置
+                            </Button>
+                        </Col>
+                    </Row>
                 </Form>
-            </Drawer>
+                <Table columns={columns}
+                    dataSource={tableData}
+                    pagination={pagination}
+                    scroll={{ y: 700 }}
+                    size="small"
+                />
+                {subOperationElement}
+            </Spin>
         </div>
     )
 }
+
 export default InitContainerConfigurationPage;

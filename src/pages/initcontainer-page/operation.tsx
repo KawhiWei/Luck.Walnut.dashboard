@@ -7,7 +7,8 @@ import {
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 
-import { IDeploymentConfigurationService } from "@/domain/deployment-configurations/ideployment-configuration-service";
+import { IInitContainerConfigurationInputDto } from "@/domain/init-container-configurations/iinit-container-service-dto";
+import { IInitContainerService } from "@/domain/init-container-configurations/iinit-container-service";
 import { IMasterContainerConfigurationInputDto } from "@/domain/deployment-configurations/deployment-configuration-dto";
 import { IOperationConfig } from "@/shared/operation/operationConfig";
 import { IocTypes } from "@/shared/config/ioc-types";
@@ -35,10 +36,6 @@ interface IProp {
      */
     operationType: OperationTypeEnum;
 
-    /**
-     * 部署配置Id
-     */
-    deploymentId: string;
 }
 
 const validateMessages = {
@@ -51,13 +48,13 @@ const validateMessages = {
         range: "${label} must be between ${min} and ${max}",
     },
 };
-const ContainerConfigurationOperation = (props: IProp) => {
-    const _deploymentConfigurationService: IDeploymentConfigurationService = useHookProvider(IocTypes.DeploymentConfigurationService);
+const InitContainerConfigurationPage = (props: IProp) => {
+    const _initContainerService: IInitContainerService = useHookProvider(IocTypes.InitContainerService);
     const [operationState, setOperationState] = useState<IOperationConfig>({
         visible: false,
     });
     const [loading, setLoading] = useState<boolean>(false);
-    const [deploymentContainerConfiguration, setDeploymentContainerConfiguration] = useState<IMasterContainerConfigurationInputDto>({
+    const [deploymentContainerConfiguration, setDeploymentContainerConfiguration] = useState<IInitContainerConfigurationInputDto>({
         containerName: '',
         restartPolicy: '',
         isInitContainer: false,
@@ -94,7 +91,7 @@ const ContainerConfigurationOperation = (props: IProp) => {
     };
 
     const onGetDeploymentContainerConfigurationDetail = (_id: string) => {
-        _deploymentConfigurationService.getDeploymentContainerConfigurationDetail(_id).then(rep => {
+        _initContainerService.getInitContainerConfigurationDetail(_id).then(rep => {
             if (rep.success) {
                 containerConfigurationFormData.setFieldsValue(rep.result);
                 editOperationState(true, "编辑");
@@ -108,13 +105,13 @@ const ContainerConfigurationOperation = (props: IProp) => {
        * 底部栏OK事件
        */
     const onFinish = () => {
-        containerConfigurationFormData.validateFields().then((_deploymentContainer: IMasterContainerConfigurationInputDto) => {
+        containerConfigurationFormData.validateFields().then((_deploymentContainer: IInitContainerConfigurationInputDto) => {
             switch (props.operationType) {
                 case OperationTypeEnum.add:
-                    onCreate(props.deploymentId, _deploymentContainer);
+                    onCreate(_deploymentContainer);
                     break;
                 case OperationTypeEnum.edit:
-                    props.id && onUpdate(props.deploymentId, props.id, _deploymentContainer)
+                    props.id && onUpdate(props.id, _deploymentContainer);
                     break;
             }
         })
@@ -127,9 +124,9 @@ const ContainerConfigurationOperation = (props: IProp) => {
     /**
      * 弹框取消事件
      */
-    const onCreate = (_deploymentId: string, _params: IMasterContainerConfigurationInputDto) => {
+    const onCreate = (_params: IInitContainerConfigurationInputDto) => {
         setLoading(true);
-        _deploymentConfigurationService.createDeploymentContainerConfiguration(_deploymentId, _params).then(rep => {
+        _initContainerService.createInitContainerConfiguration(_params).then(rep => {
             if (!rep.success) {
                 message.error(rep.errorMessage, 3);
             } else {
@@ -145,9 +142,9 @@ const ContainerConfigurationOperation = (props: IProp) => {
     /**
      * 修改事件
      */
-    const onUpdate = (_deploymentId: string, _id: string, _deploymentContainer: IMasterContainerConfigurationInputDto) => {
+    const onUpdate = (_id: string, _deploymentContainer: IInitContainerConfigurationInputDto) => {
         setLoading(true);
-        _deploymentConfigurationService.updateDeploymentContainerConfiguration(_deploymentId, _id, _deploymentContainer).then(rep => {
+        _initContainerService.updateInitContainerConfiguration(_id, _deploymentContainer).then(rep => {
             if (!rep.success) {
                 message.error(rep.errorMessage, 3);
             } else {
@@ -437,4 +434,4 @@ const ContainerConfigurationOperation = (props: IProp) => {
         </div>
     )
 }
-export default ContainerConfigurationOperation;
+export default InitContainerConfigurationPage;

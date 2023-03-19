@@ -40,3 +40,8 @@ export const KubernetesApi = {
 export const DeploymentApi = {
   deployments:"/kube/api/deployments",
 }
+
+
+export const InitContainerApi = {
+  initContainers:"/kube/api/init/containers",
+}

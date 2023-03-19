@@ -8,7 +8,7 @@ import {
     PlusOutlined,
     WarningOutlined
 } from "@ant-design/icons";
-import { IDeploymentConfigurationDto, IDeploymentInputDto, IMasterContainerConfigurationDto, IMasterContainerConfigurationOutputDto } from "@/domain/deployment-configurations/deployment-configuration-dto";
+import { IDeploymentConfigurationDto, IDeploymentInputDto, IMasterContainerConfigurationInputDto, IMasterContainerConfigurationOutputDto } from "@/domain/deployment-configurations/deployment-configuration-dto";
 import { useEffect, useState } from "react";
 
 import ContainerConfigurationOperation from "./container-configuration-operation";
@@ -70,7 +70,7 @@ const Operation = (props: IProp) => {
     const [deploymentConfigurationFormData] = Form.useForm();
     const [loading, setLoading] = useState<boolean>(false);
 
-    const [masterContainerConfiguration, setMasterContainerConfiguration] = useState<IMasterContainerConfigurationDto>({
+    const [masterContainerConfiguration, setMasterContainerConfiguration] = useState<IMasterContainerConfigurationInputDto>({
         containerName: '',
         restartPolicy: '',
         isInitContainer: false,
@@ -248,7 +248,7 @@ const Operation = (props: IProp) => {
     const onFinish = () => {
         deploymentConfigurationFormData.validateFields().then((_deployment: IDeploymentConfigurationDto) => {
 
-            masterContainerConfigurationFormData.validateFields().then((_masterContainer: IMasterContainerConfigurationDto) => {
+            masterContainerConfigurationFormData.validateFields().then((_masterContainer: IMasterContainerConfigurationInputDto) => {
                 _deployment.appId = props.appId;
                 _deployment.kubernetesNameSpaceId = "test";
 

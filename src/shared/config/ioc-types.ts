@@ -8,5 +8,6 @@ export const IocTypes = {
     ApplicationPipelineService: Symbol("ApplicationPipelineService"),
     BuildImageService: Symbol("BuildImageService"),
     ClusterService: Symbol("ClusterService"),
-    DeploymentConfigurationService: Symbol("DeploymentConfigurationService")
+    DeploymentConfigurationService: Symbol("DeploymentConfigurationService"),
+    InitContainerService: Symbol("InitContainerService")
 };

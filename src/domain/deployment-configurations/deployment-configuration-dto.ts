@@ -88,7 +88,7 @@ export interface IDeploymentInputDto {
     /**
      * 容器配置Dto
      */
-    masterContainerConfiguration: IMasterContainerConfigurationDto
+    masterContainerConfiguration: IMasterContainerConfigurationInputDto
 
 }
 
@@ -155,7 +155,7 @@ export interface IMasterContainerConfigurationOutputDto extends IMasterContainer
 /**
  * 容器输入Dto
  */
-export interface IMasterContainerConfigurationDto extends IMasterContainerConfigurationBase {
+export interface IMasterContainerConfigurationInputDto extends IMasterContainerConfigurationBase {
 
 }
 /**
