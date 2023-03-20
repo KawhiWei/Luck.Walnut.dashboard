@@ -45,3 +45,7 @@ export const DeploymentApi = {
 export const InitContainerApi = {
   initContainers:"/kube/api/init/containers",
 }
+
+export const NameSpaceApi = {
+  nameSpaces:"/kube/api/namespaces",
+}

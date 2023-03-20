@@ -408,7 +408,7 @@ const Operation = (props: IProp) => {
                                         rules={[{ required: true }]}
                                         valuePropName={"checked"}
                                     >
-                                        <Switch />
+                                        <Switch disabled />
                                     </Form.Item>
                                 </Col>
                             </Row>

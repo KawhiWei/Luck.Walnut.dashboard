@@ -67,7 +67,7 @@ const ApplicationDashboard = (props: any) => {
         <Row gutter={12} style={{ textAlign: "left" }}>
           <Col span="24">
             <Card
-              title="应用监控"
+              title="应用面板"
               extra={
                 <Button
                   shape="round"

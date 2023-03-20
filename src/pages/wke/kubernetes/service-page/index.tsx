@@ -6,6 +6,7 @@ import {
     Popconfirm,
     Row,
     Spin,
+    Switch,
     Table,
     Tooltip,
     message
@@ -21,94 +22,70 @@ import {
 import {
     initPaginationConfig,
     tacitPagingProps,
-} from "../../shared/ajax/request";
+} from "../../../../shared/ajax/request";
 import { useEffect, useState } from "react";
 
-import { IDeploymentConfigurationOutputDto } from "@/domain/deployment-configurations/deployment-configuration-dto";
-import { IDeploymentConfigurationService } from "@/domain/deployment-configurations/ideployment-configuration-service";
+import { INameSpaceOutputDto } from "@/domain/namespaces/inamespace-dto";
+import { INameSpaceService } from "@/domain/namespaces/inamespace-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import Operation from "./operation";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
 import { searchFormItemDoubleRankLayout } from "@/constans/layout/optionlayout";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
-interface IProp {
-    /**
-     * 应用Id
-     */
-    appId: string;
-
-
-}
-const DeploymentConfigurationPage = (props: IProp) => {
+const ServicePage = (props: any) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [formData] = Form.useForm();
-    const [tableData, setTableData] = useState<Array<IDeploymentConfigurationOutputDto>>();
+    const [tableData, setTableData] = useState<Array<INameSpaceOutputDto>>();
     const [subOperationElement, setOperationElement] = useState<any>(null);
     const [paginationConfig, setPaginationConfig] =
         useState<initPaginationConfig>(new initPaginationConfig());
-    const _deploymentConfigurationService: IDeploymentConfigurationService = useHookProvider(IocTypes.DeploymentConfigurationService);
+    const _nameSpaceService: INameSpaceService = useHookProvider(IocTypes.NameSpaceService);
     useEffect(() => {
         getPageList();
     }, [paginationConfig])
 
     const columns = [
         {
-            title: "应用Id",
-            dataIndex: "appId",
+            title: "中文名称",
+            dataIndex: "chineseName",
         },
         {
             title: "名称",
             dataIndex: "name",
         },
         {
-            title: "中文名称",
-            dataIndex: "chineseName",
+            title: "集群",
+            dataIndex: "clusterName",
         },
         {
-            title: "部署环境",
-            dataIndex: "environmentName",
-        },
-        {
-            title: "应用运行时",
-            dataIndex: "applicationRuntimeTypeName",
-        },
-        {
-            title: "部署类型",
-            dataIndex: "deploymentTypeName",
-        },
-        {
-            title: "命名空间",
-            dataIndex: "kubernetesNameSpaceId",
-        },
-        {
-            title: "部署副本数量",
-            dataIndex: "replicas",
-        },
-        {
-            title: "最大不可用",
-            dataIndex: "maxUnavailable",
-        },
-        {
-            title: "镜像拉取证书",
-            dataIndex: "imagePullSecretId",
+            title: "发布状态",
+            dataIndex: "id",
+            key: "id",
+            render: (text: any, record: INameSpaceOutputDto) => {
+                return (
+                    <div className="table-operation">
+                        <Switch checked={record.isPublish} disabled ></Switch>
+                    </div>
+                )
+            }
         },
         {
             title: "操作",
             dataIndex: "id",
             key: "id",
-            render: (text: any, record: IDeploymentConfigurationOutputDto) => {
+            render: (text: any, record: INameSpaceOutputDto) => {
                 return (
                     <div className="table-operation">
                         <Tooltip placement="top" title="编辑">
                             <EditOutlined
                                 style={{ color: "orange", marginRight: 10, fontSize: 16 }}
-                                onClick={() => editRow(record.id, record.masterContainerId)} />
+                                onClick={() => editRow(record.id)} />
                         </Tooltip>
                         <Tooltip placement="top" title="发布">
                             <CloudUploadOutlined
                                 style={{ color: "#1677ff", marginRight: 10, fontSize: 16 }}
-                                onClick={() => publishDeploymentConfiguration(record.id)} />
+                                onClick={() => publishNameSpace(record.id)} />
                         </Tooltip>
                         <Tooltip placement="top" title="删除">
                             <Popconfirm
@@ -167,34 +144,41 @@ const DeploymentConfigurationPage = (props: IProp) => {
             pageSize: paginationConfig.pageSize,
             pageIndex: paginationConfig.current,
         }
-        _deploymentConfigurationService.getDeploymentConfigurationPageList("luck.walnut", _param).then((x) => {
-            if (x.success) {
-                setTableData(x.result.data);
+        _nameSpaceService.getNameSpacePageList(_param).then((rep) => {
+            if (rep.success) {
+                setTableData(rep.result.data);
             }
         }).finally(() => {
             setLoading(false);
         })
     }
     const addChange = () => {
-        setOperationElement(<Operation operationType={OperationTypeEnum.add} appId={props.appId} onCallbackEvent={clearElement}></Operation>)
+        setOperationElement(<Operation operationType={OperationTypeEnum.add} onCallbackEvent={clearElement}></Operation>)
     }
 
     /***
      * 修改一个配置
      */
-    const editRow = (_id: string, _masterContainerId: string) => {
-        setOperationElement(<Operation operationType={OperationTypeEnum.edit} appId={props.appId} id={_id} masterContainerId={_masterContainerId} onCallbackEvent={clearElement}></Operation>)
+    const editRow = (_id: string) => {
+        setOperationElement(<Operation operationType={OperationTypeEnum.edit} id={_id} onCallbackEvent={clearElement}></Operation>)
     }
 
-    /***
-     * 发布一个部署配置
-     */
-    const publishDeploymentConfiguration = (_id: string) => {
-        console.log('发布应用')
-
-    }
     const deleteRow = (_id: string) => {
-        _deploymentConfigurationService.deleteDeploymentConfiguration(_id).then(res => {
+        _nameSpaceService.deleteNameSpace(_id).then(res => {
+            if (!res.success) {
+                message.error(res.errorMessage, 3);
+            } else {
+                getPageList();
+            }
+        });
+    }
+
+    /**
+     * 
+     * @param _id 
+     */
+    const publishNameSpace = (_id: string) => {
+        _nameSpaceService.publishNameSpace(_id).then(res => {
             if (!res.success) {
                 message.error(res.errorMessage, 3);
             } else {
@@ -233,7 +217,7 @@ const DeploymentConfigurationPage = (props: IProp) => {
                                 }}
                             >
                                 <PlusOutlined />
-                                添加部署
+                                添加NameSpace
                             </Button>
                         </Col>
                     </Row>
@@ -250,4 +234,4 @@ const DeploymentConfigurationPage = (props: IProp) => {
     )
 }
 
-export default DeploymentConfigurationPage;
+export default ServicePage;

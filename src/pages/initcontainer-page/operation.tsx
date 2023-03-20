@@ -176,7 +176,7 @@ const InitContainerConfigurationPage = (props: IProp) => {
     return (
         <div>
             <Drawer style={{ borderRadius: 6 }}
-                width="60%"
+                width="80%"
                 title={
                     <div
                         style={{

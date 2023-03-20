@@ -17,10 +17,12 @@ import { IDoveLogService } from "@/domain/logs/idovelog-service";
 import { IEnvironmentService } from "@/domain/environment/ienvironment-service";
 import { IInitContainerService } from "@/domain/init-container-configurations/iinit-container-service";
 import { IMatterService } from "@/domain/matters/imatter-service";
+import { INameSpaceService } from "@/domain/namespaces/inamespace-service";
 import { IProjectService } from "@/domain/projects/iproject-service";
 import InitContainerService from "@/domain/init-container-configurations/init-container-service";
 import { IocTypes } from "./ioc-types"
 import { MatterService } from "@/domain/matters/matter-service";
+import NameSpaceService from "@/domain/namespaces/namespace-service";
 import { ProjectService } from "@/domain/projects/project-service";
 
 const container = new Container();
@@ -35,6 +37,7 @@ container.bind<IBuildImageService>(IocTypes.BuildImageService).to(BuildImageServ
 container.bind<IClusterService>(IocTypes.ClusterService).to(ClusterService);
 container.bind<IDeploymentConfigurationService>(IocTypes.DeploymentConfigurationService).to(DeploymentConfigurationService);
 container.bind<IInitContainerService>(IocTypes.InitContainerService).to(InitContainerService);
+container.bind<INameSpaceService>(IocTypes.NameSpaceService).to(NameSpaceService);
 
 
 
