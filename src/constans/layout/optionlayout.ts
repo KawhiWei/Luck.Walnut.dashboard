@@ -11,7 +11,7 @@ export const formItemDoubleRankLayout = {
 };
 
 /**
-* form表单双列布局设置
+* form表单搜索双列布局设置
 */
 export const searchFormItemDoubleRankLayout = {
   labelCol: { span: 6 },

@@ -8,13 +8,14 @@ import {
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 
-import { INameSpaceInputDto } from "@/domain/namespaces/inamespace-dto";
-import { INameSpaceService } from "@/domain/namespaces/inamespace-service";
 import { IOperationConfig } from "@/shared/operation/operationConfig";
 import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
-import { formItemDoubleRankLayout } from "@/constans/layout/optionlayout";
+import { formItemSingleRankLayout } from "@/constans/layout/optionlayout";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
+import { IClusterService } from "@/domain/kubernetes/clusters/icluster-service";
+import { IClusterInputDto } from "@/domain/kubernetes/clusters/cluster-dto";
+import TextArea from "antd/lib/input/TextArea";
 
 // import "../description.less";
 
@@ -49,16 +50,14 @@ const validateMessages = {
     },
 };
 const Operation = (props: IProp) => {
-    const _nameSpaceService: INameSpaceService = useHookProvider(IocTypes.NameSpaceService);
+    const _clusterService: IClusterService = useHookProvider(IocTypes.ClusterService);
     const [operationState, setOperationState] = useState<IOperationConfig>({
         visible: false,
     });
     const [loading, setLoading] = useState<boolean>(false);
-    const [nameSpace, setNameSpace] = useState<INameSpaceInputDto>({
-        chineseName: '',
+    const [nameSpace, setNameSpace] = useState<IClusterInputDto>({
+        config: '',
         name: '',
-        clusterId: '',
-        isPublish: false
     });
     const [nameSpaceFormData] = Form.useForm();
 
@@ -82,7 +81,7 @@ const Operation = (props: IProp) => {
                 editOperationState(true, "添加");
                 break;
             case OperationTypeEnum.edit:
-                props.id && onGetNameSpaceDetail(props.id)
+                props.id && onClusterDetail(props.id)
                 break;
             case OperationTypeEnum.view:
                 editOperationState(true, "查看");
@@ -90,8 +89,8 @@ const Operation = (props: IProp) => {
         }
     };
 
-    const onGetNameSpaceDetail = (_id: string) => {
-        _nameSpaceService.getNameSpaceDetail(_id).then(rep => {
+    const onClusterDetail = (_id: string) => {
+        _clusterService.getClusterDetail(_id).then(rep => {
             if (rep.success) {
                 nameSpaceFormData.setFieldsValue(rep.result);
                 editOperationState(true, "编辑");
@@ -105,7 +104,7 @@ const Operation = (props: IProp) => {
        * 底部栏OK事件
        */
     const onFinish = () => {
-        nameSpaceFormData.validateFields().then((_nameSpace: INameSpaceInputDto) => {
+        nameSpaceFormData.validateFields().then((_nameSpace: IClusterInputDto) => {
             switch (props.operationType) {
                 case OperationTypeEnum.add:
                     onCreate(_nameSpace);
@@ -123,9 +122,9 @@ const Operation = (props: IProp) => {
     /**
      * 弹框取消事件
      */
-    const onCreate = (_params: INameSpaceInputDto) => {
+    const onCreate = (_params: IClusterInputDto) => {
         setLoading(true);
-        _nameSpaceService.createNameSpace(_params).then(rep => {
+        _clusterService.createCluster(_params).then(rep => {
             if (!rep.success) {
                 message.error(rep.errorMessage, 3);
             } else {
@@ -141,9 +140,9 @@ const Operation = (props: IProp) => {
     /**
      * 修改事件
      */
-    const onUpdate = (_id: string, _deploymentContainer: INameSpaceInputDto) => {
+    const onUpdate = (_id: string, _params: IClusterInputDto) => {
         setLoading(true);
-        _nameSpaceService.updateNameSpace(_id, _deploymentContainer).then(rep => {
+        _clusterService.updateCluster(_id, _params).then(rep => {
             if (!rep.success) {
                 message.error(rep.errorMessage, 3);
             } else {
@@ -170,7 +169,7 @@ const Operation = (props: IProp) => {
      * @param _title
      */
     const editOperationState = (_visible: boolean, _title?: string) => {
-        setOperationState({ visible: _visible, title: _title + "NameSpace配置" });
+        setOperationState({ visible: _visible, title: _title + "集群" });
     };
     return (
         <div>
@@ -209,7 +208,7 @@ const Operation = (props: IProp) => {
                     </Space>
                 }>
                 <Form
-                    {...formItemDoubleRankLayout}
+                    {...formItemSingleRankLayout}
                     form={nameSpaceFormData}
                     name="nest-messages"
                     layout="horizontal"
@@ -217,42 +216,22 @@ const Operation = (props: IProp) => {
                     validateMessages={validateMessages}
                 >
                     <Row>
-                        <Col span="12">
+                        <Col span="24">
                             <Form.Item
-                                name="chineseName"
-                                label="中文名称："
+                                name="name"
+                                label="集群名称："
                                 rules={[{ required: true }]}>
                                 <Input />
                             </Form.Item>
                         </Col>
                     </Row>
                     <Row>
-
-                        <Col span="12">
+                        <Col span="24">
                             <Form.Item
-                                name="name"
-                                label="命名空间名称："
+                                name="config"
+                                label="Config："
                                 rules={[{ required: true }]}>
-                                <Input />
-                            </Form.Item>
-                        </Col>
-                        <Col span="12">
-                            <Form.Item
-                                name="clusterId"
-                                label="绑定集群："
-                                rules={[{ required: true }]}>
-                                <Select
-                                    allowClear={true}
-                                    placeholder="绑定集群"
-                                >
-                                    {ImagePullPolicyTypeMap.map((item: any) => {
-                                        return (
-                                            <Select.Option value={item.key}>
-                                                {item.value}
-                                            </Select.Option>
-                                        );
-                                    })}
-                                </Select>
+                                <TextArea  rows={40} disabled={props.operationType === OperationTypeEnum.view} />
                             </Form.Item>
                         </Col>
                     </Row>

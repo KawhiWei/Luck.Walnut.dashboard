@@ -25,67 +25,47 @@ import {
 } from "../../../../shared/ajax/request";
 import { useEffect, useState } from "react";
 
-import { INameSpaceOutputDto } from "@/domain/namespaces/inamespace-dto";
-import { INameSpaceService } from "@/domain/namespaces/inamespace-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import Operation from "./operation";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
 import { searchFormItemDoubleRankLayout } from "@/constans/layout/optionlayout";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
+import { IClusterService } from "@/domain/kubernetes/clusters/icluster-service";
+import { IClusterOutputDto } from "@/domain/kubernetes/clusters/cluster-dto";
 
-const ServicePage = (props: any) => {
+const ClusterPage = (props: any) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [formData] = Form.useForm();
-    const [tableData, setTableData] = useState<Array<INameSpaceOutputDto>>();
+    const [tableData, setTableData] = useState<Array<IClusterOutputDto>>();
     const [subOperationElement, setOperationElement] = useState<any>(null);
     const [paginationConfig, setPaginationConfig] =
         useState<initPaginationConfig>(new initPaginationConfig());
-    const _nameSpaceService: INameSpaceService = useHookProvider(IocTypes.NameSpaceService);
+    const _clusterService: IClusterService = useHookProvider(IocTypes.ClusterService);
     useEffect(() => {
         getPageList();
     }, [paginationConfig])
 
     const columns = [
         {
-            title: "中文名称",
-            dataIndex: "chineseName",
-        },
-        {
             title: "名称",
             dataIndex: "name",
         },
         {
-            title: "集群",
-            dataIndex: "clusterName",
-        },
-        {
-            title: "发布状态",
-            dataIndex: "id",
-            key: "id",
-            render: (text: any, record: INameSpaceOutputDto) => {
-                return (
-                    <div className="table-operation">
-                        <Switch checked={record.isPublish} disabled ></Switch>
-                    </div>
-                )
-            }
+            title: "Config",
+            dataIndex: "config",
+            ellipsis: true,
         },
         {
             title: "操作",
             dataIndex: "id",
             key: "id",
-            render: (text: any, record: INameSpaceOutputDto) => {
+            render: (text: any, record: IClusterOutputDto) => {
                 return (
                     <div className="table-operation">
                         <Tooltip placement="top" title="编辑">
                             <EditOutlined
                                 style={{ color: "orange", marginRight: 10, fontSize: 16 }}
                                 onClick={() => editRow(record.id)} />
-                        </Tooltip>
-                        <Tooltip placement="top" title="发布">
-                            <CloudUploadOutlined
-                                style={{ color: "#1677ff", marginRight: 10, fontSize: 16 }}
-                                onClick={() => publishNameSpace(record.id)} />
                         </Tooltip>
                         <Tooltip placement="top" title="删除">
                             <Popconfirm
@@ -144,7 +124,7 @@ const ServicePage = (props: any) => {
             pageSize: paginationConfig.pageSize,
             pageIndex: paginationConfig.current,
         }
-        _nameSpaceService.getNameSpacePageList(_param).then((rep) => {
+        _clusterService.getClusterPageList(_param).then((rep) => {
             if (rep.success) {
                 setTableData(rep.result.data);
             }
@@ -164,7 +144,7 @@ const ServicePage = (props: any) => {
     }
 
     const deleteRow = (_id: string) => {
-        _nameSpaceService.deleteNameSpace(_id).then(res => {
+        _clusterService.deleteCluster(_id).then(res => {
             if (!res.success) {
                 message.error(res.errorMessage, 3);
             } else {
@@ -173,19 +153,6 @@ const ServicePage = (props: any) => {
         });
     }
 
-    /**
-     * 
-     * @param _id 
-     */
-    const publishNameSpace = (_id: string) => {
-        _nameSpaceService.publishNameSpace(_id).then(res => {
-            if (!res.success) {
-                message.error(res.errorMessage, 3);
-            } else {
-                getPageList();
-            }
-        });
-    }
     const clearElement = () => {
         setOperationElement(null);
         getPageList();
@@ -217,7 +184,7 @@ const ServicePage = (props: any) => {
                                 }}
                             >
                                 <PlusOutlined />
-                                添加NameSpace
+                                添加集群
                             </Button>
                         </Col>
                     </Row>
@@ -234,4 +201,4 @@ const ServicePage = (props: any) => {
     )
 }
 
-export default ServicePage;
+export default ClusterPage;
