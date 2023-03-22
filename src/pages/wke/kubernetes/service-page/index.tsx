@@ -25,8 +25,8 @@ import {
 } from "../../../../shared/ajax/request";
 import { useEffect, useState } from "react";
 
-import { INameSpaceOutputDto } from "@/domain/namespaces/inamespace-dto";
-import { INameSpaceService } from "@/domain/namespaces/inamespace-service";
+import { INameSpaceOutputDto } from "@/domain/kubernetes/namespaces/namespace-dto";
+import { INameSpaceService } from "@/domain/kubernetes/namespaces/inamespace-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import Operation from "./operation";
 import { OperationTypeEnum } from "@/shared/operation/operationType";

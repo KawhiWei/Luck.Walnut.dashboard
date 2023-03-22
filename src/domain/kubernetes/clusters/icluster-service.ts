@@ -1,6 +1,6 @@
-import { INameSpaceOutputDto } from "@/domain/namespaces/inamespace-dto";
+import { IClusterInputDto, IClusterOutputDto } from "./cluster-dto";
 import { IServerPageReturn, IServerReturn } from "@/shared/entity";
-import { IClusterInputDto,IClusterOutputDto } from "./cluster-dto";
+
 import { KubernetesClusterDashboardDto } from "./kubernetes-cluster-dto";
 
 export interface IClusterService {

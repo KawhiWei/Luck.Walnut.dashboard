@@ -8,15 +8,15 @@ import {
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 
-import { INameSpaceInputDto } from "@/domain/namespaces/inamespace-dto";
-import { INameSpaceService } from "@/domain/namespaces/inamespace-service";
+import { IClusterOutputDto } from "@/domain/kubernetes/clusters/cluster-dto";
+import { IClusterService } from "@/domain/kubernetes/clusters/icluster-service";
+import { INameSpaceInputDto } from "@/domain/kubernetes/namespaces/namespace-dto";
+import { INameSpaceService } from "@/domain/kubernetes/namespaces/inamespace-service";
 import { IOperationConfig } from "@/shared/operation/operationConfig";
 import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
 import { formItemDoubleRankLayout } from "@/constans/layout/optionlayout";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
-import { IClusterService } from "@/domain/kubernetes/clusters/icluster-service";
-import { IClusterOutputDto } from "@/domain/kubernetes/clusters/cluster-dto";
 
 // import "../description.less";
 

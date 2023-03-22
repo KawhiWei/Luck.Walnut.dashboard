@@ -17,12 +17,12 @@ import { IDoveLogService } from "@/domain/logs/idovelog-service";
 import { IEnvironmentService } from "@/domain/environment/ienvironment-service";
 import { IInitContainerService } from "@/domain/init-container-configurations/iinit-container-service";
 import { IMatterService } from "@/domain/matters/imatter-service";
-import { INameSpaceService } from "@/domain/namespaces/inamespace-service";
+import { INameSpaceService } from "@/domain/kubernetes/namespaces/inamespace-service";
 import { IProjectService } from "@/domain/projects/iproject-service";
 import InitContainerService from "@/domain/init-container-configurations/init-container-service";
 import { IocTypes } from "./ioc-types"
 import { MatterService } from "@/domain/matters/matter-service";
-import NameSpaceService from "@/domain/namespaces/namespace-service";
+import NameSpaceService from "@/domain/kubernetes/namespaces/namespace-service";
 import { ProjectService } from "@/domain/projects/project-service";
 
 const container = new Container();

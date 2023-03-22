@@ -1,4 +1,4 @@
-import { INameSpaceInputDto, INameSpaceOutputDto } from "./inamespace-dto";
+import { INameSpaceInputDto, INameSpaceOutputDto } from "./namespace-dto";
 import { IServerPageReturn, IServerReturn } from "@/shared/entity";
 
 export interface INameSpaceService {
