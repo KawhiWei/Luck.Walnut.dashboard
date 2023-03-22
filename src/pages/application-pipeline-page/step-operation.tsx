@@ -27,7 +27,7 @@ import { IStepDto } from "@/domain/applicationpipelines/applicationpipeline-dto"
 import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
 import { StepTypeEnum } from "@/domain/applicationpipelines/applicationpipeline-enum";
-import { StepTypeMap } from "@/domain/applicationpipelines/steptype-map";
+import { StepTypeMap } from "@/domain/maps/steptype-map";
 import TextArea from "antd/lib/input/TextArea";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 

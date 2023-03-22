@@ -25,8 +25,8 @@ import {
 } from "../../../../shared/ajax/request";
 import { useEffect, useState } from "react";
 
-import { INameSpaceOutputDto } from "@/domain/kubernetes/namespaces/namespace-dto";
-import { INameSpaceService } from "@/domain/kubernetes/namespaces/inamespace-service";
+import { IServiceOutputDto } from "@/domain/kubernetes/services/service-dto";
+import { IServiceService } from "@/domain/kubernetes/services/iservice-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import Operation from "./operation";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
@@ -36,11 +36,11 @@ import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 const ServicePage = (props: any) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [formData] = Form.useForm();
-    const [tableData, setTableData] = useState<Array<INameSpaceOutputDto>>();
+    const [tableData, setTableData] = useState<Array<IServiceOutputDto>>();
     const [subOperationElement, setOperationElement] = useState<any>(null);
     const [paginationConfig, setPaginationConfig] =
         useState<initPaginationConfig>(new initPaginationConfig());
-    const _nameSpaceService: INameSpaceService = useHookProvider(IocTypes.NameSpaceService);
+    const _serviceService: IServiceService = useHookProvider(IocTypes.ServiceService);
     useEffect(() => {
         getPageList();
     }, [paginationConfig])
@@ -48,21 +48,25 @@ const ServicePage = (props: any) => {
     const columns = [
         {
             title: "中文名称",
-            dataIndex: "chineseName",
+            dataIndex: "name",
         },
         {
-            title: "名称",
-            dataIndex: "name",
+            title: "NameSpace",
+            dataIndex: "nameSpaceName",
+        },
+        {
+            title: "NameSpace中文名称",
+            dataIndex: "nameSpaceChineseName",
         },
         {
             title: "集群",
             dataIndex: "clusterName",
         },
         {
-            title: "发布状态",
+            title: "是否发布",
             dataIndex: "id",
             key: "id",
-            render: (text: any, record: INameSpaceOutputDto) => {
+            render: (text: any, record: IServiceOutputDto) => {
                 return (
                     <div className="table-operation">
                         <Switch checked={record.isPublish} disabled ></Switch>
@@ -74,7 +78,7 @@ const ServicePage = (props: any) => {
             title: "操作",
             dataIndex: "id",
             key: "id",
-            render: (text: any, record: INameSpaceOutputDto) => {
+            render: (text: any, record: IServiceOutputDto) => {
                 return (
                     <div className="table-operation">
                         <Tooltip placement="top" title="编辑">
@@ -85,7 +89,7 @@ const ServicePage = (props: any) => {
                         <Tooltip placement="top" title="发布">
                             <CloudUploadOutlined
                                 style={{ color: "#1677ff", marginRight: 10, fontSize: 16 }}
-                                onClick={() => publishNameSpace(record.id)} />
+                                onClick={() => publish(record.id)} />
                         </Tooltip>
                         <Tooltip placement="top" title="删除">
                             <Popconfirm
@@ -144,7 +148,7 @@ const ServicePage = (props: any) => {
             pageSize: paginationConfig.pageSize,
             pageIndex: paginationConfig.current,
         }
-        _nameSpaceService.getNameSpacePageList(_param).then((rep) => {
+        _serviceService.getServicePageList(_param).then((rep) => {
             if (rep.success) {
                 setTableData(rep.result.data);
             }
@@ -164,7 +168,7 @@ const ServicePage = (props: any) => {
     }
 
     const deleteRow = (_id: string) => {
-        _nameSpaceService.deleteNameSpace(_id).then(res => {
+        _serviceService.deleteService(_id).then(res => {
             if (!res.success) {
                 message.error(res.errorMessage, 3);
             } else {
@@ -177,8 +181,9 @@ const ServicePage = (props: any) => {
      * 
      * @param _id 
      */
-    const publishNameSpace = (_id: string) => {
-        _nameSpaceService.publishNameSpace(_id).then(res => {
+    const publish = (_id: string) => {
+        debugger
+        _serviceService.publishService(_id).then(res => {
             if (!res.success) {
                 message.error(res.errorMessage, 3);
             } else {
@@ -217,7 +222,7 @@ const ServicePage = (props: any) => {
                                 }}
                             >
                                 <PlusOutlined />
-                                添加NameSpace
+                                Service
                             </Button>
                         </Col>
                     </Row>

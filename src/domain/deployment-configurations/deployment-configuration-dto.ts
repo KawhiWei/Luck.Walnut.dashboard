@@ -31,7 +31,11 @@ export interface IDeploymentConfigurationBaseDto {
     /**
      * 命名空间Id
      */
-    kubernetesNameSpaceId: string;
+    nameSpaceId: string;
+    /**
+     * 集群Id
+     */
+    clusterId: string;
     /**
      * 部署副本数量
      */
@@ -63,6 +67,12 @@ export interface IDeploymentConfigurationOutputDto extends IDeploymentConfigurat
      * 应用容器配置列表
      */
     masterContainerId: string;
+
+    clusterName: string;
+
+    nameSpaceName: string;
+
+    
 }
 
 /**

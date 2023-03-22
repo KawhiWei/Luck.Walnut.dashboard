@@ -78,8 +78,12 @@ const DeploymentConfigurationPage = (props: IProp) => {
             dataIndex: "deploymentTypeName",
         },
         {
-            title: "命名空间",
-            dataIndex: "kubernetesNameSpaceId",
+            title: "集群",
+            dataIndex: "clusterName",
+        },
+        {
+            title: "NameSpace",
+            dataIndex: "nameSpaceName",
         },
         {
             title: "部署副本数量",

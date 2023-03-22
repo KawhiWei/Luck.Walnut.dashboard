@@ -11,4 +11,5 @@ export const IocTypes = {
     DeploymentConfigurationService: Symbol("DeploymentConfigurationService"),
     InitContainerService: Symbol("InitContainerService"),
     NameSpaceService: Symbol("NameSpaceService"),
+    ServiceService: Symbol("ServiceService"),
 };

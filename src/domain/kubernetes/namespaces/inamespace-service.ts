@@ -22,7 +22,7 @@ export interface INameSpaceService {
      * @returns 
      */
     getNameSpacePageList(_param: any): Promise<IServerReturn<IServerPageReturn<INameSpaceOutputDto>>>;
-    
+
     /** 
      * @param _id 
      * @returns 
@@ -42,5 +42,11 @@ export interface INameSpaceService {
      * @param _params 
      */
     deleteNameSpace(_id: string): Promise<IServerReturn<any>>;
+    /**
+     * 
+     * @param _param 
+     * @returns 
+     */
+    getNameSpaceByClusterIdList(_clusterId: string): Promise<IServerReturn<Array<INameSpaceOutputDto>>>;
 
 }

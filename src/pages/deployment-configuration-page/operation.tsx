@@ -1,5 +1,7 @@
 import "../drawer.less";
 
+import { ApplicationRuntimeTypeEnum, DeploymentTypeEnum } from "@/domain/deployment-configurations/deployment-configuration-enum";
+import { ApplicationRuntimeTypeMap, DeploymentTypeMap } from "@/domain/maps/deployment-configuration-map";
 import { Button, Card, Col, Drawer, Form, Input, InputNumber, Popconfirm, Row, Select, Space, Switch, Table, Tooltip, message } from "antd";
 import {
     DeleteOutlined,
@@ -13,9 +15,13 @@ import { ImagePullPolicyTypeMap, RestartPolicyTypeMap } from "@/domain/maps/cont
 import { useEffect, useState } from "react";
 
 import ContainerConfigurationOperation from "./container-configuration-operation";
+import { IClusterOutputDto } from "@/domain/kubernetes/clusters/cluster-dto";
+import { IClusterService } from "@/domain/kubernetes/clusters/icluster-service";
 import { IDeploymentConfigurationService } from "@/domain/deployment-configurations/ideployment-configuration-service";
 import { IInitContainerConfigurationOutputDto } from "@/domain/init-container-configurations/iinit-container-service-dto";
 import { IInitContainerService } from "@/domain/init-container-configurations/iinit-container-service";
+import { INameSpaceOutputDto } from "@/domain/kubernetes/namespaces/namespace-dto";
+import { INameSpaceService } from "@/domain/kubernetes/namespaces/inamespace-service";
 import { IOperationConfig } from "@/shared/operation/operationConfig";
 import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
@@ -64,6 +70,10 @@ const validateMessages = {
     },
 };
 const Operation = (props: IProp) => {
+    const _nameSpaceService: INameSpaceService = useHookProvider(IocTypes.NameSpaceService);
+    const _clusterService: IClusterService = useHookProvider(IocTypes.ClusterService);
+    const [clusterData, setClusterData] = useState<Array<IClusterOutputDto>>([]);
+    const [nameSpaceArrayData, setNameSpaceArrayData] = useState<Array<INameSpaceOutputDto>>([]);
     const _deploymentConfigurationService: IDeploymentConfigurationService = useHookProvider(IocTypes.DeploymentConfigurationService);
     const _initContainerService: IInitContainerService = useHookProvider(IocTypes.InitContainerService);
     const [operationState, setOperationState] = useState<IOperationConfig>({
@@ -76,15 +86,16 @@ const Operation = (props: IProp) => {
     const [deploymentConfigurationData, setDeploymentConfigurationData] = useState<IDeploymentConfigurationDto>({
         name: "",
         environmentName: "",
-        applicationRuntimeType: 0,
-        deploymentType: 0,
+        applicationRuntimeType: ApplicationRuntimeTypeEnum.kubernetes,
+        deploymentType: DeploymentTypeEnum.deployment,
         chineseName: "",
         appId: "",
-        kubernetesNameSpaceId: "",
+        nameSpaceId: "",
         replicas: 1,
         maxUnavailable: 0,
         imagePullSecretId: "",
-        initContainers: []
+        initContainers: [],
+        clusterId: ""
     });
     const [masterContainerConfiguration, setMasterContainerConfiguration] = useState<IMasterContainerConfigurationInputDto>({
         containerName: '',
@@ -109,6 +120,7 @@ const Operation = (props: IProp) => {
      */
     const onLoad = () => {
         onGetInitContainerList();
+        onClusterList();
         switch (props.operationType) {
             case OperationTypeEnum.add:
                 deploymentConfigurationFormData.setFieldsValue(deploymentConfigurationData)
@@ -124,6 +136,36 @@ const Operation = (props: IProp) => {
 
         }
     };
+
+    /**
+     * 获取集群
+     */
+    const onClusterList = () => {
+        _clusterService.getClusterList().then(rep => {
+            if (rep.success) {
+                setClusterData(rep.result)
+
+            } else {
+                message.error(rep.errorMessage, 3);
+            }
+        })
+    }
+    /**
+      * 查询命名空间根据集群Id
+      */
+    const onGetNameSpaceByClusterIdData = (_clusterId: string) => {
+        _nameSpaceService.getNameSpaceByClusterIdList(_clusterId).then(rep => {
+            if (rep.success) {
+                console.log(rep.result)
+                setNameSpaceArrayData(rep.result)
+
+            } else {
+                message.error(rep.errorMessage, 3);
+            }
+        })
+
+    };
+
     /**
      * 查询配置详情
      */
@@ -142,6 +184,7 @@ const Operation = (props: IProp) => {
             if (rep.success) {
                 deploymentConfigurationFormData.setFieldsValue(rep.result.deploymentConfiguration);
                 masterContainerConfigurationFormData.setFieldsValue(rep.result.masterContainerConfiguration)
+                rep.result.deploymentConfiguration && onGetNameSpaceByClusterIdData(rep.result.deploymentConfiguration.clusterId)
                 editOperationState(true, "编辑");
             } else {
                 message.error(rep.errorMessage, 3);
@@ -157,7 +200,6 @@ const Operation = (props: IProp) => {
 
             masterContainerConfigurationFormData.validateFields().then((_masterContainer: IMasterContainerConfigurationInputDto) => {
                 _deployment.appId = props.appId;
-                _deployment.kubernetesNameSpaceId = "test";
                 let param = {
                     deploymentConfiguration: _deployment,
                     masterContainerConfiguration: _masterContainer
@@ -274,16 +316,16 @@ const Operation = (props: IProp) => {
                         <Row>
                             <Col span="12">
                                 <Form.Item
-                                    name="name"
-                                    label="名称："
+                                    name="chineseName"
+                                    label="中文名称："
                                     rules={[{ required: true }]}>
                                     <Input />
                                 </Form.Item>
                             </Col>
                             <Col span="12">
                                 <Form.Item
-                                    name="chineseName"
-                                    label="中文名称："
+                                    name="name"
+                                    label="名称："
                                     rules={[{ required: true }]}>
                                     <Input />
                                 </Form.Item>
@@ -299,13 +341,45 @@ const Operation = (props: IProp) => {
                                     <Input />
                                 </Form.Item>
                             </Col>
+                        </Row>
+                        <Row>
                             <Col span="12">
                                 <Form.Item
-                                    name="kubernetesNameSpaceId"
-                                    label="命名空间："
+                                    name="clusterId"
+                                    label="集群："
                                     rules={[{ required: true }]}
                                 >
-                                    <Input />
+                                    <Select
+                                        allowClear={true}
+                                        placeholder="绑定集群"
+                                        onChange={onGetNameSpaceByClusterIdData}
+                                    >
+                                        {clusterData.map((item: IClusterOutputDto) => {
+                                            return (
+                                                <Select.Option value={item.id}>
+                                                    {item.name}
+                                                </Select.Option>
+                                            );
+                                        })}
+                                    </Select>
+                                </Form.Item>
+                            </Col>
+                            <Col span="12">
+                                <Form.Item
+                                    name="nameSpaceId"
+                                    label="命名空间："
+                                    rules={[{ required: true }]}>
+                                    <Select
+                                        allowClear={true}
+                                    >
+                                        {nameSpaceArrayData.map((item: INameSpaceOutputDto) => {
+                                            return (
+                                                <Select.Option value={item.id}>
+                                                    {item.name}
+                                                </Select.Option>
+                                            );
+                                        })}
+                                    </Select>
                                 </Form.Item>
                             </Col>
 
@@ -314,9 +388,18 @@ const Operation = (props: IProp) => {
                             <Col span="12">
                                 <Form.Item
                                     name="applicationRuntimeType"
-                                    label="应用运行时类型："
+                                    label="运行时类型："
                                     rules={[{ required: true }]}>
-                                    <Input />
+                                    <Select allowClear={true}
+                                        placeholder="请选择运行时类型">
+                                        {ApplicationRuntimeTypeMap.map((item: any) => {
+                                            return (
+                                                <Select.Option value={item.key}>
+                                                    {item.value}
+                                                </Select.Option>
+                                            );
+                                        })}
+                                    </Select>
                                 </Form.Item>
                             </Col>
                             <Col span="12">
@@ -325,7 +408,16 @@ const Operation = (props: IProp) => {
                                     label="部署类型："
                                     rules={[{ required: true }]}
                                 >
-                                    <Input />
+                                    <Select allowClear={true}
+                                        placeholder="请选择部署类型">
+                                        {DeploymentTypeMap.map((item: any) => {
+                                            return (
+                                                <Select.Option value={item.key}>
+                                                    {item.value}
+                                                </Select.Option>
+                                            );
+                                        })}
+                                    </Select>
                                 </Form.Item>
                             </Col>
 
@@ -343,11 +435,11 @@ const Operation = (props: IProp) => {
                             <Col span="12">
                                 <Form.Item
                                     name="initContainers"
-                                    label="绑定初始容器："
+                                    label="初始容器："
                                 >
                                     <Select allowClear={true}
                                         mode="multiple"
-                                        placeholder="请选择绑定初始容器">
+                                        placeholder="请选择初始容器">
                                         {initContainerData.map((item: IInitContainerConfigurationOutputDto) => {
                                             return (
                                                 <Select.Option value={item.id}>
@@ -356,7 +448,6 @@ const Operation = (props: IProp) => {
                                             );
                                         })}
                                     </Select>
-
                                 </Form.Item>
                             </Col>
                         </Row>
@@ -597,36 +688,40 @@ const Operation = (props: IProp) => {
                             </Row>
                         </Card>
                         <Card title="环境变量" size="small" bordered={false}  >
-                            <Form.List name="environments">
-                                {(fields, { add, remove }) => (
-                                    <>
-                                        {fields.map(({ key, name, ...restField }) => (
-                                            <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
-                                                <Form.Item
-                                                    {...restField}
-                                                    name={[name, 'key']}
-                                                    label="Key："
-                                                >
-                                                    <Input placeholder="请输入Key" />
+                            <Row>
+                                <Col span="24">
+                                    <Form.List name="environments">
+                                        {(fields, { add, remove }) => (
+                                            <>
+                                                {fields.map(({ key, name, ...restField }) => (
+                                                    <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
+                                                        <Form.Item
+                                                            {...restField}
+                                                            name={[name, 'key']}
+                                                            label="Key："
+                                                        >
+                                                            <Input placeholder="请输入Key" />
+                                                        </Form.Item>
+                                                        <Form.Item
+                                                            {...restField}
+                                                            name={[name, 'value']}
+                                                            label="Value："
+                                                        >
+                                                            <Input placeholder="请输入Value" />
+                                                        </Form.Item>
+                                                        <MinusCircleOutlined onClick={() => remove(name)} />
+                                                    </Space>
+                                                ))}
+                                                <Form.Item>
+                                                    <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                                                        添加环境变量
+                                                    </Button>
                                                 </Form.Item>
-                                                <Form.Item
-                                                    {...restField}
-                                                    name={[name, 'value']}
-                                                    label="Value："
-                                                >
-                                                    <Input placeholder="请输入Value" />
-                                                </Form.Item>
-                                                <MinusCircleOutlined onClick={() => remove(name)} />
-                                            </Space>
-                                        ))}
-                                        <Form.Item>
-                                            <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
-                                                添加环境变量
-                                            </Button>
-                                        </Form.Item>
-                                    </>
-                                )}
-                            </Form.List>
+                                            </>
+                                        )}
+                                    </Form.List>
+                                </Col>
+                            </Row>
                         </Card>
                     </Form>
                 </Card>

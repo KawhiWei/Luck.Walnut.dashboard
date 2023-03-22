@@ -1,6 +1,7 @@
 import "../../../drawer.less";
 
 import { Button, Card, Col, Drawer, Form, Input, InputNumber, Row, Select, Space, message } from "antd";
+import { INameSpaceInputDto, INameSpaceOutputDto } from "@/domain/kubernetes/namespaces/namespace-dto";
 import { ImagePullPolicyTypeMap, RestartPolicyTypeMap } from "@/domain/maps/container-map";
 import {
     MinusCircleOutlined,
@@ -8,9 +9,12 @@ import {
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 
-import { INameSpaceInputDto } from "@/domain/kubernetes/namespaces/namespace-dto";
+import { IClusterOutputDto } from "@/domain/kubernetes/clusters/cluster-dto";
+import { IClusterService } from "@/domain/kubernetes/clusters/icluster-service";
 import { INameSpaceService } from "@/domain/kubernetes/namespaces/inamespace-service";
 import { IOperationConfig } from "@/shared/operation/operationConfig";
+import { IServiceInputDto } from "@/domain/kubernetes/services/service-dto";
+import { IServiceService } from "@/domain/kubernetes/services/iservice-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
 import { formItemDoubleRankLayout } from "@/constans/layout/optionlayout";
@@ -40,27 +44,25 @@ interface IProp {
 
 const validateMessages = {
     required: "${label} 不可为空",
-    types: {
-        email: "${label} is not a valid email!",
-        number: "${label} is not a valid number!",
-    },
-    number: {
-        range: "${label} must be between ${min} and ${max}",
-    },
 };
 const Operation = (props: IProp) => {
     const _nameSpaceService: INameSpaceService = useHookProvider(IocTypes.NameSpaceService);
+    const _serviceService: IServiceService = useHookProvider(IocTypes.ServiceService);
     const [operationState, setOperationState] = useState<IOperationConfig>({
         visible: false,
     });
+    const [clusterData, setClusterData] = useState<Array<IClusterOutputDto>>([]);
+    const [nameSpaceArrayData, setNameSpaceArrayData] = useState<Array<INameSpaceOutputDto>>([]);
+    const _clusterService: IClusterService = useHookProvider(IocTypes.ClusterService);
     const [loading, setLoading] = useState<boolean>(false);
-    const [nameSpace, setNameSpace] = useState<INameSpaceInputDto>({
-        chineseName: '',
+    const [service, setService] = useState<IServiceInputDto>({
         name: '',
-        clusterId: '',
-        isPublish: false
+        deploymentId: '',
+        nameSpaceId: "",
+        clusterId: "",
+        servicePorts: []
     });
-    const [nameSpaceFormData] = Form.useForm();
+    const [serviceFormData] = Form.useForm();
 
     /**
      * 初始化加载事件
@@ -76,9 +78,10 @@ const Operation = (props: IProp) => {
      * @param _id
      */
     const onLoad = () => {
+        onClusterList()
         switch (props.operationType) {
             case OperationTypeEnum.add:
-                nameSpaceFormData.setFieldsValue(nameSpace)
+                serviceFormData.setFieldsValue(service)
                 editOperationState(true, "添加");
                 break;
             case OperationTypeEnum.edit:
@@ -90,10 +93,22 @@ const Operation = (props: IProp) => {
         }
     };
 
-    const onGetNameSpaceDetail = (_id: string) => {
-        _nameSpaceService.getNameSpaceDetail(_id).then(rep => {
+    const onClusterList = () => {
+        _clusterService.getClusterList().then(rep => {
             if (rep.success) {
-                nameSpaceFormData.setFieldsValue(rep.result);
+                setClusterData(rep.result)
+
+            } else {
+                message.error(rep.errorMessage, 3);
+            }
+        })
+
+    }
+
+    const onGetNameSpaceDetail = (_id: string) => {
+        _serviceService.getServiceDetail(_id).then(rep => {
+            if (rep.success) {
+                serviceFormData.setFieldsValue(rep.result);
                 editOperationState(true, "编辑");
             } else {
                 message.error(rep.errorMessage, 3);
@@ -105,27 +120,48 @@ const Operation = (props: IProp) => {
        * 底部栏OK事件
        */
     const onFinish = () => {
-        nameSpaceFormData.validateFields().then((_nameSpace: INameSpaceInputDto) => {
+        serviceFormData.validateFields().then((_params: IServiceInputDto) => {
+
+            console.log(_params)
+            return;
+            
+            _params.deploymentId = "as";
             switch (props.operationType) {
                 case OperationTypeEnum.add:
-                    onCreate(_nameSpace);
+                    onCreate(_params);
                     break;
                 case OperationTypeEnum.edit:
-                    props.id && onUpdate(props.id, _nameSpace);
+                    props.id && onUpdate(props.id, _params);
                     break;
             }
         })
             .catch((error) => {
+                console.log(error)
             });
+
+    };
+
+    /**
+      * 查询命名空间根据集群Id
+      */
+    const onGetNameSpaceByClusterIdData = (_clusterId: string) => {
+        _nameSpaceService.getNameSpaceByClusterIdList(_clusterId).then(rep => {
+            if (rep.success) {
+                setNameSpaceArrayData(rep.result)
+
+            } else {
+                message.error(rep.errorMessage, 3);
+            }
+        })
 
     };
 
     /**
      * 弹框取消事件
      */
-    const onCreate = (_params: INameSpaceInputDto) => {
+    const onCreate = (_params: IServiceInputDto) => {
         setLoading(true);
-        _nameSpaceService.createNameSpace(_params).then(rep => {
+        _serviceService.createService(_params).then(rep => {
             if (!rep.success) {
                 message.error(rep.errorMessage, 3);
             } else {
@@ -141,9 +177,9 @@ const Operation = (props: IProp) => {
     /**
      * 修改事件
      */
-    const onUpdate = (_id: string, _deploymentContainer: INameSpaceInputDto) => {
+    const onUpdate = (_id: string, _params: IServiceInputDto) => {
         setLoading(true);
-        _nameSpaceService.updateNameSpace(_id, _deploymentContainer).then(rep => {
+        _serviceService.updateService(_id, _params).then(rep => {
             if (!rep.success) {
                 message.error(rep.errorMessage, 3);
             } else {
@@ -210,52 +246,116 @@ const Operation = (props: IProp) => {
                 }>
                 <Form
                     {...formItemDoubleRankLayout}
-                    form={nameSpaceFormData}
+                    form={serviceFormData}
                     name="nest-messages"
                     layout="horizontal"
                     onFinish={onFinish}
                     validateMessages={validateMessages}
                 >
-                    <Row>
-                        <Col span="12">
-                            <Form.Item
-                                name="chineseName"
-                                label="中文名称："
-                                rules={[{ required: true }]}>
-                                <Input />
-                            </Form.Item>
-                        </Col>
-                    </Row>
-                    <Row>
+                    <Card title="基础配置" size="default" bordered={false} >
+                        <Row>
+                            <Col span="12">
+                                <Form.Item
+                                    name="name"
+                                    label="ServiceName："
+                                    rules={[{ required: true }]}>
+                                    <Input />
+                                </Form.Item>
+                            </Col>
+                            <Col span="12">
+                                <Form.Item
+                                    name="clusterId"
+                                    label="绑定集群："
+                                    rules={[{ required: true }]}>
+                                    <Select
+                                        allowClear={true}
+                                        placeholder="绑定集群"
+                                        onChange={onGetNameSpaceByClusterIdData}
+                                    >
+                                        {clusterData.map((item: IClusterOutputDto) => {
+                                            return (
+                                                <Select.Option value={item.id}>
+                                                    {item.name}
+                                                </Select.Option>
+                                            );
+                                        })}
+                                    </Select>
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span="12">
+                                <Form.Item
+                                    name="nameSpaceId"
+                                    label="命名空间："
+                                    rules={[{ required: true }]}>
+                                    <Select
+                                        allowClear={true}
+                                    >
+                                        {nameSpaceArrayData.map((item: INameSpaceOutputDto) => {
+                                            return (
+                                                <Select.Option value={item.id}>
+                                                    {item.name}
+                                                </Select.Option>
+                                            );
+                                        })}
+                                    </Select>
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                    </Card>
+                    <Card title="端口配置" size="default" bordered={false} >
+                        <Row>
+                            <Col span="24">
+                                <Form.List name="servicePorts">
+                                    {(fields, { add, remove }) => (
+                                        <>
+                                            {fields.map(({ key, name, ...restField }) => (
+                                                <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
+                                                    <Form.Item
+                                                        {...restField}
+                                                        name={[name, 'portType']}
+                                                        label="PortType："
+                                                    >
+                                                        <Input placeholder="请输入端口类型" />
+                                                    </Form.Item>
+                                                    <Form.Item
+                                                        {...restField}
+                                                        name={[name, 'portName']}
+                                                        label="PortName："
+                                                    >
+                                                        <Input placeholder="请输入PortName" />
+                                                    </Form.Item>
+                                                    <Form.Item
+                                                        {...restField}
+                                                        name={[name, 'sourcePort']}
+                                                        label="SourcePort："
+                                                    >
+                                                        <Input placeholder="请输入SourcePort" />
+                                                    </Form.Item>
+                                                    <Form.Item
+                                                        {...restField}
+                                                        name={[name, 'targetPort']}
+                                                        label="TargetPort："
+                                                    >
+                                                        <Input placeholder="请输入TargetPort" />
+                                                    </Form.Item>
+                                                    <MinusCircleOutlined onClick={() => remove(name)} />
+                                                </Space>
+                                            ))}
+                                            <Form.Item>
+                                                <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                                                    添加端口配置
+                                                </Button>
+                                            </Form.Item>
+                                        </>
+                                    )}
+                                </Form.List>
+                            </Col>
 
-                        <Col span="12">
-                            <Form.Item
-                                name="name"
-                                label="命名空间名称："
-                                rules={[{ required: true }]}>
-                                <Input />
-                            </Form.Item>
-                        </Col>
-                        <Col span="12">
-                            <Form.Item
-                                name="clusterId"
-                                label="绑定集群："
-                                rules={[{ required: true }]}>
-                                <Select
-                                    allowClear={true}
-                                    placeholder="绑定集群"
-                                >
-                                    {ImagePullPolicyTypeMap.map((item: any) => {
-                                        return (
-                                            <Select.Option value={item.key}>
-                                                {item.value}
-                                            </Select.Option>
-                                        );
-                                    })}
-                                </Select>
-                            </Form.Item>
-                        </Col>
-                    </Row>
+                        </Row>
+
+                    </Card>
                 </Form>
             </Drawer>
         </div>

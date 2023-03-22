@@ -6,6 +6,9 @@ import { INameSpaceService } from "./inamespace-service";
 import { NameSpaceApi } from "@/constans/api";
 
 export default class NameSpaceService extends BaseService implements INameSpaceService {
+    getNameSpaceByClusterIdList(_clusterId: string): Promise<IServerReturn<Array<INameSpaceOutputDto>>> {
+        return this.dataRequest.getRequest(`${NameSpaceApi.nameSpaces}/${_clusterId}/list`);
+    }
 
     createNameSpace(_params: INameSpaceInputDto): Promise<IServerReturn<any>> {
         return this.dataRequest.postRequest(`${NameSpaceApi.nameSpaces}`, _params);

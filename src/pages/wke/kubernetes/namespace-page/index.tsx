@@ -59,7 +59,7 @@ const NameSpacePage = (props: any) => {
             dataIndex: "clusterName",
         },
         {
-            title: "发布状态",
+            title: "是否发布",
             dataIndex: "id",
             key: "id",
             render: (text: any, record: INameSpaceOutputDto) => {

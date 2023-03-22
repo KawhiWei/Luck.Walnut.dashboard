@@ -19,11 +19,13 @@ import { IInitContainerService } from "@/domain/init-container-configurations/ii
 import { IMatterService } from "@/domain/matters/imatter-service";
 import { INameSpaceService } from "@/domain/kubernetes/namespaces/inamespace-service";
 import { IProjectService } from "@/domain/projects/iproject-service";
+import { IServiceService } from "@/domain/kubernetes/services/iservice-service";
 import InitContainerService from "@/domain/init-container-configurations/init-container-service";
 import { IocTypes } from "./ioc-types"
 import { MatterService } from "@/domain/matters/matter-service";
 import NameSpaceService from "@/domain/kubernetes/namespaces/namespace-service";
 import { ProjectService } from "@/domain/projects/project-service";
+import ServiceService from "@/domain/kubernetes/services/service-service";
 
 const container = new Container();
 container.bind<IApplicationService>(IocTypes.ApplicationService).to(ApplicationService);
@@ -38,6 +40,8 @@ container.bind<IClusterService>(IocTypes.ClusterService).to(ClusterService);
 container.bind<IDeploymentConfigurationService>(IocTypes.DeploymentConfigurationService).to(DeploymentConfigurationService);
 container.bind<IInitContainerService>(IocTypes.InitContainerService).to(InitContainerService);
 container.bind<INameSpaceService>(IocTypes.NameSpaceService).to(NameSpaceService);
+container.bind<IServiceService>(IocTypes.ServiceService).to(ServiceService);
+
 
 
 

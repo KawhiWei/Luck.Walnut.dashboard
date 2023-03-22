@@ -51,11 +51,12 @@ const validateMessages = {
     },
 };
 const Operation = (props: IProp) => {
+    const [clusterData, setClusterData] = useState<Array<IClusterOutputDto>>([]);
     const _nameSpaceService: INameSpaceService = useHookProvider(IocTypes.NameSpaceService);
     const [operationState, setOperationState] = useState<IOperationConfig>({
         visible: false,
     });
-    
+
     const _clusterService: IClusterService = useHookProvider(IocTypes.ClusterService);
     const [loading, setLoading] = useState<boolean>(false);
     const [nameSpace, setNameSpace] = useState<INameSpaceInputDto>({
@@ -64,7 +65,7 @@ const Operation = (props: IProp) => {
         clusterId: '',
         isPublish: false
     });
-    const [TABLE, setClusterData] = useState<Array<IClusterOutputDto>>();
+
     const [nameSpaceFormData] = Form.useForm();
 
     /**
@@ -248,7 +249,7 @@ const Operation = (props: IProp) => {
                         <Col span="12">
                             <Form.Item
                                 name="name"
-                                label="命名空间名称："
+                                label="NameSpace："
                                 rules={[{ required: true }]}>
                                 <Input />
                             </Form.Item>
@@ -262,7 +263,13 @@ const Operation = (props: IProp) => {
                                     allowClear={true}
                                     placeholder="绑定集群"
                                 >
-                                   
+                                    {clusterData.map((item: IClusterOutputDto) => {
+                                        return (
+                                            <Select.Option value={item.id}>
+                                                {item.name}
+                                            </Select.Option>
+                                        );
+                                    })}
                                 </Select>
                             </Form.Item>
                         </Col>
