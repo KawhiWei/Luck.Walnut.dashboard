@@ -39,6 +39,10 @@ interface IProp {
      * 操作类型
      */
     operationType: OperationTypeEnum;
+    /**
+     * 应用Id
+     */
+    appId: string;
 
 }
 
@@ -60,6 +64,7 @@ const Operation = (props: IProp) => {
         deploymentId: '',
         nameSpaceId: "",
         clusterId: "",
+        appId: props.appId,
         servicePorts: []
     });
     const [serviceFormData] = Form.useForm();
@@ -121,10 +126,7 @@ const Operation = (props: IProp) => {
        */
     const onFinish = () => {
         serviceFormData.validateFields().then((_params: IServiceInputDto) => {
-
             console.log(_params)
-            return;
-            
             _params.deploymentId = "as";
             switch (props.operationType) {
                 case OperationTypeEnum.add:
@@ -352,9 +354,7 @@ const Operation = (props: IProp) => {
                                     )}
                                 </Form.List>
                             </Col>
-
                         </Row>
-
                     </Card>
                 </Form>
             </Drawer>

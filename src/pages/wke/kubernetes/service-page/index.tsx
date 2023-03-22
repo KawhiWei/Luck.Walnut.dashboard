@@ -33,7 +33,15 @@ import { OperationTypeEnum } from "@/shared/operation/operationType";
 import { searchFormItemDoubleRankLayout } from "@/constans/layout/optionlayout";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
-const ServicePage = (props: any) => {
+interface IProp {
+    /**
+     * 应用Id
+     */
+    appId: string;
+
+
+}
+const ServicePage = (props: IProp) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [formData] = Form.useForm();
     const [tableData, setTableData] = useState<Array<IServiceOutputDto>>();
@@ -157,14 +165,14 @@ const ServicePage = (props: any) => {
         })
     }
     const addChange = () => {
-        setOperationElement(<Operation operationType={OperationTypeEnum.add} onCallbackEvent={clearElement}></Operation>)
+        setOperationElement(<Operation operationType={OperationTypeEnum.add}  appId={props.appId} onCallbackEvent={clearElement}></Operation>)
     }
 
     /***
      * 修改一个配置
      */
     const editRow = (_id: string) => {
-        setOperationElement(<Operation operationType={OperationTypeEnum.edit} id={_id} onCallbackEvent={clearElement}></Operation>)
+        setOperationElement(<Operation operationType={OperationTypeEnum.edit} id={_id}  appId={props.appId} onCallbackEvent={clearElement}></Operation>)
     }
 
     const deleteRow = (_id: string) => {

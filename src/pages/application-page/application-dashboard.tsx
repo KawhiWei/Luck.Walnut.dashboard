@@ -103,6 +103,11 @@ const ApplicationDashboard = (props: any) => {
                     key: "3",
                     children: <DeploymentConfigurationPage appId={appId} />,
                   },
+                  {
+                    label: `Service`,
+                    key: "4",
+                    children: <DeploymentConfigurationPage appId={appId} />,
+                  },
                 ]}
               ></Tabs>
             </Card>

@@ -20,6 +20,11 @@ export interface IServiceBase {
      * 
      */
     clusterId: string,
+
+    /**
+     * 应用Id
+     */
+    appId: string,
     /**
      * 
      */
