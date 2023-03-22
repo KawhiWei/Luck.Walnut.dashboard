@@ -14,3 +14,25 @@ yarn-error.log*
 .npm/
 yarn.lock
 .eslintcache
+
+/coverage
+.idea
+yarn.lock
+package-lock.json
+*bak
+.vscode
+
+# visual studio code
+.history
+*.log
+functions/*
+.temp/**
+
+build
+
+# yarn
+.yarn/cache
+yarn.lock
+package-lock.json
+.yarn/install-state.gz
+.yarn/build-state.yml

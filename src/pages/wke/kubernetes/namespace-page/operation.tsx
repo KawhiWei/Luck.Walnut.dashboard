@@ -15,6 +15,8 @@ import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
 import { formItemDoubleRankLayout } from "@/constans/layout/optionlayout";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
+import { IClusterService } from "@/domain/kubernetes/clusters/icluster-service";
+import { IClusterOutputDto } from "@/domain/kubernetes/clusters/cluster-dto";
 
 // import "../description.less";
 
@@ -53,6 +55,8 @@ const Operation = (props: IProp) => {
     const [operationState, setOperationState] = useState<IOperationConfig>({
         visible: false,
     });
+    
+    const _clusterService: IClusterService = useHookProvider(IocTypes.ClusterService);
     const [loading, setLoading] = useState<boolean>(false);
     const [nameSpace, setNameSpace] = useState<INameSpaceInputDto>({
         chineseName: '',
@@ -60,6 +64,7 @@ const Operation = (props: IProp) => {
         clusterId: '',
         isPublish: false
     });
+    const [TABLE, setClusterData] = useState<Array<IClusterOutputDto>>();
     const [nameSpaceFormData] = Form.useForm();
 
     /**
@@ -76,6 +81,7 @@ const Operation = (props: IProp) => {
      * @param _id
      */
     const onLoad = () => {
+        onClusterList();
         switch (props.operationType) {
             case OperationTypeEnum.add:
                 nameSpaceFormData.setFieldsValue(nameSpace)
@@ -95,6 +101,17 @@ const Operation = (props: IProp) => {
             if (rep.success) {
                 nameSpaceFormData.setFieldsValue(rep.result);
                 editOperationState(true, "编辑");
+            } else {
+                message.error(rep.errorMessage, 3);
+            }
+        })
+
+    }
+    const onClusterList = () => {
+        _clusterService.getClusterList().then(rep => {
+            if (rep.success) {
+                setClusterData(rep.result)
+
             } else {
                 message.error(rep.errorMessage, 3);
             }
@@ -245,13 +262,7 @@ const Operation = (props: IProp) => {
                                     allowClear={true}
                                     placeholder="绑定集群"
                                 >
-                                    {ImagePullPolicyTypeMap.map((item: any) => {
-                                        return (
-                                            <Select.Option value={item.key}>
-                                                {item.value}
-                                            </Select.Option>
-                                        );
-                                    })}
+                                   
                                 </Select>
                             </Form.Item>
                         </Col>
