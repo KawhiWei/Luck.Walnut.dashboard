@@ -8,6 +8,7 @@ import { IApplicationService } from "@/domain/applications/iapplication-service"
 import { IocTypes } from "@/shared/config/ioc-types";
 import PipelinePage from "../application-pipeline-page/index";
 import RollbackOutlined from "@ant-design/icons";
+import ServicePage from "../wke/kubernetes/service-page";
 import { useHistory } from "react-router-dom";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
@@ -106,7 +107,7 @@ const ApplicationDashboard = (props: any) => {
                   {
                     label: `Service`,
                     key: "4",
-                    children: <DeploymentConfigurationPage appId={appId} />,
+                    children: <ServicePage appId={appId} />,
                   },
                 ]}
               ></Tabs>

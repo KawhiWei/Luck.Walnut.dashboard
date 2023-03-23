@@ -11,12 +11,15 @@ import { useEffect, useState } from "react";
 
 import { IClusterOutputDto } from "@/domain/kubernetes/clusters/cluster-dto";
 import { IClusterService } from "@/domain/kubernetes/clusters/icluster-service";
+import { IDeploymentConfigurationOutputDto } from "@/domain/deployment-configurations/deployment-configuration-dto";
+import { IDeploymentConfigurationService } from "@/domain/deployment-configurations/ideployment-configuration-service";
 import { INameSpaceService } from "@/domain/kubernetes/namespaces/inamespace-service";
 import { IOperationConfig } from "@/shared/operation/operationConfig";
 import { IServiceInputDto } from "@/domain/kubernetes/services/service-dto";
 import { IServiceService } from "@/domain/kubernetes/services/iservice-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
+import { PortTypeMap } from "@/domain/maps/port-type-map";
 import { formItemDoubleRankLayout } from "@/constans/layout/optionlayout";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
@@ -55,6 +58,9 @@ const Operation = (props: IProp) => {
     const [operationState, setOperationState] = useState<IOperationConfig>({
         visible: false,
     });
+    const [deploymentConfigurationData, setDeploymentConfigurationData] = useState<Array<IDeploymentConfigurationOutputDto>>([]);
+
+
     const [clusterData, setClusterData] = useState<Array<IClusterOutputDto>>([]);
     const [nameSpaceArrayData, setNameSpaceArrayData] = useState<Array<INameSpaceOutputDto>>([]);
     const _clusterService: IClusterService = useHookProvider(IocTypes.ClusterService);
@@ -68,7 +74,8 @@ const Operation = (props: IProp) => {
         servicePorts: []
     });
     const [serviceFormData] = Form.useForm();
-
+    const [servicePortsFormData] = Form.useForm();
+    const _deploymentConfigurationService: IDeploymentConfigurationService = useHookProvider(IocTypes.DeploymentConfigurationService);
     /**
      * 初始化加载事件
      */
@@ -83,10 +90,14 @@ const Operation = (props: IProp) => {
      * @param _id
      */
     const onLoad = () => {
-        onClusterList()
+        onClusterList();
+        onGetDeploymentConfigurationData();
         switch (props.operationType) {
             case OperationTypeEnum.add:
                 serviceFormData.setFieldsValue(service)
+                servicePortsFormData.setFieldsValue({
+                    servicePorts: []
+                })
                 editOperationState(true, "添加");
                 break;
             case OperationTypeEnum.edit:
@@ -114,6 +125,7 @@ const Operation = (props: IProp) => {
         _serviceService.getServiceDetail(_id).then(rep => {
             if (rep.success) {
                 serviceFormData.setFieldsValue(rep.result);
+                servicePortsFormData.setFieldsValue(rep.result)
                 editOperationState(true, "编辑");
             } else {
                 message.error(rep.errorMessage, 3);
@@ -126,8 +138,9 @@ const Operation = (props: IProp) => {
        */
     const onFinish = () => {
         serviceFormData.validateFields().then((_params: IServiceInputDto) => {
+            _params.servicePorts = servicePortsFormData.getFieldsValue().servicePorts;
+            _params.appId = props.appId;
             console.log(_params)
-            _params.deploymentId = "as";
             switch (props.operationType) {
                 case OperationTypeEnum.add:
                     onCreate(_params);
@@ -142,6 +155,18 @@ const Operation = (props: IProp) => {
             });
 
     };
+
+    const onGetDeploymentConfigurationData = () => {
+        _deploymentConfigurationService.getDeploymentConfigurationByAppIdList(props.appId).then(rep => {
+            if (rep.success) {
+                setDeploymentConfigurationData(rep.result)
+
+            } else {
+                message.error(rep.errorMessage, 3);
+            }
+        })
+    }
+
 
     /**
       * 查询命名空间根据集群Id
@@ -304,9 +329,35 @@ const Operation = (props: IProp) => {
                                     </Select>
                                 </Form.Item>
                             </Col>
+                            <Col span="12">
+                                <Form.Item
+                                    name="deploymentId"
+                                    label="部署："
+                                    rules={[{ required: true }]}>
+                                    <Select
+                                        allowClear={true}
+                                    >
+                                        {deploymentConfigurationData.map((item: IDeploymentConfigurationOutputDto) => {
+                                            return (
+                                                <Select.Option value={item.id}>
+                                                    {item.name}
+                                                </Select.Option>
+                                            );
+                                        })}
+                                    </Select>
+                                </Form.Item>
+                            </Col>
                         </Row>
                     </Card>
-                    <Card title="端口配置" size="default" bordered={false} >
+                </Form>
+                <Card title="端口配置" size="default" bordered={false} >
+                    <Form
+                        form={servicePortsFormData}
+                        name="nest-messages"
+                        layout="horizontal"
+                        onFinish={onFinish}
+                        validateMessages={validateMessages}
+                    >
                         <Row>
                             <Col span="24">
                                 <Form.List name="servicePorts">
@@ -318,8 +369,17 @@ const Operation = (props: IProp) => {
                                                         {...restField}
                                                         name={[name, 'portType']}
                                                         label="PortType："
+                                                    ><Select
+                                                        allowClear={true}
                                                     >
-                                                        <Input placeholder="请输入端口类型" />
+                                                            {PortTypeMap.map((item: any) => {
+                                                                return (
+                                                                    <Select.Option value={item.key}>
+                                                                        {item.value}
+                                                                    </Select.Option>
+                                                                );
+                                                            })}
+                                                        </Select>
                                                     </Form.Item>
                                                     <Form.Item
                                                         {...restField}
@@ -333,14 +393,14 @@ const Operation = (props: IProp) => {
                                                         name={[name, 'sourcePort']}
                                                         label="SourcePort："
                                                     >
-                                                        <Input placeholder="请输入SourcePort" />
+                                                        <InputNumber placeholder="请输入SourcePort" />
                                                     </Form.Item>
                                                     <Form.Item
                                                         {...restField}
                                                         name={[name, 'targetPort']}
                                                         label="TargetPort："
                                                     >
-                                                        <Input placeholder="请输入TargetPort" />
+                                                        <InputNumber placeholder="请输入TargetPort" />
                                                     </Form.Item>
                                                     <MinusCircleOutlined onClick={() => remove(name)} />
                                                 </Space>
@@ -355,8 +415,8 @@ const Operation = (props: IProp) => {
                                 </Form.List>
                             </Col>
                         </Row>
-                    </Card>
-                </Form>
+                    </Form>
+                </Card>
             </Drawer>
         </div>
     )

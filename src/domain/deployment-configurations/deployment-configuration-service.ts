@@ -60,6 +60,15 @@ export default class DeploymentConfigurationService extends BaseService implemen
     getDeploymentConfigurationDetail(_deploymentId: string, _masterContainerId: string): Promise<IServerReturn<IDeploymentOutputDto>> {
         return this.dataRequest.getRequest(`${DeploymentApi.deployments}/${_deploymentId}/${_masterContainerId}`)
     }
+    /**
+     * 根据应用Id获取部署列表
+     * @param _appId 
+     * @param _param 
+     * @returns 
+     */
+    getDeploymentConfigurationByAppIdList(_appId: string): Promise<IServerReturn<Array<IDeploymentConfigurationOutputDto>>> {
+        return this.dataRequest.getRequest(`${DeploymentApi.deployments}/${_appId}/list`);
+    }
 
 
 
