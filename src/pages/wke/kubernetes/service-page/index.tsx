@@ -55,16 +55,12 @@ const ServicePage = (props: IProp) => {
 
     const columns = [
         {
-            title: "中文名称",
+            title: "名称",
             dataIndex: "name",
         },
         {
             title: "NameSpace",
             dataIndex: "nameSpaceName",
-        },
-        {
-            title: "NameSpace中文名称",
-            dataIndex: "nameSpaceChineseName",
         },
         {
             title: "集群",
