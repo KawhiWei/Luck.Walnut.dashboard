@@ -154,7 +154,7 @@ const Operation = (props: IProp) => {
       * 查询命名空间根据集群Id
       */
     const onGetNameSpaceByClusterIdData = (_clusterId: string) => {
-        _nameSpaceService.getNameSpaceByClusterIdList(_clusterId).then(rep => {
+        _nameSpaceService.getNameSpaceList(_clusterId).then(rep => {
             if (rep.success) {
                 console.log(rep.result)
                 setNameSpaceArrayData(rep.result)

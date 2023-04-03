@@ -47,6 +47,6 @@ export interface INameSpaceService {
      * @param _param 
      * @returns 
      */
-    getNameSpaceByClusterIdList(_clusterId: string): Promise<IServerReturn<Array<INameSpaceOutputDto>>>;
+    getNameSpaceList(): Promise<IServerReturn<Array<INameSpaceOutputDto>>>;
 
 }
