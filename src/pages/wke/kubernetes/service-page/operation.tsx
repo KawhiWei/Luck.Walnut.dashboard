@@ -21,6 +21,7 @@ import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
 import { PortTypeMap } from "@/domain/maps/port-type-map";
 import { formItemDoubleRankLayout } from "@/constans/layout/optionlayout";
+import { id } from "inversify";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
 // import "../description.less";
@@ -166,7 +167,16 @@ const Operation = (props: IProp) => {
             }
         })
     }
-
+    /**
+      * 命名空间根据集群Id
+      */
+    const onChangeDeployment = (_id: string) => {
+        let deployment = deploymentConfigurationData.find(x => x.id == _id);
+        if (deployment) {
+            serviceFormData.setFieldValue("nameSpaceId", deployment.nameSpaceId)
+            serviceFormData.setFieldValue("clusterId", deployment.clusterId)
+        }
+    };
 
     /**
       * 查询命名空间根据集群Id
@@ -217,6 +227,7 @@ const Operation = (props: IProp) => {
             setLoading(false);
         });
     };
+
 
 
     /**
@@ -291,51 +302,12 @@ const Operation = (props: IProp) => {
                             </Col>
                             <Col span="12">
                                 <Form.Item
-                                    name="clusterId"
-                                    label="绑定集群："
-                                    rules={[{ required: true }]}>
-                                    <Select
-                                        allowClear={true}
-                                        placeholder="绑定集群"
-                                        onChange={onGetNameSpaceByClusterIdData}
-                                    >
-                                        {clusterData.map((item: IClusterOutputDto) => {
-                                            return (
-                                                <Select.Option value={item.id}>
-                                                    {item.name}
-                                                </Select.Option>
-                                            );
-                                        })}
-                                    </Select>
-                                </Form.Item>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span="12">
-                                <Form.Item
-                                    name="nameSpaceId"
-                                    label="命名空间："
-                                    rules={[{ required: true }]}>
-                                    <Select
-                                        allowClear={true}
-                                    >
-                                        {nameSpaceArrayData.map((item: INameSpaceOutputDto) => {
-                                            return (
-                                                <Select.Option value={item.id}>
-                                                    {item.name}
-                                                </Select.Option>
-                                            );
-                                        })}
-                                    </Select>
-                                </Form.Item>
-                            </Col>
-                            <Col span="12">
-                                <Form.Item
                                     name="deploymentId"
-                                    label="部署："
+                                    label="选择部署："
                                     rules={[{ required: true }]}>
                                     <Select
                                         allowClear={true}
+                                        onChange={onChangeDeployment}
                                     >
                                         {deploymentConfigurationData.map((item: IDeploymentConfigurationOutputDto) => {
                                             return (
@@ -364,14 +336,16 @@ const Operation = (props: IProp) => {
                                     {(fields, { add, remove }) => (
                                         <>
                                             {fields.map(({ key, name, ...restField }) => (
-                                                <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
+                                                <Space key={key} style={{ display: 'flex', marginBottom: 8, justifyContent: 'space-between' }} align="baseline">
                                                     <Form.Item
                                                         {...restField}
                                                         name={[name, 'portType']}
                                                         label="PortType："
-                                                    ><Select
-                                                        allowClear={true}
                                                     >
+                                                        <Select
+                                                            allowClear={true}
+                                                            style={{ width: 180 }}
+                                                        >
                                                             {PortTypeMap.map((item: any) => {
                                                                 return (
                                                                     <Select.Option value={item.key}>
@@ -386,21 +360,28 @@ const Operation = (props: IProp) => {
                                                         name={[name, 'portName']}
                                                         label="PortName："
                                                     >
-                                                        <Input placeholder="请输入PortName" />
+                                                        <Input
+                                                            allowClear={true}
+                                                            style={{ width: 180 }}
+                                                            placeholder="请输入PortName" />
                                                     </Form.Item>
                                                     <Form.Item
                                                         {...restField}
                                                         name={[name, 'sourcePort']}
                                                         label="SourcePort："
                                                     >
-                                                        <InputNumber placeholder="请输入SourcePort" />
+                                                        <InputNumber
+                                                            style={{ width: 180 }}
+                                                            placeholder="请输入SourcePort" />
                                                     </Form.Item>
                                                     <Form.Item
                                                         {...restField}
                                                         name={[name, 'targetPort']}
                                                         label="TargetPort："
                                                     >
-                                                        <InputNumber placeholder="请输入TargetPort" />
+                                                        <InputNumber
+                                                            style={{ width: 180 }}
+                                                            placeholder="请输入TargetPort" />
                                                     </Form.Item>
                                                     <MinusCircleOutlined onClick={() => remove(name)} />
                                                 </Space>
