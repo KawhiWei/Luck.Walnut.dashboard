@@ -20,6 +20,7 @@ import { IServiceService } from "@/domain/kubernetes/services/iservice-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
 import { PortTypeMap } from "@/domain/maps/port-type-map";
+import { cwd } from "process";
 import { formItemDoubleRankLayout } from "@/constans/layout/optionlayout";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
@@ -134,26 +135,14 @@ const Operation = (props: IProp) => {
 
     }
     /**
-       * 底部栏OK事件
+       * 选择部署时触发
        */
-    const onFinish = () => {
-        serviceFormData.validateFields().then((_params: IServiceInputDto) => {
-            _params.servicePorts = servicePortsFormData.getFieldsValue().servicePorts;
-            _params.appId = props.appId;
-            console.log(_params)
-            switch (props.operationType) {
-                case OperationTypeEnum.add:
-                    onCreate(_params);
-                    break;
-                case OperationTypeEnum.edit:
-                    props.id && onUpdate(props.id, _params);
-                    break;
-            }
-        })
-            .catch((error) => {
-                console.log(error)
-            });
-
+    const onChangeDeployment = (_deploymentId:string) => {
+        let deployment=deploymentConfigurationData.find(x=>x.id==_deploymentId)
+        if(deployment){
+            serviceFormData.setFieldValue("clusterId",deployment.clusterId)
+            serviceFormData.setFieldValue("nameSpaceId",deployment.nameSpaceId)
+        }
     };
 
     const onGetDeploymentConfigurationData = () => {
@@ -166,22 +155,6 @@ const Operation = (props: IProp) => {
             }
         })
     }
-
-
-    /**
-      * 查询命名空间根据集群Id
-      */
-    const onGetNameSpaceByClusterIdData = (_clusterId: string) => {
-        _nameSpaceService.getNameSpaceByClusterIdList(_clusterId).then(rep => {
-            if (rep.success) {
-                setNameSpaceArrayData(rep.result)
-
-            } else {
-                message.error(rep.errorMessage, 3);
-            }
-        })
-
-    };
 
     /**
      * 弹框取消事件
@@ -218,6 +191,28 @@ const Operation = (props: IProp) => {
         });
     };
 
+    /**
+   * 底部栏OK事件
+   */
+    const onFinish = () => {
+        serviceFormData.validateFields().then((_params: IServiceInputDto) => {
+            _params.servicePorts = servicePortsFormData.getFieldsValue().servicePorts;
+            _params.appId = props.appId;
+            console.log(_params)
+            switch (props.operationType) {
+                case OperationTypeEnum.add:
+                    onCreate(_params);
+                    break;
+                case OperationTypeEnum.edit:
+                    props.id && onUpdate(props.id, _params);
+                    break;
+            }
+        })
+            .catch((error) => {
+                console.log(error)
+            });
+
+    };
 
     /**
      * 弹框取消事件
@@ -289,17 +284,18 @@ const Operation = (props: IProp) => {
                                     <Input />
                                 </Form.Item>
                             </Col>
+
+
                             <Col span="12">
                                 <Form.Item
-                                    name="clusterId"
-                                    label="绑定集群："
+                                    name="deploymentId"
+                                    label="选择部署："
                                     rules={[{ required: true }]}>
                                     <Select
                                         allowClear={true}
-                                        placeholder="绑定集群"
-                                        onChange={onGetNameSpaceByClusterIdData}
+                                        onChange={onChangeDeployment}
                                     >
-                                        {clusterData.map((item: IClusterOutputDto) => {
+                                        {deploymentConfigurationData.map((item: IDeploymentConfigurationOutputDto) => {
                                             return (
                                                 <Select.Option value={item.id}>
                                                     {item.name}
@@ -313,13 +309,15 @@ const Operation = (props: IProp) => {
                         <Row>
                             <Col span="12">
                                 <Form.Item
-                                    name="nameSpaceId"
-                                    label="命名空间："
+                                    name="clusterId"
+                                    label="绑定集群："
                                     rules={[{ required: true }]}>
                                     <Select
                                         allowClear={true}
+                                        placeholder="绑定集群"
+                                        disabled
                                     >
-                                        {nameSpaceArrayData.map((item: INameSpaceOutputDto) => {
+                                        {clusterData.map((item: IClusterOutputDto) => {
                                             return (
                                                 <Select.Option value={item.id}>
                                                     {item.name}
@@ -331,13 +329,14 @@ const Operation = (props: IProp) => {
                             </Col>
                             <Col span="12">
                                 <Form.Item
-                                    name="deploymentId"
-                                    label="部署："
+                                    name="nameSpaceId"
+                                    label="命名空间："
                                     rules={[{ required: true }]}>
                                     <Select
                                         allowClear={true}
+                                        disabled
                                     >
-                                        {deploymentConfigurationData.map((item: IDeploymentConfigurationOutputDto) => {
+                                        {nameSpaceArrayData.map((item: INameSpaceOutputDto) => {
                                             return (
                                                 <Select.Option value={item.id}>
                                                     {item.name}
@@ -347,6 +346,7 @@ const Operation = (props: IProp) => {
                                     </Select>
                                 </Form.Item>
                             </Col>
+
                         </Row>
                     </Card>
                 </Form>

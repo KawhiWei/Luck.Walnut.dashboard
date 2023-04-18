@@ -121,6 +121,7 @@ const Operation = (props: IProp) => {
     const onLoad = () => {
         onGetInitContainerList();
         onClusterList();
+        onGetNameSpaceByClusterIdData();
         switch (props.operationType) {
             case OperationTypeEnum.add:
                 deploymentConfigurationFormData.setFieldsValue(deploymentConfigurationData)
@@ -153,8 +154,8 @@ const Operation = (props: IProp) => {
     /**
       * 查询命名空间根据集群Id
       */
-    const onGetNameSpaceByClusterIdData = (_clusterId: string) => {
-        _nameSpaceService.getNameSpaceList(_clusterId).then(rep => {
+    const onGetNameSpaceByClusterIdData = () => {
+        _nameSpaceService.getNameSpaceList().then(rep => {
             if (rep.success) {
                 console.log(rep.result)
                 setNameSpaceArrayData(rep.result)
@@ -184,7 +185,6 @@ const Operation = (props: IProp) => {
             if (rep.success) {
                 deploymentConfigurationFormData.setFieldsValue(rep.result.deploymentConfiguration);
                 masterContainerConfigurationFormData.setFieldsValue(rep.result.masterContainerConfiguration)
-                rep.result.deploymentConfiguration && onGetNameSpaceByClusterIdData(rep.result.deploymentConfiguration.clusterId)
                 editOperationState(true, "编辑");
             } else {
                 message.error(rep.errorMessage, 3);
