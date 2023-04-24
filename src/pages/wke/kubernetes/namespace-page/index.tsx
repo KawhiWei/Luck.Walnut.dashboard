@@ -12,6 +12,7 @@ import {
     message
 } from "antd";
 import {
+    CloudDownloadOutlined,
     CloudUploadOutlined,
     DeleteOutlined,
     EditOutlined,
@@ -79,14 +80,20 @@ const NameSpacePage = (props: any) => {
                     <div className="table-operation">
                         <Tooltip placement="top" title="编辑">
                             <EditOutlined
-                                style={{ color: "orange", marginRight: 10, fontSize: 16 }}
+                                style={{ color: "orange", marginRight: 20, fontSize: 16 }}
                                 onClick={() => editRow(record.id)} />
                         </Tooltip>
                         <Tooltip placement="top" title="发布">
                             <CloudUploadOutlined
-                                style={{ color: "#1677ff", marginRight: 10, fontSize: 16 }}
+                                style={{ color: "#1677ff", marginRight: 20, fontSize: 16 }}
                                 onClick={() => publishNameSpace(record.id)} />
                         </Tooltip>
+                        <Tooltip placement="top" title="下线">
+                            <CloudDownloadOutlined
+                                style={{ color: "orange", marginRight: 20, fontSize: 16 }}
+                                onClick={() => publishNameSpace(record.id)} />
+                        </Tooltip>
+
                         <Tooltip placement="top" title="删除">
                             <Popconfirm
                                 placement="top"
