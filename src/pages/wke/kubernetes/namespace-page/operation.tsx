@@ -237,25 +237,6 @@ const Operation = (props: IProp) => {
                     <Row>
                         <Col span="12">
                             <Form.Item
-                                name="chineseName"
-                                label="中文名称："
-                                rules={[{ required: true }]}>
-                                <Input />
-                            </Form.Item>
-                        </Col>
-                    </Row>
-                    <Row>
-
-                        <Col span="12">
-                            <Form.Item
-                                name="name"
-                                label="NameSpace："
-                                rules={[{ required: true }]}>
-                                <Input />
-                            </Form.Item>
-                        </Col>
-                        <Col span="12">
-                            <Form.Item
                                 name="clusterId"
                                 label="绑定集群："
                                 rules={[{ required: true }]}>
@@ -273,6 +254,26 @@ const Operation = (props: IProp) => {
                                 </Select>
                             </Form.Item>
                         </Col>
+
+                    </Row>
+                    <Row>
+                        <Col span="12">
+                            <Form.Item
+                                name="chineseName"
+                                label="中文名称："
+                                rules={[{ required: true }]}>
+                                <Input />
+                            </Form.Item>
+                        </Col>
+                        <Col span="12">
+                            <Form.Item
+                                name="name"
+                                label="NameSpace："
+                                rules={[{ required: true }]}>
+                                <Input />
+                            </Form.Item>
+                        </Col>
+
                     </Row>
                 </Form>
             </Drawer>

@@ -29,14 +29,6 @@ export interface IDeploymentConfigurationService {
     getDeploymentConfigurationDetail(_deploymentId: string, _masterContainerId: string): Promise<IServerReturn<IDeploymentOutputDto>>;
 
     /**
-     * 修改部署
-     * @param _params 
-     * @returns 
-     */
-    updateDeploymentConfiguration(_id: string, _params: IDeploymentConfigurationDto): Promise<IServerReturn<any>>;
-
-
-    /**
      * 
      * @param _deploymentId 
      * @param _masterContainerId 

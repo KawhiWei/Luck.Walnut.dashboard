@@ -39,14 +39,6 @@ export default class DeploymentConfigurationService extends BaseService implemen
      * @param _params 
      * @returns 
      */
-    updateDeploymentConfiguration(_id: string, _params: IDeploymentConfigurationDto): Promise<IServerReturn<any>> {
-        return this.dataRequest.putRequest(`${DeploymentApi.deployments}/${_id}`, _params)
-    }
-    /**
-     * 修改部署
-     * @param _params 
-     * @returns 
-     */
     updateDeployment(_deploymentId: string, _masterContainerId: string, _params: IDeploymentInputDto): Promise<IServerReturn<any>> {
         return this.dataRequest.putRequest(`${DeploymentApi.deployments}/${_deploymentId}/${_masterContainerId}`, _params)
     }

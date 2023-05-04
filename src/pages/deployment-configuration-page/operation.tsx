@@ -92,9 +92,8 @@ const Operation = (props: IProp) => {
         appId: "",
         nameSpaceId: "",
         replicas: 1,
-        maxUnavailable: 0,
         imagePullSecretId: "",
-        initContainers: [],
+        sideCarPlugins: [],
         clusterId: ""
     });
     const [masterContainerConfiguration, setMasterContainerConfiguration] = useState<IMasterContainerConfigurationInputDto>({
@@ -434,8 +433,8 @@ const Operation = (props: IProp) => {
                             </Col>
                             <Col span="12">
                                 <Form.Item
-                                    name="initContainers"
-                                    label="初始容器："
+                                    name="sideCarPlugins"
+                                    label="SideCar插件："
                                 >
                                     <Select allowClear={true}
                                         mode="multiple"
@@ -461,13 +460,37 @@ const Operation = (props: IProp) => {
                                     <InputNumber />
                                 </Form.Item>
                             </Col>
+                        </Row>
+                        <Row>
                             <Col span="12">
                                 <Form.Item
-                                    name="maxUnavailable"
-                                    label="最大不可用："
-                                    rules={[{ required: true }]}
+                                    name={["strategy", "type"]}
+                                    label="更新策略类型："
                                 >
-                                    <InputNumber />
+                                    <Select allowClear={true}
+                                        placeholder="请选择更新策略类型">
+                                        <Select.Option value="Recreate">Recreate</Select.Option>
+                                        <Select.Option value="RollingUpdate">RollingUpdate</Select.Option>
+
+                                    </Select>
+                                </Form.Item>
+                            </Col>
+                            <Col span="12">
+                                <Form.Item
+                                    name={["strategy", "maxUnavailable"]}
+                                    label="最大不可用："
+
+                                >
+                                    <Input />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span="12">
+                                <Form.Item
+                                    name={["strategy", "maxSurge"]}
+                                    label="可调度数量：">
+                                    <Input />
                                 </Form.Item>
                             </Col>
                         </Row>

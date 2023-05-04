@@ -41,9 +41,9 @@ export interface IDeploymentConfigurationBaseDto {
      */
     replicas: number;
     /**
-     * 最大不可用
+     * 部署更新策略
      */
-    maxUnavailable: number;
+    strategy?: IStrategyDto;
     /**
      * 镜像拉取证书
      */
@@ -52,8 +52,28 @@ export interface IDeploymentConfigurationBaseDto {
     /**
      * 绑定初始容器
      */
-    initContainers: Array<string>;
+    sideCarPlugins: Array<string>;
 }
+
+
+export interface IStrategyDto {
+
+    /**
+     * 镜像拉取证书
+     */
+    type: string;
+
+    /**
+    * 镜像拉取证书
+    */
+    maxSurge: string;
+
+    /**
+     * 镜像拉取证书
+     */
+    maxUnavailable: string;
+}
+
 /**
  * DeploymentConfiguration输入Dto
  */
@@ -68,11 +88,17 @@ export interface IDeploymentConfigurationOutputDto extends IDeploymentConfigurat
      */
     masterContainerId: string;
 
+    /**
+     * 
+     */
     clusterName: string;
 
+    /**
+     * 
+     */
     nameSpaceName: string;
 
-    
+
 }
 
 /**
