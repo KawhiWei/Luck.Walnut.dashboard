@@ -103,6 +103,7 @@ const Operation = (props: IProp) => {
                 appId={props.appId}
                 operationType={props.operationType}
                 pipelineInfo={rep.result}
+                onCallbackEvent={onCancel}
               ></PipelineStage>
             );
           }
@@ -115,6 +116,7 @@ const Operation = (props: IProp) => {
         <PipelineStage
           appId={props.appId}
           operationType={props.operationType}
+          onCallbackEvent={onCancel}
         ></PipelineStage>
       );
     }
@@ -139,25 +141,25 @@ const Operation = (props: IProp) => {
           </div>
         }
         open={operationState.visible}
-        footer={
-          <Space style={{ float: "right" }}>
-            <Button
-              shape="round"
-              disabled={loading}
-              onClick={() => onCancel()}
-            >
-              取消
-            </Button>
-            <Button
-              shape="round"
-              style={{ margin: "0 8px" }}
-              type="primary"
-              loading={loading}
-              htmlType="submit"
-            >
-              保存
-            </Button>
-          </Space>}
+        // footer={
+        //   <Space style={{ float: "right" }}>
+        //     <Button
+        //       shape="round"
+        //       disabled={loading}
+        //       onClick={() => onCancel()}
+        //     >
+        //       取消
+        //     </Button>
+        //     <Button
+        //       shape="round"
+        //       style={{ margin: "0 8px" }}
+        //       type="primary"
+        //       loading={loading}
+        //       htmlType="submit"
+        //     >
+        //       保存
+        //     </Button>
+        //   </Space>}
       >{pipelineStageElement}</Drawer>
     </div>
   );

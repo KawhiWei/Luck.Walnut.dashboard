@@ -34,4 +34,8 @@ export class BuildImageService extends BaseService implements IBuildImageService
     getDetail(_id:string): Promise<IServerReturn<any>> {
         return this.dataRequest.getRequest(`${BuildImageApi.buildImage}/${_id}`)
     }
+
+    getImageList(): Promise<IServerReturn<Array<IBuildImageOutputDto>>>{
+        return this.dataRequest.getRequest(`${BuildImageApi.buildImage}`);
+    }
 }

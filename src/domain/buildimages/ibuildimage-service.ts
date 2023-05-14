@@ -9,4 +9,5 @@ export interface IBuildImageService {
     addBuildImage(_param:any) : Promise<IServerReturn<any>>;
     update(_id: string, _param: any): Promise<IServerReturn<any>>;
     getDetail(_id:string): Promise<IServerReturn<any>>;
+    getImageList(): Promise<IServerReturn<Array<IBuildImageOutputDto>>>;
 }

@@ -31,6 +31,7 @@ import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
 import TextArea from "antd/lib/input/TextArea";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
+import { IBuildImageService } from "@/domain/buildimages/ibuildimage-service";
 
 interface IProp {
   /**
@@ -80,12 +81,16 @@ const Operation = (props: IProp) => {
   const projectArray = props.projectArray;
   const [languageArray, setLanguageArray] = useState<Array<any>>([]);
   const [placement, setPlacement] = useState<DrawerProps['placement']>('top');
+
+  const _buildImageService: IBuildImageService = useHookProvider(IocTypes.BuildImageService);
+  const [imageList, setImageList] = useState<Array<any>>([]);
   /**
    * 页面初始化事件
    */
   useEffect(() => {
     onLoad();
     getLanguageList();
+    getImageList();
   }, [formData]);
 
   /**
@@ -103,6 +108,18 @@ const Operation = (props: IProp) => {
       }
     });
   };
+
+  /**
+   * 获取镜像下拉
+   */
+  const getImageList = () =>{
+    _buildImageService.getImageList().then((rep) => {
+      if(rep.success){
+        setImageList(rep.result);
+        console.log(rep)
+      }
+    })
+  }
 
   /**
    * 编辑获取一个表单
@@ -382,6 +399,17 @@ const Operation = (props: IProp) => {
                 label="基础构建镜像："
                 rules={[{ required: true }]}
               >
+                <Select
+                  style={{ width:180}}
+                  allowClear={true}
+                  placeholder="请选择基础构建镜像"
+                >
+                  {imageList.map((item:any) => {
+                    return (<Select.Option value={item.id}>
+                      {item.name}
+                    </Select.Option>)
+                  })}
+                </Select>
               </Form.Item>
             </Col>
             <Col span="12">
@@ -396,7 +424,7 @@ const Operation = (props: IProp) => {
                   {props.componentIntegrationArray.map((item: any) => {
                     return (
                       <Select.Option value={item.id}>
-                        {item.componentCategoryName}
+                        {item.name}
                       </Select.Option>
                     );
                   })}

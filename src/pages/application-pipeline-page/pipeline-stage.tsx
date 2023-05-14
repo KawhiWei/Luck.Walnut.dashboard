@@ -1,4 +1,4 @@
-import { Button, Card, Col, Row } from "antd";
+import { Button, Card, Col, Row, Drawer } from "antd";
 import {
   CheckCircleFilled,
   CloseOutlined,
@@ -28,6 +28,11 @@ import { StepTypeEnum } from "@/domain/applicationpipelines/applicationpipeline-
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
 interface IProp {
+/**
+   * 操作成功回调事件
+   */
+ onCallbackEvent?: any;
+
   /**
    * 操作类型
    */
@@ -118,6 +123,7 @@ const PipelineStage = (props: IProp) => {
    */
   const clearStageOperationElement = () => {
     setStageOperationElement(null);
+    props.onCallbackEvent && props.onCallbackEvent  
   };
 
   /**
@@ -273,22 +279,6 @@ const PipelineStage = (props: IProp) => {
 
   return (
     <div>
-      <Row>
-        <Col span="24" style={{ textAlign: "right", minWidth: 270 }}>
-          <Button
-            shape="round"
-            type="primary"
-            style={{ margin: "8px 8px" }}
-            onClick={() => {
-              onSave();
-            }}
-          >
-            <PlusOutlined />
-            保存流水线
-          </Button>
-        </Col>
-      </Row>
-
       <Row gutter={16} wrap={false}>
         {stageList.map((stage: IStageDto, index) => {
           return (
@@ -377,8 +367,23 @@ const PipelineStage = (props: IProp) => {
           </Card>
         </Col>
       </Row>
+      <Row>
+        <Col span="24" style={{ textAlign: "right", minWidth: 270 }}>
+          <Button
+            shape="round"
+            type="primary"
+            style={{ margin: "8px 8px" }}
+            onClick={() => {
+              onSave();
+            }}
+          >
+            保存流水线
+          </Button>
+        </Col>
+      </Row>
       {stageOperationElement}
       {stepOperationElement}
+      
     </div>
   );
 };

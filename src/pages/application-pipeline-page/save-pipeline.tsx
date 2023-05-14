@@ -153,13 +153,7 @@ const SavePipeLine = (props: IProp) => {
                 message.error(rep.errorMessage, 3);
               } else {
                 message.success("保存成功", 3);
-                history.push({
-                  pathname: "/application/dashboard",
-                  state: {
-                    defaultActiveKey: "2",
-                    appId: props.appId,
-                  },
-                });
+                props.onCallbackEvent && props.onCallbackEvent;
               }
             })
             .finally(() => {
@@ -187,17 +181,13 @@ const SavePipeLine = (props: IProp) => {
               message.error(rep.errorMessage, 3);
             } else {
               message.success("保存成功", 3);
-              history.push({
-                pathname: "/application/dashboard",
-                state: {
-                  defaultActiveKey: "2",
-                  appId: props.appId,
-                },
-              });
+              
+              props.onCallbackEvent && props.onCallbackEvent;
             }
           })
           .finally(() => {
             setLoading(false);
+
           });
         break;
     }
