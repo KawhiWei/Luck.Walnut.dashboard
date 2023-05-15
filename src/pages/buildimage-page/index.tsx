@@ -11,6 +11,7 @@ import { IocTypes } from "@/shared/config/ioc-types";
 import Operation from "./operation";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
+import BulidImageVersion from "./bulidimage-version";
 
 const BuildImagePage = () => {
 
@@ -22,6 +23,7 @@ const BuildImagePage = () => {
         IocTypes.BuildImageService
     );
     const [subOperationElement, setOperationElement] = useState<any>(null);
+    const [subBulidImageVersionElement, setBulidImageVersionElement] = useState<any>(null);
     const columns = [
         {
             title: "名称",
@@ -49,6 +51,12 @@ const BuildImagePage = () => {
                             <EyeOutlined
                                 style={{ color: "#108ee9", marginRight: 10, fontSize: 16 }}
                                 onClick={() => details(record.id)}
+                            />
+                            </Tooltip>
+                            <Tooltip placement="top" title="添加版本">
+                            <PlusOutlined
+                                style={{ color: "#108ee9", marginRight: 10, fontSize: 16 }}
+                                onClick={() => addVersion(record.id,record.name)}
                             />
                             </Tooltip>
                         <Tooltip placement="top" title="编辑">
@@ -161,6 +169,7 @@ const BuildImagePage = () => {
 
     const clearElement = () => {
         setOperationElement(null);
+        setBulidImageVersionElement(null);
         getPageList();
     }
 
@@ -171,6 +180,15 @@ const BuildImagePage = () => {
                 operationType={OperationTypeEnum.view}
                 id={_id}
             />)
+    }
+
+    const addVersion = (_id:string, _name:string) => {
+        setBulidImageVersionElement(<BulidImageVersion
+            operationType={OperationTypeEnum.add}
+            buildImageId={_id}
+            buildImageName={_name}
+            onCallbackEvent={clearElement}
+        />);
     }
     return (
         <div>
@@ -218,6 +236,7 @@ const BuildImagePage = () => {
                     </Col>
                 </Row>
                 {subOperationElement}
+                {subBulidImageVersionElement}
             </Spin>
         </div>
     )

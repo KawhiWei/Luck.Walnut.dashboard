@@ -38,4 +38,13 @@ export class BuildImageService extends BaseService implements IBuildImageService
     getImageList(): Promise<IServerReturn<Array<IBuildImageOutputDto>>>{
         return this.dataRequest.getRequest(`${BuildImageApi.buildImage}`);
     }
+
+    /**
+     * 
+     * @param _param 添加镜像版本
+     * @returns 
+     */
+    addBulidImageVersion(_param:any): Promise<IServerReturn<any>>{
+        return this.dataRequest.postRequest(`${BuildImageApi.buildImage}/CareatBuildImageVersion`, _param);
+    }
 }
