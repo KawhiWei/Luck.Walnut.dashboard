@@ -118,7 +118,6 @@ const SavePipeLine = (props: IProp) => {
       });
   };
 
-  const history = useHistory();
   /**
    * 修改弹框属性
    * @param _visible
@@ -153,19 +152,15 @@ const SavePipeLine = (props: IProp) => {
                 message.error(rep.errorMessage, 3);
               } else {
                 message.success("保存成功", 3);
-                props.onCallbackEvent && props.onCallbackEvent;
               }
             })
             .finally(() => {
               setLoading(false);
+              onCancel();
             });
         }
         break;
       case OperationTypeEnum.edit:
-        // var data = {...props.pipelineInfo, componentIntegrationId:form.componentIntegrationId};
-        // data.name = form.name;
-        // data.pipelineScript = props.stageList;
-
         var data = {
           appId: props.pipelineInfo?.appId,
           appEnvironmentId: "string",
@@ -181,13 +176,11 @@ const SavePipeLine = (props: IProp) => {
               message.error(rep.errorMessage, 3);
             } else {
               message.success("保存成功", 3);
-              
-              props.onCallbackEvent && props.onCallbackEvent;
             }
           })
           .finally(() => {
             setLoading(false);
-
+            onCancel();
           });
         break;
     }

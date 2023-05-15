@@ -1,4 +1,4 @@
-import { Button, Card, Col, Row, Drawer } from "antd";
+import { Button, Card, Col, Drawer, Row } from "antd";
 import {
   CheckCircleFilled,
   CloseOutlined,
@@ -28,10 +28,10 @@ import { StepTypeEnum } from "@/domain/applicationpipelines/applicationpipeline-
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
 interface IProp {
-/**
-   * 操作成功回调事件
-   */
- onCallbackEvent?: any;
+  /**
+     * 操作成功回调事件
+     */
+  onCallbackEvent?: any;
 
   /**
    * 操作类型
@@ -123,7 +123,7 @@ const PipelineStage = (props: IProp) => {
    */
   const clearStageOperationElement = () => {
     setStageOperationElement(null);
-    props.onCallbackEvent && props.onCallbackEvent  
+    props.onCallbackEvent && props.onCallbackEvent()
   };
 
   /**
@@ -383,7 +383,7 @@ const PipelineStage = (props: IProp) => {
       </Row>
       {stageOperationElement}
       {stepOperationElement}
-      
+
     </div>
   );
 };
