@@ -32,3 +32,14 @@ export interface IBuildImageOutputDto extends IBuildImageBaseDto{
      */
     id:string;
 }
+
+export interface IBuildImageVersionInputDto {
+    /**
+     * 镜像ID
+     */
+    buildImageId:string;
+    /**
+     * 版本
+     */
+    version:string;
+}
