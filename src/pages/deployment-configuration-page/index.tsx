@@ -94,10 +94,6 @@ const DeploymentConfigurationPage = (props: IProp) => {
             dataIndex: "maxUnavailable",
         },
         {
-            title: "镜像拉取证书",
-            dataIndex: "imagePullSecretId",
-        },
-        {
             title: "操作",
             dataIndex: "id",
             key: "id",
@@ -171,7 +167,7 @@ const DeploymentConfigurationPage = (props: IProp) => {
             pageSize: paginationConfig.pageSize,
             pageIndex: paginationConfig.current,
         }
-        _deploymentConfigurationService.getDeploymentConfigurationPageList("luck.walnut", _param).then((x) => {
+        _deploymentConfigurationService.getDeploymentConfigurationPageList(props.appId, _param).then((x) => {
             if (x.success) {
                 setTableData(x.result.data);
             }

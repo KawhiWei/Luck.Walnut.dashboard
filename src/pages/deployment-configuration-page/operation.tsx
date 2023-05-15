@@ -426,7 +426,6 @@ const Operation = (props: IProp) => {
                                 <Form.Item
                                     name="imagePullSecretId"
                                     label="镜像拉取证书："
-                                    rules={[{ required: true }]}
                                 >
                                     <Input />
                                 </Form.Item>
