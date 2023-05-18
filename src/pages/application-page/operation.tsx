@@ -212,7 +212,7 @@ const Operation = (props: IProp) => {
   return (
     <div>
       <Drawer
-        width="40%"
+        width="30%"
         title={
           <div
             style={{
