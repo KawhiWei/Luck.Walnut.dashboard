@@ -1,4 +1,4 @@
-import { Button, Card, Col, Row, Spin, Tabs } from "antd";
+import { Button, Card, Col, Layout, Row, Spin, Tabs } from "antd";
 import { useEffect, useState } from "react";
 
 import ApplicationInformation from "./application-information";
@@ -63,59 +63,43 @@ const ApplicationDashboard = (props: any) => {
   };
 
   return (
-    <div>
+    <Layout className="luck-layout">
       <Spin spinning={loading}>
-        <Row gutter={12} style={{ textAlign: "left" }}>
+        <Row gutter={12} style={{ margin: 5, textAlign: "left" }}>
           <Col span="24">
-            <Card
-              title="应用面板"
-              extra={
-                <Button
-                  shape="round"
-                  style={{ margin: "8px 8px " }}
-                  onClick={() => {
-                    backToApplicationList();
-                  }}
-                >
-                  <RollbackOutlined />
-                  返回上一层
-                </Button>
-              }
-            >
-              <Tabs
-                defaultActiveKey={defaultActiveKey}
-                items={[
-                  {
-                    label: `基础信息`,
-                    key: "1",
-                    children: (
-                      <ApplicationInformation
-                        applicationData={applicationData}
-                      />
-                    ),
-                  },
-                  {
-                    label: `应用流水线`,
-                    key: "2",
-                    children: <PipelinePage appId={appId} />,
-                  },
-                  {
-                    label: `部署配置`,
-                    key: "3",
-                    children: <DeploymentConfigurationPage appId={appId} />,
-                  },
-                  {
-                    label: `Service`,
-                    key: "4",
-                    children: <ServicePage appId={appId} />,
-                  },
-                ]}
-              ></Tabs>
-            </Card>
+            <Tabs
+              defaultActiveKey={defaultActiveKey}
+              items={[
+                {
+                  label: `基础信息`,
+                  key: "1",
+                  children: (
+                    <ApplicationInformation
+                      applicationData={applicationData}
+                    />
+                  ),
+                },
+                {
+                  label: `应用流水线`,
+                  key: "2",
+                  children: <PipelinePage appId={appId} />,
+                },
+                {
+                  label: `部署配置`,
+                  key: "3",
+                  children: <DeploymentConfigurationPage appId={appId} />,
+                },
+                {
+                  label: `Service`,
+                  key: "4",
+                  children: <ServicePage appId={appId} />,
+                },
+              ]}
+            ></Tabs>
           </Col>
         </Row>
       </Spin>
-    </div>
+      </Layout>
   );
 };
 export default ApplicationDashboard;

@@ -8,7 +8,7 @@ import { Guid } from "guid-typescript";
 export class MenuStuff implements IMenuStuff {
   mode: MenuEnum.EMenuMode = MenuEnum.EMenuMode.vertical;
   accordion: boolean = true;
-  theme: MenuEnum.EMenuTheme = MenuEnum.EMenuTheme.dark;
+  theme: MenuEnum.EMenuTheme = MenuEnum.EMenuTheme.light;
 }
 export class RouteMeta implements IRouteMeta {
   title: string = "";

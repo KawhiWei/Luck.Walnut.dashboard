@@ -9,12 +9,13 @@ import Menus from "@/component/menu-tab";
 const LayoutSider = (props: { menus: IMenuOutput[],defaultpath:any }) => {
 
   const [collapsed, setCollapsed] = useState<boolean>(false)
+  
   const onCollapse = () => {
     collapsed?setCollapsed(false):setCollapsed(true);
   };
   
   return (
-    <Layout.Sider  width={246}>
+    <Layout.Sider trigger={null} collapsible collapsed={collapsed} width={246}>
       <div  className="logo">核桃PaaS平台</div>
       <Menus defaultpath={props.defaultpath} menus={props.menus} />
     </Layout.Sider>

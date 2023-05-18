@@ -1,28 +1,21 @@
 import "../table.less";
 
 import {
+  Avatar,
   Button,
+  Card,
   Col,
   Form,
-  Input,
   PaginationProps,
-  Popconfirm,
   Row,
-  Select,
+  Space,
   Spin,
-  Table,
-  Tag,
-  Tooltip,
   message,
 } from "antd";
+import { IApplicationBaseDto, IApplicationOutputDto } from "@/domain/applications/application-dto";
 import {
-  DeleteOutlined,
-  EditOutlined,
-  EyeOutlined,
   PlusOutlined,
-  SearchOutlined,
-  SettingTwoTone,
-  WarningOutlined,
+  SyncOutlined
 } from "@ant-design/icons";
 import {
   initPaginationConfig,
@@ -30,15 +23,11 @@ import {
 } from "../../shared/ajax/request";
 import { useEffect, useState } from "react";
 
-import { ApplicationStateMap } from "@/domain/maps/application-map";
-import ApplicationStateTag from "./applicationStateTag";
-import { IApplicationBaseDto } from "@/domain/applications/application-dto";
 import { IApplicationService } from "@/domain/applications/iapplication-service";
 import { IProjectService } from "@/domain/projects/iproject-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import Operation from "./operation";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
-import { searchFormItemDoubleRankLayout } from "@/constans/layout/optionlayout";
 import { useHistory } from "react-router-dom";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
@@ -88,90 +77,6 @@ const ApplicationPage = () => {
       getPageList();
     },
   };
-  const columns = [
-    {
-      title: "应用英文名",
-      dataIndex: "englishName",
-      key: "englishName",
-      render: (text: any, record: any) => {
-        return (
-          <div className="table-operation">
-            <Button type="link"
-              onClick={() => goToApplicationDashboard(record.appId)}>{record.englishName}</Button>
-          </div>
-        );
-      },
-    },
-    {
-      title: "应用中文名",
-      dataIndex: "chineseName",
-      key: "chineseName",
-    },
-    {
-      title: "应用标识",
-      dataIndex: "appId",
-      key: "appId",
-    },
-    {
-      title: "所属项目",
-      dataIndex: "projectName",
-      key: "projectName",
-    },
-    {
-      title: "应用状态",
-      dataIndex: "id",
-      key: "id",
-      width: 120,
-      // fixed: 'right',
-      render: (text: any, record: any) => {
-        return (
-          <div>
-            <ApplicationStateTag
-              applicationState={record.applicationState}
-              applicationStateName={record.applicationStateName}
-            />
-          </div>
-        );
-      },
-    },
-    {
-      title: "操作",
-      dataIndex: "id",
-      key: "id",
-      width: 400,
-      render: (text: any, record: any) => (
-        <div className="table-operation">
-          {/* <Tooltip placement="top" title="应用看板">
-            <EyeOutlined
-              style={{ color: "#108ee9", marginRight: 10, fontSize: 16 }}
-              onClick={() => goToApplicationDashboard(record.appId)} />
-          </Tooltip> */}
-          {/* <Tooltip placement="top" title="配置管理">
-            <SettingTwoTone
-              style={{ marginRight: 10, fontSize: 16 }}
-              onClick={() => goToConfig(record.appId)} />
-          </Tooltip> */}
-          <Tooltip placement="top" title="编辑">
-            <EditOutlined
-              style={{ color: "orange", marginRight: 10, fontSize: 16 }}
-              onClick={() => editRow(record.id)} />
-          </Tooltip>
-          <Tooltip placement="top" title="删除">
-            <Popconfirm
-              placement="top"
-              title="确认删除?"
-              okText="确定"
-              cancelText="取消"
-              onConfirm={() => deleteRow(record.id)}
-              icon={<WarningOutlined />}
-            >
-              <DeleteOutlined style={{ color: "red", fontSize: 16 }} />
-            </Popconfirm>
-          </Tooltip>
-        </div>
-      ),
-    },
-  ];
 
   const goToApplicationDashboard = (_appId: string) => {
     history.push({
@@ -187,8 +92,6 @@ const ApplicationPage = () => {
    */
   useEffect(() => {
     getPageList();
-    onGetProjectList();
-    onGetApplicationSelectedData();
   }, [paginationConfig]);
 
   const onSearch = () => {
@@ -197,23 +100,6 @@ const ApplicationPage = () => {
       return Pagination;
     });
     getPageList();
-  };
-
-  const onGetProjectList = () => {
-    let param = { pageSize: 1000, pageIndex: 1 };
-    _projectService.getPage(param).then((rep) => {
-      if (rep.success) {
-        setProjectArray(rep.result.data);
-      }
-    });
-  };
-
-  const onGetApplicationSelectedData = () => {
-    _applicationService.getApplicationSelectedData().then((rep) => {
-      if (rep.success) {
-        setComponentIntegrationArray(rep.result.componentIntegrationList);
-      }
-    });
   };
 
   /**
@@ -291,123 +177,62 @@ const ApplicationPage = () => {
   };
 
   return (
-    <div>
+    <div >
       <Spin spinning={loading}>
-        <Form
-          form={formData}
-          name="horizontal_login"
-          layout="horizontal"
-          {...searchFormItemDoubleRankLayout}
-          onFinish={onSearch}
-        >
+        <Row style={{ marginBottom: "10px", backgroundColor: "white", height: "56px", padding: "0px 28px", }}>
           <Row>
-            <Col span="6">
-              <Form.Item name="projectId" label="项目：">
-                <Select allowClear={true} placeholder="请选择项目">
-                  {projectArray.map((item: any) => {
-                    return (
-                      <Select.Option value={item.id}>{item.name}</Select.Option>
-                    );
-                  })}
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col span="6">
-              <Form.Item name="appId" label="应用标识：">
-                <Input
-                  style={{ borderRadius: 8 }}
-                  placeholder="请请输入应用标识"
-                />
-              </Form.Item>
-            </Col>
-            <Col span="6">
-              <Form.Item name="englishName" label="应用英文名称：">
-                <Input
-                  style={{ borderRadius: 8 }}
-                  placeholder="请请输入应用英文名称"
-                />
-              </Form.Item>
-            </Col>
-            <Col span="6">
-              <Form.Item name="chineseName" label="应用中文名称：">
-                <Input
-                  style={{ borderRadius: 8 }}
-                  placeholder="请请输入应用标识"
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="6">
-              <Form.Item name="principal" label="应用负责人：">
-                <Select allowClear={true} placeholder="请选择应用负责人">
-                  {projectArray.map((item: any) => {
-                    return (
-                      <Select.Option value={item.id}>{item.name}</Select.Option>
-                    );
-                  })}
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col span="6">
-              <Form.Item name="applicationState" label="应用状态：">
-                <Select
-                  style={{ width: 180 }}
-                  allowClear={true}
-                  placeholder="请选择应用状态"
-                >
-                  {ApplicationStateMap.map((item: any) => {
-                    return (
-                      <Select.Option value={item.key}>
-                        {item.value}
-                      </Select.Option>
-                    );
-                  })}
-                </Select>
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="6" style={{ textAlign: "center" }}>
-              <Button
-                type="primary"
-                shape="round"
-                htmlType="submit"
+            <Space align="center" >
+              <SyncOutlined
+                style={{ textAlign: "right", marginRight: 10, fontSize: 16 }}
                 onClick={() => {
                   getPageList();
                 }}
+              />
+              <Button
+                style={{ float: "right" }}
+                size="middle"
+                type="primary"
+                icon={<PlusOutlined />}
+                onClick={() => addChange()}
               >
-                <SearchOutlined />
-                查询
+                创建应用
               </Button>
-            </Col>
+            </Space>
           </Row>
-        </Form>
-        <Row>
-          <Col span="24" style={{ textAlign: "right" }}>
-            <Button
-              shape="round"
-              type="primary"
-              style={{ margin: "8px 8px" }}
-              onClick={() => {
-                addChange();
-              }}
-            >
-              <PlusOutlined />
-              添加
-            </Button>
-          </Col>
         </Row>
-        <Row>
-          <Col span={24}>
-            <Table
-              columns={columns}
-              dataSource={tableData}
-              pagination={pagination}
-              scroll={{ y: 700 }}
-              size="small"
-            />
-          </Col>
+        <Row style={{ padding: "0px 20px" }} gutter={[12, 12]} >
+          {tableData.map((item: IApplicationOutputDto) => {
+            return (
+              <Col xs={24} sm={24} md={12} lg={12} xl={8} xxl={4}>
+                <Card hoverable={true} bordered={false} style={{ borderRadius: 8, padding: "10px 0px" }}
+                  onClick={() => goToApplicationDashboard(item.appId)}
+                >
+                  <Row>
+                    <Avatar size={"large"} shape="square" style={{ marginRight: 15 }} />
+                    <Row>{item.appId}</Row>
+                  </Row>
+                  <Row style={{ padding: "16px 0px " }}>
+                    <Col span={12}>
+                      <span style={{ fontSize: "10px", color: "#606c80", marginRight: 5 }}>最新镜像</span>
+                      <span style={{ fontWeight: 700 }}>asdasdasd</span>
+                    </Col>
+                    <Col span={12}>
+                      <Row >
+                        <span style={{ fontSize: "10px", color: "#606c80", marginRight: 5 }}>最近构建</span>
+                        <span style={{ fontWeight: 700 }}>asdasdasdsa</span>
+                      </Row>
+                    </Col>
+                  </Row>
+                  <Row >
+                    <Col span={24}>
+                      <Row >
+                        <span style={{ color: "#606c80", fontSize: "10px" }}>其他操作</span>
+                      </Row>
+                    </Col>
+                  </Row>
+                </Card>
+              </Col>)
+          })}
         </Row>
         {subOperationElement}
       </Spin>

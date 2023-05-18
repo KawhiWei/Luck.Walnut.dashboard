@@ -26,12 +26,11 @@ import {
 import { useEffect, useState } from "react";
 
 import { IApplicationService } from "@/domain/applications/iapplication-service";
+import { IBuildImageService } from "@/domain/buildimages/ibuildimage-service";
 import { IOperationConfig } from "@/shared/operation/operationConfig";
 import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
-import TextArea from "antd/lib/input/TextArea";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
-import { IBuildImageService } from "@/domain/buildimages/ibuildimage-service";
 
 interface IProp {
   /**
@@ -112,9 +111,9 @@ const Operation = (props: IProp) => {
   /**
    * 获取镜像下拉
    */
-  const getImageList = () =>{
+  const getImageList = () => {
     _buildImageService.getImageList().then((rep) => {
-      if(rep.success){
+      if (rep.success) {
         setImageList(rep.result);
         console.log(rep)
       }
@@ -213,7 +212,7 @@ const Operation = (props: IProp) => {
   return (
     <div>
       <Drawer
-        width="80%"
+        width="40%"
         title={
           <div
             style={{
@@ -248,197 +247,36 @@ const Operation = (props: IProp) => {
       >
         <Form
           form={formData}
-          {...formItemDoubleRankLayout}
           name="nest-messages"
-          layout="horizontal"
+          layout="vertical"
           validateMessages={validateMessages}
         >
-          <Row>
-            <Col span="12">
-              <Form.Item
-                name="appId"
-                label="应用唯一标识："
-                rules={[{ required: true }]}
-              >
-                <Input
-                  style={{ borderRadius: 6 }}
-                  disabled={props.operationType === OperationTypeEnum.edit}
-                />
-              </Form.Item>
-            </Col>
-            <Col span="12">
-              <Form.Item
-                name="englishName"
-                label="应用英文名"
-                rules={[{ required: true }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="12">
-              <Form.Item
-                name="chineseName"
-                label="应用中文名："
-                rules={[{ required: true }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span="12">
-              <Form.Item
-                name="projectId"
-                label="所属项目："
-                rules={[{ required: true }]}
-              >
-                <Select allowClear={true} placeholder="请选择项目">
-                  {projectArray.map((item: any) => {
-                    return (
-                      <Select.Option value={item.id}>{item.name}</Select.Option>
-                    );
-                  })}
-                </Select>
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="12">
-              <Form.Item
-                name="applicationState"
-                label="应用状态："
-                rules={[{ required: true }]}
-              >
-                <Select
-                  style={{ width: 180 }}
-                  allowClear={true}
-                  placeholder="请选择应用状态"
-                >
-                  {ApplicationStateMap.map((item: any) => {
-                    return (
-                      <Select.Option value={item.key}>
-                        {item.value}
-                      </Select.Option>
-                    );
-                  })}
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col span="12">
-              <Form.Item
-                name="developmentLanguage"
-                label="应用开发语言："
-                rules={[{ required: true }]}
-              >
-                <Select
-                  style={{ width: 180 }}
-                  allowClear={true}
-                  placeholder="请选择应用开发语言"
-                >
-                  {languageArray.map((item: any) => {
-                    return (
-                      <Select.Option value={item.id}>{item.name}</Select.Option>
-                    );
-                  })}
-                </Select>
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="12">
-              <Form.Item
-                name="applicationLevel"
-                label="应用等级："
-                rules={[{ required: true }]}
-              >
-                <Select
-                  style={{ width: 180 }}
-                  allowClear={true}
-                  placeholder="请选择应用等级"
-                >
-                  {ApplicationLevelMap.map((item: any) => {
-                    return (
-                      <Select.Option value={item.key}>
-                        {item.value}
-                      </Select.Option>
-                    );
-                  })}
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col span="12">
-              <Form.Item
-                name="departmentName"
-                label="所属部门："
-                rules={[{ required: true }]}
-              >
-                <Input style={{ borderRadius: 6 }} />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="12">
-              <Form.Item
-                name="principal"
-                label="负责人："
-                rules={[{ required: true }]}
-              >
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span="12">
-              <Form.Item name="codeWarehouseAddress" label="代码仓库地址：">
-                <Input />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="12">
-              <Form.Item
-                name="buildImageId"
-                label="基础构建镜像："
-                rules={[{ required: true }]}
-              >
-                <Select
-                  style={{ width:180}}
-                  allowClear={true}
-                  placeholder="请选择基础构建镜像"
-                >
-                  {imageList.map((item:any) => {
-                    return (<Select.Option value={item.id}>
-                      {item.name}
-                    </Select.Option>)
-                  })}
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col span="12">
-              <Form.Item
-                name="imageWarehouseId"
-                label="镜像推送仓库：">
-                <Select
-                  style={{ width: 180 }}
-                  allowClear={true}
-                  placeholder="请选择镜像推送仓库"
-                >
-                  {props.componentIntegrationArray.map((item: any) => {
-                    return (
-                      <Select.Option value={item.id}>
-                        {item.name}
-                      </Select.Option>
-                    );
-                  })}
-                </Select>
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="12">
-              <Form.Item name="describe" label="应用描述：">
-                <TextArea rows={14}></TextArea>
-              </Form.Item>
-            </Col>
-          </Row>
+          <Form.Item
+            name="name"
+            label="应用名称："
+            rules={[{ required: true }]}
+          >
+            <Input
+              disabled={props.operationType === OperationTypeEnum.edit}
+            />
+          </Form.Item>
+          <Form.Item
+            name="appId"
+            label="应用标识："
+            rules={[{ required: true }]}
+          >
+            <Input
+              disabled={props.operationType === OperationTypeEnum.edit}
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="gitUrl"
+            label="git地址："
+            rules={[{ required: true }]}
+          >
+            <Input />
+          </Form.Item>
         </Form>
       </Drawer>
     </div>

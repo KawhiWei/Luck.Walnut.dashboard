@@ -1,77 +1,28 @@
-import { ApplicationLevelEnum, ApplicationStateEnum } from "./applicationstate-enum";
+import { IEntity } from "@/shared/entity";
 
 export interface IApplicationBaseDto {
+  /***
+   * 应用名称
+   */
+  name: string;
+  
   /***
    * 唯一标识
    */
   appId: string;
 
   /**
-   * 英文名称
+   * git地址
    */
-  englishName: string;
+  gitUrl: string;
 
-  /**
-   * 中文名称
-   */
-  chineseName: string;
-
-  /**
-   * 归属部门
-   */
-  departmentName: string;
-
-  /**
-   * 负责人
-   */
-  principal: string;
-
-  /**
-   * 应用状态
-   */
-  applicationState: ApplicationStateEnum;
-
-  /**
-   * 状态名称
-   */
-  applicationStateName: string,
-
-  /**
-   * 应用级别
-   */
-  applicationLevel: ApplicationLevelEnum
-
-  /**
-   * 应用级别名称
-   */
-  applicationLevelName: string,
   /**
    * 应用描述
    */
   describe: string,
-
-
-  /**
-   * 仓库地址
-   */
-  codeWarehouseAddress: string,
-
-  /**
-   * 
-   */
-  buildImage: string,
-
-  /**
- * 
- */
-  buildImageId: string;
-  /**
- * 
- */
-  buildImageName: string;
 }
 
-export interface IApplicationDto extends IApplicationBaseDto{
+export interface IApplicationDto extends IApplicationBaseDto {
 
   /**
    * 
@@ -82,5 +33,9 @@ export interface IApplicationDto extends IApplicationBaseDto{
   /**
    * 
    */
-  compileScript:string;
+  compileScript: string;
+}
+
+export interface IApplicationOutputDto extends IApplicationBaseDto  {
+
 }

@@ -2,6 +2,7 @@ import "./layout-view.less";
 
 import { BrowserRouter, Route } from 'react-router-dom';
 
+import ConfigProviderApp from "@/ConfigProvider";
 import { IMenuRoute } from '@/shared//menu/IMenu';
 import { Layout } from 'antd';
 import LayoutSider from "./layout-sider/layout-sider";
@@ -20,8 +21,11 @@ interface IProp {
 const LayoutView = (props: IProp) => {
     const [routes] = useState(props.route.children);
     return (
+
         <Layout className="luck-layout">
+
             <BrowserRouter>
+
                 <LayoutSider menus={menuList} defaultpath="/user" />
                 <Layout>
                     <Layoutheader />
@@ -30,8 +34,11 @@ const LayoutView = (props: IProp) => {
                     </Layout.Content>
                     {/* <Layout.Footer className="luck-layout-footer">VV大佬盛情出品</Layout.Footer> */}
                 </Layout>
+
             </BrowserRouter>
+
         </Layout>
+
     )
 }
 export default LayoutView;
