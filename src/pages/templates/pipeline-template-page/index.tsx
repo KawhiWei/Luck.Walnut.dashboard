@@ -198,28 +198,16 @@ const PipelineTemplatePage = () => {
             </Space>
           </Row>
         </Row>
-        <Row style={{ padding: "0px 20px" }} gutter={[12, 12]} >
+        <Row style={{ padding: "0px 10px" }} gutter={[12, 12]} >
           {tableData.map((item: IApplicationOutputDto) => {
             return (
-              <Col xs={24} sm={24} md={12} lg={12} xl={8} xxl={4}>
-                <Card hoverable={true} bordered={false} style={{ borderRadius: 8, padding: "10px 0px" }}
+              <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={12}>
+                <Card hoverable={true} bordered={false} style={{ borderRadius: 8, padding: "0px 0px" }}
                   onClick={() => goToApplicationDashboard(item.appId)}
                 >
                   <Row>
                     <Avatar size={"large"} shape="square" style={{ marginRight: 15 }} />
                     <Row>{item.appId}</Row>
-                  </Row>
-                  <Row style={{ padding: "16px 0px " }}>
-                    <Col span={12}>
-                      <span style={{ fontSize: "10px", color: "#606c80", marginRight: 5 }}>最新镜像</span>
-                      <span style={{ fontWeight: 700 }}>asdasdasd</span>
-                    </Col>
-                    <Col span={12}>
-                      <Row >
-                        <span style={{ fontSize: "10px", color: "#606c80", marginRight: 5 }}>最近构建</span>
-                        <span style={{ fontWeight: 700 }}>asdasdasdsa</span>
-                      </Row>
-                    </Col>
                   </Row>
                   <Row >
                     <Col span={24}>

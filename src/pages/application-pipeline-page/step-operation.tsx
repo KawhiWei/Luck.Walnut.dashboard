@@ -225,7 +225,7 @@ const StepOperation = (props: IProp) => {
     switch (currentStep.stepType) {
       case StepTypeEnum.pullCode:
         let pullCodeData = {
-          git: props.applicationData?.codeWarehouseAddress,
+          git: props.applicationData?.gitUrl,
         };
         if (props.operationType !== OperationTypeEnum.add && props.step) {
           pullCodeFormData.setFieldsValue(JSON.parse(props.step.content));
