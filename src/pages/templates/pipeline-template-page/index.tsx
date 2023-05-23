@@ -5,20 +5,23 @@ import {
   Col,
   Form,
   PaginationProps,
+  Popover,
   Row,
   Space,
   Spin,
   message,
+  Dropdown
 } from "antd";
 import { IApplicationBaseDto, IApplicationOutputDto } from "@/domain/applications/application-dto";
 import {
   PlusOutlined,
-  SyncOutlined
+  SyncOutlined,
+  EllipsisOutlined
 } from "@ant-design/icons";
 import {
   initPaginationConfig,
   tacitPagingProps,
-} from  "@/shared/ajax/request";
+} from "@/shared/ajax/request";
 import { useEffect, useState } from "react";
 
 import { IApplicationService } from "@/domain/applications/iapplication-service";
@@ -198,23 +201,27 @@ const PipelineTemplatePage = () => {
             </Space>
           </Row>
         </Row>
-        <Row style={{ padding: "0px 10px" }} gutter={[12, 12]} >
+        <Row gutter={[12, 12]} style={{ padding: "0px 8px", }}>
           {tableData.map((item: IApplicationOutputDto) => {
             return (
-              <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={12}>
-                <Card hoverable={true} bordered={false} style={{ borderRadius: 8, padding: "0px 0px" }}
-                  onClick={() => goToApplicationDashboard(item.appId)}
-                >
+              <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={12}>
+                <Card hoverable={true} bordered={false} style={{ borderRadius: 8 }}>
                   <Row>
-                    <Avatar size={"large"} shape="square" style={{ marginRight: 15 }} />
-                    <Row>{item.appId}</Row>
-                  </Row>
-                  <Row >
-                    <Col span={24}>
-                      <Row >
-                        <span style={{ color: "#606c80", fontSize: "10px" }}>其他操作</span>
-                      </Row>
-                    </Col>
+                    <div>
+                      <Avatar size={"large"} shape="square" style={{ marginRight: 15 }} />
+                    </div>
+                    <div>
+                      <Row style={{ fontSize: "16px", fontWeight: 500 }}>{item.appId}</Row>
+                      <Row style={{ color: "#606c80", fontSize: "12px" }}>{item.appId}</Row>
+                    </div>
+                    <div style={{ position: "absolute", top: "10px", right: "15px" }}>
+
+                    <Dropdown.Button icon={<EllipsisOutlined />} >
+                    </Dropdown.Button>
+                    </div>
+
+
+
                   </Row>
                 </Card>
               </Col>)

@@ -200,7 +200,7 @@ const ApplicationPage = () => {
             </Space>
           </Row>
         </Row>
-        <Row style={{ padding: "0px 20px" }} gutter={[12, 12]} >
+        <Row gutter={[12, 12]} style={{ padding: "0px 8px", }} >
           {tableData.map((item: IApplicationOutputDto) => {
             return (
               <Col xs={24} sm={24} md={12} lg={12} xl={8} xxl={4}>
@@ -209,7 +209,7 @@ const ApplicationPage = () => {
                 >
                   <Row>
                     <Avatar size={"large"} shape="square" style={{ marginRight: 15 }} />
-                    <Row>{item.appId}</Row>
+                    <Row style={{ fontSize: "16px" }}>{item.appId}</Row>
                   </Row>
                   <Row style={{ padding: "16px 0px " }}>
                     <Col span={12}>
