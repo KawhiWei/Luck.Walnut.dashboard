@@ -55,6 +55,11 @@ interface IProp {
    */
   componentIntegrationArray: Array<any>;
 
+  /**
+   * 表单数据
+   */
+  fromData?:any;
+
 }
 
 const validateMessages = {
