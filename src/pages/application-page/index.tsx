@@ -11,11 +11,15 @@ import {
   Space,
   Spin,
   message,
+  Tooltip
 } from "antd";
 import { IApplicationBaseDto, IApplicationOutputDto } from "@/domain/applications/application-dto";
 import {
   PlusOutlined,
-  SyncOutlined
+  SyncOutlined,
+  PartitionOutlined,
+  CameraOutlined,
+  BranchesOutlined
 } from "@ant-design/icons";
 import {
   initPaginationConfig,
@@ -210,6 +214,7 @@ const ApplicationPage = () => {
                   <Row>
                     <Avatar size={"large"} shape="square" style={{ marginRight: 15 }} />
                     <Row style={{ fontSize: "16px" }}>{item.appId}</Row>
+                    
                   </Row>
                   <Row style={{ padding: "16px 0px " }}>
                     <Col span={12}>
@@ -227,6 +232,18 @@ const ApplicationPage = () => {
                     <Col span={24}>
                       <Row >
                         <span style={{ color: "#606c80", fontSize: "10px" }}>其他操作</span>
+                        <Tooltip title="构建过程">
+                          <PartitionOutlined 
+                            style = {{fontSize:"20px", marginLeft:"10px"}}
+                            onClick={() => {}}
+                          />
+                        </Tooltip>
+                        <Tooltip title="构建快照">
+                          <CameraOutlined style={{fontSize:"20px", marginLeft:"10px"}} onClick={() => {}}/>
+                        </Tooltip>
+                        <Tooltip title="改动记录">
+                          <BranchesOutlined style={{fontSize:"20px", marginLeft:"10px"}} onClick={() => {}}/>
+                        </Tooltip>
                       </Row>
                     </Col>
                   </Row>

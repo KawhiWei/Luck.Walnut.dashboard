@@ -219,9 +219,6 @@ const PipelineTemplatePage = () => {
                     <Dropdown.Button icon={<EllipsisOutlined />} >
                     </Dropdown.Button>
                     </div>
-
-
-
                   </Row>
                 </Card>
               </Col>)
