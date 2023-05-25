@@ -10,17 +10,17 @@ import {
   Row,
   Space,
   Spin,
-  message,
-  Tooltip
+  Tooltip,
+  message
 } from "antd";
-import { IApplicationBaseDto, IApplicationOutputDto } from "@/domain/applications/application-dto";
 import {
-  PlusOutlined,
-  SyncOutlined,
-  PartitionOutlined,
+  BranchesOutlined,
   CameraOutlined,
-  BranchesOutlined
+  PartitionOutlined,
+  PlusOutlined,
+  SyncOutlined
 } from "@ant-design/icons";
+import { IApplicationBaseDto, IApplicationOutputDto } from "@/domain/applications/application-dto";
 import {
   initPaginationConfig,
   tacitPagingProps,
@@ -209,12 +209,11 @@ const ApplicationPage = () => {
             return (
               <Col xs={24} sm={24} md={12} lg={12} xl={8} xxl={4}>
                 <Card hoverable={true} bordered={false} style={{ borderRadius: 8, padding: "10px 0px" }}
-                  onClick={() => goToApplicationDashboard(item.appId)}
                 >
                   <Row>
                     <Avatar size={"large"} shape="square" style={{ marginRight: 15 }} />
                     <Row style={{ fontSize: "16px" }}>{item.appId}</Row>
-                    
+
                   </Row>
                   <Row style={{ padding: "16px 0px " }}>
                     <Col span={12}>
@@ -233,16 +232,16 @@ const ApplicationPage = () => {
                       <Row >
                         <span style={{ color: "#606c80", fontSize: "10px" }}>其他操作</span>
                         <Tooltip title="构建过程">
-                          <PartitionOutlined 
-                            style = {{fontSize:"20px", marginLeft:"10px"}}
-                            onClick={() => {}}
+                          <PartitionOutlined
+                            style={{ fontSize: "20px", marginLeft: "10px" }}
+                            onClick={() => { }}
                           />
                         </Tooltip>
                         <Tooltip title="构建快照">
-                          <CameraOutlined style={{fontSize:"20px", marginLeft:"10px"}} onClick={() => {}}/>
+                          <CameraOutlined style={{ fontSize: "20px", marginLeft: "10px" }} onClick={() => { }} />
                         </Tooltip>
                         <Tooltip title="改动记录">
-                          <BranchesOutlined style={{fontSize:"20px", marginLeft:"10px"}} onClick={() => {}}/>
+                          <BranchesOutlined style={{ fontSize: "20px", marginLeft: "10px" }} onClick={() => { }} />
                         </Tooltip>
                       </Row>
                     </Col>
