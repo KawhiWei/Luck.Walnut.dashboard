@@ -45,20 +45,11 @@ interface IProp {
    * 操作类型
    */
   operationType: OperationTypeEnum;
-  /**
-   * 项目列表
-   */
-  projectArray: Array<any>;
-
-  /**
-   * 
-   */
-  componentIntegrationArray: Array<any>;
 
   /**
    * 表单数据
    */
-  fromData?:any;
+  formData?: any;
 
 }
 
@@ -82,19 +73,17 @@ const Operation = (props: IProp) => {
     visible: false,
   });
   const [formData] = Form.useForm();
-  const projectArray = props.projectArray;
-  const [languageArray, setLanguageArray] = useState<Array<any>>([]);
-  const [placement, setPlacement] = useState<DrawerProps['placement']>('top');
+
+
+
 
   const _buildImageService: IBuildImageService = useHookProvider(IocTypes.BuildImageService);
-  const [imageList, setImageList] = useState<Array<any>>([]);
+
   /**
    * 页面初始化事件
    */
   useEffect(() => {
     onLoad();
-    getLanguageList();
-    getImageList();
   }, [formData]);
 
   /**
@@ -105,25 +94,6 @@ const Operation = (props: IProp) => {
   const editOperationState = (_visible: boolean, _title?: string) => {
     setOperationState({ visible: _visible, title: _title });
   };
-  const getLanguageList = () => {
-    _applicationService.getLanguageList().then((rep) => {
-      if (rep.success) {
-        setLanguageArray(rep.result);
-      }
-    });
-  };
-
-  /**
-   * 获取镜像下拉
-   */
-  const getImageList = () => {
-    _buildImageService.getImageList().then((rep) => {
-      if (rep.success) {
-        setImageList(rep.result);
-        console.log(rep)
-      }
-    })
-  }
 
   /**
    * 编辑获取一个表单
@@ -139,15 +109,11 @@ const Operation = (props: IProp) => {
         editOperationState(true, "查看");
         break;
       case OperationTypeEnum.edit:
-        props.id &&
-          _applicationService.getDetail(props.id).then((rep) => {
-            if (rep.success) {
-              formData.setFieldsValue(rep.result.application);
-              editOperationState(true, "修改");
-            } else {
-              message.error(rep.errorMessage, 3);
-            }
-          });
+        if (props.formData) {
+          formData.setFieldsValue(props.formData);
+          editOperationState(true, "修改");
+        }
+
         break;
     }
   };

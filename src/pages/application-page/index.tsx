@@ -1,11 +1,15 @@
 import "../table.less";
+import "../card-operation.less";
 
 import {
   Avatar,
   Button,
   Card,
   Col,
+  Dropdown,
   Form,
+  Menu,
+  MenuProps,
   PaginationProps,
   Row,
   Space,
@@ -16,9 +20,12 @@ import {
 import {
   BranchesOutlined,
   CameraOutlined,
+  EditOutlined,
+  EllipsisOutlined,
   PartitionOutlined,
   PlusOutlined,
-  SyncOutlined
+  SyncOutlined,
+  UserOutlined
 } from "@ant-design/icons";
 import { IApplicationBaseDto, IApplicationOutputDto } from "@/domain/applications/application-dto";
 import {
@@ -32,6 +39,7 @@ import { IProjectService } from "@/domain/projects/iproject-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import Operation from "./operation";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
+import { defineLocale } from "moment";
 import { useHistory } from "react-router-dom";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
@@ -43,7 +51,7 @@ const ApplicationPage = () => {
   const _projectService: IProjectService = useHookProvider(
     IocTypes.ProjectService
   );
-  const [tableData, setTableData] = useState<Array<IApplicationBaseDto>>([]);
+  const [tableData, setTableData] = useState<Array<IApplicationOutputDto>>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [paginationConfig, setPaginationConfig] =
     useState<initPaginationConfig>(new initPaginationConfig());
@@ -51,6 +59,36 @@ const ApplicationPage = () => {
   const [formData] = Form.useForm();
   const [projectArray, setProjectArray] = useState<Array<any>>([]);
   const [componentIntegrationArray, setComponentIntegrationArray] = useState<Array<any>>([]);
+
+
+
+  const handleMenuClick: MenuProps['onClick'] = e => {
+    message.info('Click on menu item.');
+    console.log('click', e);
+  };
+
+  const items: MenuProps['items'] = [
+    {
+      label: '1st menu item',
+      key: '1',
+      icon: <UserOutlined />,
+    },
+    {
+      label: '2nd menu item',
+      key: '2',
+      icon: <UserOutlined />,
+    },
+    {
+      label: '3rd menu item',
+      key: '3',
+      icon: <UserOutlined />,
+    },
+  ];
+
+  const menuProps = {
+    items,
+    onClick: handleMenuClick,
+  };
 
 
 
@@ -82,6 +120,17 @@ const ApplicationPage = () => {
     },
   };
 
+  /**
+   * 
+   * @param name 
+   * @returns 
+   */
+  const getAvatarColor = (name: any) => {
+    const colors = ['#f56a00', '#7265e6', '#ffbf00', '#00a2ae'];
+    const charIndex = Math.abs(name.charCodeAt(0) - 65) % 4;
+    return colors[charIndex];
+  };
+
   const goToApplicationDashboard = (_appId: string) => {
     history.push({
       pathname: "/application/dashboard",
@@ -111,15 +160,27 @@ const ApplicationPage = () => {
    * @param _id
    */
   const editRow = (_id: any) => {
-    setOperationElement(
-      <Operation
-        componentIntegrationArray={componentIntegrationArray}
-        onCallbackEvent={clearElement}
-        operationType={OperationTypeEnum.edit}
-        id={_id}
-        projectArray={projectArray}
-      />
-    );
+    setLoading(true);
+    _applicationService.getDetail(_id).then(rep => {
+      if (rep.success) {
+        setOperationElement(
+          <Operation
+            onCallbackEvent={clearElement}
+            operationType={OperationTypeEnum.edit}
+            id={_id}
+            formData={rep.result}
+          />
+        );
+      }
+      else {
+        message.error(rep.errorMessage, 3);
+      }
+    })
+      .finally(() => {
+        setLoading(false);
+      });
+
+
   };
 
   /**
@@ -172,9 +233,7 @@ const ApplicationPage = () => {
   const addChange = () => {
     setOperationElement(
       <Operation
-        componentIntegrationArray={componentIntegrationArray}
         onCallbackEvent={clearElement}
-        projectArray={projectArray}
         operationType={OperationTypeEnum.add}
       />
     );
@@ -207,43 +266,52 @@ const ApplicationPage = () => {
         <Row gutter={[12, 12]} style={{ padding: "0px 8px", }} >
           {tableData.map((item: IApplicationOutputDto) => {
             return (
-              <Col xs={24} sm={24} md={12} lg={12} xl={8} xxl={4}>
-                <Card hoverable={true} bordered={false} style={{ borderRadius: 8, padding: "10px 0px" }}
+              <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={4}>
+                <Card hoverable={true} bordered={false} style={{ borderRadius: 8 }}
                 >
                   <Row>
-                    <Avatar size={"large"} shape="square" style={{ marginRight: 15 }} />
+                    <Avatar size={"large"} shape="square" style={{ marginRight: 15, backgroundColor: getAvatarColor(item.appId), fontWeight: 700 }}>{item.appId[0].toUpperCase()}</Avatar>
                     <Row style={{ fontSize: "16px" }}>{item.appId}</Row>
-
                   </Row>
-                  <Row style={{ padding: "16px 0px " }}>
-                    <Col span={12}>
-                      <span style={{ fontSize: "10px", color: "#606c80", marginRight: 5 }}>最新镜像</span>
-                      <span style={{ fontWeight: 700 }}>asdasdasd</span>
-                    </Col>
-                    <Col span={12}>
-                      <Row >
-                        <span style={{ fontSize: "10px", color: "#606c80", marginRight: 5 }}>最近构建</span>
-                        <span style={{ fontWeight: 700 }}>asdasdasdsa</span>
-                      </Row>
-                    </Col>
-                  </Row>
-                  <Row >
+                  <div className="card-operation-label-body">
+                    <div className="card-operation-label-filed">
+                      <div >最新镜像</div>
+                      <div style={{ fontWeight: 700 }}>asdasdasd</div>
+                    </div>
+                    <div className="card-operation-label-filed">
+                      <div className="card-operation-label">最近构建</div>
+                      <div style={{ fontWeight: 700 }}>asdasdasdsa</div>
+                    </div>
+                  </div>
+                  <Row>
                     <Col span={24}>
-                      <Row >
-                        <span style={{ color: "#606c80", fontSize: "10px" }}>其他操作</span>
-                        <Tooltip title="构建过程">
-                          <PartitionOutlined
-                            style={{ fontSize: "20px", marginLeft: "10px" }}
-                            onClick={() => { }}
-                          />
-                        </Tooltip>
-                        <Tooltip title="构建快照">
-                          <CameraOutlined style={{ fontSize: "20px", marginLeft: "10px" }} onClick={() => { }} />
-                        </Tooltip>
-                        <Tooltip title="改动记录">
-                          <BranchesOutlined style={{ fontSize: "20px", marginLeft: "10px" }} onClick={() => { }} />
-                        </Tooltip>
-                      </Row>
+                      <div className="card-operation" >
+                        <div className="card-operation-text" >
+                          其他操作
+                        </div>
+                        <div className="card-operation-body">
+                          <div className="card-operation-body-icon">
+                            <Tooltip title="构建过程">
+                              <PartitionOutlined onClick={() => { }} />
+                            </Tooltip>
+                          </div>
+                          <div className="card-operation-body-icon">
+                            <Tooltip title="构建快照">
+                              <CameraOutlined onClick={() => { }} />
+                            </Tooltip>
+                          </div>
+                          <div className="card-operation-body-icon">
+                            <Tooltip title="改动记录">
+                              <BranchesOutlined onClick={() => { }} />
+                            </Tooltip>
+                          </div>
+                          <div className="card-operation-body-icon">
+                            <Tooltip title="编辑">
+                              <EditOutlined onClick={() => editRow(item.id)} />
+                            </Tooltip>
+                          </div>
+                        </div>
+                      </div>
                     </Col>
                   </Row>
                 </Card>

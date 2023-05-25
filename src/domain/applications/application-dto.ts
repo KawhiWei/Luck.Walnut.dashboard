@@ -36,6 +36,9 @@ export interface IApplicationDto extends IApplicationBaseDto {
   compileScript: string;
 }
 
-export interface IApplicationOutputDto extends IApplicationBaseDto  {
+export interface IApplicationOutputDto extends IApplicationBaseDto, IEntity<string>  {
 
+}
+
+export interface IApplicationInputDto extends IApplicationBaseDto {
 }
