@@ -196,12 +196,13 @@ const PipelineTemplatePage = () => {
                 icon={<PlusOutlined />}
                 onClick={() => addChange()}
               >
-                创建模板
+                创建应用
               </Button>
             </Space>
           </Row>
         </Row>
         <Row gutter={[12, 12]} style={{ padding: "0px 8px", }}>
+          
         </Row>
         {subOperationElement}
       </Spin>
