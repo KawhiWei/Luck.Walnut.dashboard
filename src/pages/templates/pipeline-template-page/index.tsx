@@ -25,6 +25,7 @@ import {
 import { useEffect, useState } from "react";
 
 import { IApplicationService } from "@/domain/applications/iapplication-service";
+import { IPipelineTemplateService } from "@/domain/pipelinetemplates/ipipelinetemplate-service";
 import { IProjectService } from "@/domain/projects/iproject-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import Operation from "./operation";
@@ -37,10 +38,14 @@ const PipelineTemplatePage = () => {
   const _applicationService: IApplicationService = useHookProvider(
     IocTypes.ApplicationService
   );
+
+  const _pipelineTemplateService: IPipelineTemplateService = useHookProvider(
+    IocTypes.PipelineTemplateService
+  );
   const _projectService: IProjectService = useHookProvider(
     IocTypes.ProjectService
   );
-  const [tableData, setTableData] = useState<Array<IApplicationBaseDto>>([]);
+  const [tableData, setTableData] = useState<Array<any>>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [paginationConfig, setPaginationConfig] =
     useState<initPaginationConfig>(new initPaginationConfig());
@@ -79,12 +84,9 @@ const PipelineTemplatePage = () => {
     },
   };
 
-  const goToApplicationDashboard = (_appId: string) => {
+  const toCiPipeline = () => {
     history.push({
-      pathname: "/application/dashboard",
-      state: {
-        appId: _appId,
-      },
+      pathname: "/template/ci/pipeline/config",
     });
   };
 
@@ -135,8 +137,8 @@ const PipelineTemplatePage = () => {
       principal: param.principal,
       applicationState: param.applicationState,
     };
-    _applicationService
-      .getPage(_param)
+    _pipelineTemplateService
+      .getPipelineTemplatePage(_param)
       .then((rep) => {
         if (rep.success) {
           setPaginationConfig((Pagination) => {
@@ -194,7 +196,7 @@ const PipelineTemplatePage = () => {
                 size="middle"
                 type="primary"
                 icon={<PlusOutlined />}
-                onClick={() => addChange()}
+                onClick={() => toCiPipeline()}
               >
                 创建模板
               </Button>

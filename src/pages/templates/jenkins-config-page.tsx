@@ -30,6 +30,7 @@ import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 const JenkinsConfigPage = (props: any) => {
   return (
     <div>
+        流水线编辑界面
     </div>
   );
 };

@@ -18,12 +18,14 @@ import { IEnvironmentService } from "@/domain/environment/ienvironment-service";
 import { IInitContainerService } from "@/domain/init-container-configurations/iinit-container-service";
 import { IMatterService } from "@/domain/matters/imatter-service";
 import { INameSpaceService } from "@/domain/kubernetes/namespaces/inamespace-service";
+import { IPipelineTemplateService } from "@/domain/pipelinetemplates/ipipelinetemplate-service";
 import { IProjectService } from "@/domain/projects/iproject-service";
 import { IServiceService } from "@/domain/kubernetes/services/iservice-service";
 import InitContainerService from "@/domain/init-container-configurations/init-container-service";
 import { IocTypes } from "./ioc-types"
 import { MatterService } from "@/domain/matters/matter-service";
 import NameSpaceService from "@/domain/kubernetes/namespaces/namespace-service";
+import { PipelineTemplateService } from "@/domain/pipelinetemplates/pipelinetemplate-service";
 import { ProjectService } from "@/domain/projects/project-service";
 import ServiceService from "@/domain/kubernetes/services/service-service";
 
@@ -41,6 +43,7 @@ container.bind<IDeploymentConfigurationService>(IocTypes.DeploymentConfiguration
 container.bind<IInitContainerService>(IocTypes.InitContainerService).to(InitContainerService);
 container.bind<INameSpaceService>(IocTypes.NameSpaceService).to(NameSpaceService);
 container.bind<IServiceService>(IocTypes.ServiceService).to(ServiceService);
+container.bind<IPipelineTemplateService>(IocTypes.PipelineTemplateService).to(PipelineTemplateService);
 
 
 
