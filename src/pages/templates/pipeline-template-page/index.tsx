@@ -204,6 +204,25 @@ const PipelineTemplatePage = () => {
           </Row>
         </Row>
         <Row gutter={[12, 12]} style={{ padding: "0px 8px", }}>
+        {tableData.map((item: any) => {
+            return (
+              <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={12}>
+                <Card hoverable={true} bordered={false} style={{ borderRadius: 8 }}
+                key={item.id}
+                >
+                  <Row>
+                    <Avatar size={"large"} shape="square" style={{ marginRight: 15,  fontWeight: 700 }}>{item.templateName[0].toUpperCase()}</Avatar>
+                    <Row style={{ fontSize: "16px" }}>{item.templateName}</Row>
+                    
+                  </Row>
+                  <Row>
+                    <Col span={24}>
+                    {item.describe}fuygjkhgbjkbjkhbuhjbhjkvbhj
+                    </Col>
+                  </Row>
+                </Card>
+              </Col>)
+          })}
         </Row>
         {subOperationElement}
       </Spin>
