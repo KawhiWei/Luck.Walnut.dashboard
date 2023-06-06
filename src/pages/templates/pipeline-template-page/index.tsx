@@ -3,90 +3,40 @@ import {
   Button,
   Card,
   Col,
-  Dropdown,
   Form,
-  PaginationProps,
-  Popover,
   Row,
   Space,
-  Spin,
-  message
+  Spin
 } from "antd";
 import {
-  EllipsisOutlined,
   PlusOutlined,
   SyncOutlined
 } from "@ant-design/icons";
-import { IApplicationBaseDto, IApplicationOutputDto } from "@/domain/applications/application-dto";
-import {
-  initPaginationConfig,
-  tacitPagingProps,
-} from "@/shared/ajax/request";
 import { useEffect, useState } from "react";
 
-import { IApplicationService } from "@/domain/applications/iapplication-service";
 import { IPipelineTemplateService } from "@/domain/pipelinetemplates/ipipelinetemplate-service";
-import { IProjectService } from "@/domain/projects/iproject-service";
 import { IocTypes } from "@/shared/config/ioc-types";
-import Operation from "./operation";
-import { OperationTypeEnum } from "@/shared/operation/operationType";
+import {
+  initPaginationConfig,
+} from "@/shared/ajax/request";
 import { useHistory } from "react-router-dom";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
 const PipelineTemplatePage = () => {
   const history = useHistory();
-  const _applicationService: IApplicationService = useHookProvider(
-    IocTypes.ApplicationService
-  );
 
   const _pipelineTemplateService: IPipelineTemplateService = useHookProvider(
     IocTypes.PipelineTemplateService
-  );
-  const _projectService: IProjectService = useHookProvider(
-    IocTypes.ProjectService
   );
   const [tableData, setTableData] = useState<Array<any>>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [paginationConfig, setPaginationConfig] =
     useState<initPaginationConfig>(new initPaginationConfig());
-  const [subOperationElement, setOperationElement] = useState<any>(null);
   const [formData] = Form.useForm();
-  const [projectArray, setProjectArray] = useState<Array<any>>([]);
-  const [componentIntegrationArray, setComponentIntegrationArray] = useState<Array<any>>([]);
-
-
-
-  const pagination: PaginationProps = {
-    ...tacitPagingProps,
-    total: paginationConfig.total,
-    current: paginationConfig.current,
-    pageSize: paginationConfig.pageSize,
-    showTotal: (total) => {
-      return `共 ${total} 条`;
-    },
-    onShowSizeChange: (current: number, pageSize: number) => {
-      setPaginationConfig((Pagination) => {
-        Pagination.pageSize = pageSize;
-        Pagination.current = current;
-        return Pagination;
-      });
-      getPageList();
-    },
-    onChange: (page: number, pageSize?: number) => {
-      setPaginationConfig((Pagination) => {
-        Pagination.current = page;
-        if (pageSize) {
-          Pagination.pageSize = pageSize;
-        }
-        return Pagination;
-      });
-      getPageList();
-    },
-  };
 
   const toCiPipeline = () => {
     history.push({
-      pathname: "/template/ci/pipeline/config",
+      pathname: "/ci/pipeline/templates/edit",
     });
   };
 
@@ -97,29 +47,7 @@ const PipelineTemplatePage = () => {
     getPageList();
   }, [paginationConfig]);
 
-  const onSearch = () => {
-    setPaginationConfig((Pagination) => {
-      Pagination.current = 1;
-      return Pagination;
-    });
-    getPageList();
-  };
 
-  /**
-   * 修改任务
-   * @param _id
-   */
-  const editRow = (_id: any) => {
-    setOperationElement(
-      <Operation
-        componentIntegrationArray={componentIntegrationArray}
-        onCallbackEvent={clearElement}
-        operationType={OperationTypeEnum.edit}
-        id={_id}
-        projectArray={projectArray}
-      />
-    );
-  };
 
   /**
    * 页面初始化获取数据
@@ -153,31 +81,8 @@ const PipelineTemplatePage = () => {
       });
   };
 
-  const clearElement = () => {
-    setOperationElement(null);
-    getPageList();
-  };
 
-  const deleteRow = (_id: string) => {
-    _applicationService.delete(_id).then((res) => {
-      if (!res.success) {
-        message.error(res.errorMessage, 3);
-      } else {
-        getPageList();
-      }
-    });
-  };
 
-  const addChange = () => {
-    setOperationElement(
-      <Operation
-        componentIntegrationArray={componentIntegrationArray}
-        onCallbackEvent={clearElement}
-        projectArray={projectArray}
-        operationType={OperationTypeEnum.add}
-      />
-    );
-  };
 
   return (
     <div >
@@ -204,27 +109,26 @@ const PipelineTemplatePage = () => {
           </Row>
         </Row>
         <Row gutter={[12, 12]} style={{ padding: "0px 8px", }}>
-        {tableData.map((item: any) => {
+          {tableData.map((item: any) => {
             return (
               <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={12}>
                 <Card hoverable={true} bordered={false} style={{ borderRadius: 8 }}
-                key={item.id}
+                  key={item.id}
                 >
                   <Row>
-                    <Avatar size={"large"} shape="square" style={{ marginRight: 15,  fontWeight: 700 }}>{item.templateName[0].toUpperCase()}</Avatar>
+                    <Avatar size={"large"} shape="square" style={{ marginRight: 15, fontWeight: 700 }}>{item.templateName[0].toUpperCase()}</Avatar>
                     <Row style={{ fontSize: "16px" }}>{item.templateName}</Row>
-                    
+
                   </Row>
                   <Row>
                     <Col span={24}>
-                    {item.describe}fuygjkhgbjkbjkhbuhjbhjkvbhj
+                      {item.describe}
                     </Col>
                   </Row>
                 </Card>
               </Col>)
           })}
         </Row>
-        {subOperationElement}
       </Spin>
     </div>
   );

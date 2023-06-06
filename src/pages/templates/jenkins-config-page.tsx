@@ -30,7 +30,9 @@ import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 const JenkinsConfigPage = (props: any) => {
   return (
     <div>
-        流水线编辑界面
+      <Row style={{ height: "100%" }} gutter={[12, 12]}>
+
+      </Row>
     </div>
   );
 };

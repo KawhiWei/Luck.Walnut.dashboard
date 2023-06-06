@@ -1,0 +1,50 @@
+.pipeline {
+    padding: 10px;
+
+    .stage-wrapper {
+        padding: 30px;
+        width: auto;
+
+        .stage-box {
+            width: 200px;
+            height: 40px;
+            display: flex;
+            font-weight: 700;
+            align-items: center;
+            justify-content: space-between;
+            background-color: white;
+            box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .08);
+            ;
+
+            .stage-index {
+                height: 100%;
+                width: 40px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-color: #3385ff;
+                color: white;
+            }
+
+            .stage-name {
+                height: 100%;
+                flex: 1 1;
+                display: flex;
+                align-items: center;
+                padding: 10px;
+            }
+            .stage-root {
+                height: 100%;
+                flex: 1 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 10px;
+                cursor: pointer;
+                span{
+                    margin-right: 5px;
+                }
+            }
+        }
+    }
+}

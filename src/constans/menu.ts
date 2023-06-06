@@ -366,7 +366,7 @@ export const menuList: IMenuOutput[] = [
       {
         id: "1006-1",
         name: "CI流水线模板",
-        path: "/template/pipeline/templates",
+        path: "/pipeline/templates",
         component: "pages/templates/pipeline-template-page/index",
         tabs: [],
         buttonClick: "",
@@ -382,10 +382,10 @@ export const menuList: IMenuOutput[] = [
         children: [],
       },
       {
-        id: "1006-1",
+        id: "1006-2",
         name: "JenkinsConfig",
-        path: "/template/ci/pipeline/config",
-        component: "pages/templates/jenkins-config-page",
+        path: "/ci/pipeline/templates/edit",
+        component: "pages/templates/pipeline-template-page/operation",
         tabs: [],
         buttonClick: "",
         buttons: [],
@@ -395,7 +395,7 @@ export const menuList: IMenuOutput[] = [
         microName: "",
         componentName: "templates-jenkins-config-page",
         sort: 0,
-        isShow: true,
+        isShow: false,
         type: 0,
         children: [],
       }
