@@ -1,9 +1,48 @@
 .pipeline {
     padding: 10px;
-
     .stage-wrapper {
         padding: 30px;
         width: auto;
+       
+        .step-wrapper {
+            display: flex;
+            height: 40px;
+            width: 200px;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+            border: 1px solid #dadfe6;
+            background-color: white;
+            cursor: pointer;
+            .step-box{
+                margin-left: 10px;
+                width: 200px;
+                height: auto;
+                display: flex;
+                background-color: white;
+                align-items: center;
+                justify-content: space-between;
+                .step-box-icon{
+                    height: auto;
+                    width: 40px;
+                }
+                .step-box-name{
+                    flex: 1 1;
+                    margin-left: 15px;
+                }
+            }
+        }
+        .stage-add-step {
+            display: flex;
+            height: 40px;
+            width: 200px;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+            background-color: white;
+            border: 1px solid #dadfe6;
+            cursor: pointer;
+        }
 
         .stage-box {
             width: 200px;
@@ -14,7 +53,6 @@
             justify-content: space-between;
             background-color: white;
             box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .08);
-            ;
 
             .stage-index {
                 height: 100%;
@@ -33,6 +71,7 @@
                 align-items: center;
                 padding: 10px;
             }
+
             .stage-root {
                 height: 100%;
                 flex: 1 1;
@@ -41,7 +80,8 @@
                 justify-content: center;
                 padding: 10px;
                 cursor: pointer;
-                span{
+
+                span {
                     margin-right: 5px;
                 }
             }

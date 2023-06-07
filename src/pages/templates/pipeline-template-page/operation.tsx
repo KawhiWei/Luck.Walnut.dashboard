@@ -23,11 +23,12 @@ import {
   formItemSingleRankLayout,
   tailLayout,
 } from "@/constans/layout/optionlayout";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { IApplicationService } from "@/domain/applications/iapplication-service";
 import { IBuildImageService } from "@/domain/buildimages/ibuildimage-service";
 import { IOperationConfig } from "@/shared/operation/operationConfig";
+import { IStageDto } from "@/domain/applicationpipelines/applicationpipeline-dto";
 import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
 import PipelineStage from "@/pages/pipeline-operation-component-page/pipeline-stage"
@@ -45,7 +46,7 @@ const validateMessages = {
 };
 
 const Operation = (props: any) => {
-
+  const pipelineStageRef = useRef(null);
 
   const _applicationService: IApplicationService = useHookProvider(
     IocTypes.ApplicationService
@@ -83,61 +84,35 @@ const Operation = (props: any) => {
     }
   };
 
-
-  /**
-   * 底部栏OK事件
-   */
   const onFinish = () => {
-    formData.validateFields().then((values) => {
-      let param = formData.getFieldsValue();
-      switch (props.operationType) {
-        case OperationTypeEnum.add:
-          onCreate(param);
-          break;
-        case OperationTypeEnum.edit:
-          onUpdate(param);
-          break;
-      }
-    })
-      .catch((error) => {
-      });
+
+
   };
-  const onCreate = (_param: any) => {
-    setLoading(true);
-    _applicationService
-      .createApplication(_param)
-      .then((rep) => {
-        if (!rep.success) {
-          message.error(rep.errorMessage, 3);
-        } else {
-          message.success("保存成功", 3);
-          props.onCallbackEvent && props.onCallbackEvent();
-        }
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+
+
+  const onSetStageArray = (_stageArray: Array<IStageDto>) => {
+    console.log(_stageArray)
   };
-  const onUpdate = (_param: any) => {
-    props.id &&
-      _applicationService
-        .updateApplication(props.id, _param)
-        .then((rep) => {
-          if (!rep.success) {
-            message.error(rep.errorMessage, 3);
-          } else {
-            message.success("保存成功", 3);
-            props.onCallbackEvent && props.onCallbackEvent();
-          }
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-  };
+
 
   return (
     <div style={{ height: "100%" }}>
-      <PipelineStage stageArray={[]} />
+      <Row style={{ float: "right" }}>
+        <Button
+
+          size="middle"
+          type="primary"
+          onClick={() => onFinish()}
+        >
+          保存
+        </Button>
+      </Row>
+      <Row>
+        <Col span={24}>
+          <PipelineStage stageArray={[]} onCallbackEvent={onSetStageArray} />
+        </Col>
+      </Row>
+
     </div>
   );
 };

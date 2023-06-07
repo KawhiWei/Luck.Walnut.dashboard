@@ -138,7 +138,7 @@ const Operation = (props: IProp) => {
        * 选择部署时触发
        */
     const onChangeDeployment = (_deploymentId:string) => {
-        let deployment=deploymentConfigurationData.find(x=>x.id==_deploymentId)
+        let deployment=deploymentConfigurationData.find(x=>x.id===_deploymentId)
         if(deployment){
             serviceFormData.setFieldValue("clusterId",deployment.clusterId)
             serviceFormData.setFieldValue("nameSpaceId",deployment.nameSpaceId)

@@ -32,7 +32,7 @@ const PipelineTemplatePage = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [paginationConfig, setPaginationConfig] =
     useState<initPaginationConfig>(new initPaginationConfig());
-  const [formData] = Form.useForm();
+
 
   const toCiPipeline = () => {
     history.push({
@@ -54,16 +54,9 @@ const PipelineTemplatePage = () => {
    */
   const getPageList = () => {
     setLoading(true);
-    let param = formData.getFieldsValue();
     let _param = {
       pageSize: paginationConfig.pageSize,
       pageIndex: paginationConfig.current,
-      projectId: param.projectId,
-      appId: param.appId,
-      englishName: param.englishName,
-      chineseName: param.chineseName,
-      principal: param.principal,
-      applicationState: param.applicationState,
     };
     _pipelineTemplateService
       .getPipelineTemplatePage(_param)
