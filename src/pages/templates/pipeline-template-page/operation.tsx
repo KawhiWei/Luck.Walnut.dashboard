@@ -31,7 +31,7 @@ import { IOperationConfig } from "@/shared/operation/operationConfig";
 import { IStageDto } from "@/domain/applicationpipelines/applicationpipeline-dto";
 import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
-import PipelineStage from "@/pages/pipeline-operation-component-page/pipeline-stage"
+import PipelineFlow from "@/pages/pipeline-operation-component-page/pipeline-stage"
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
 const validateMessages = {
@@ -91,28 +91,15 @@ const Operation = (props: any) => {
 
 
   const onSetStageArray = (_stageArray: Array<IStageDto>) => {
-    console.log(_stageArray)
+    // console.log(_stageArray)
   };
 
 
   return (
     <div style={{ height: "100%" }}>
-      <Row style={{ float: "right" }}>
-        <Button
+      <PipelineFlow stageArray={[]} onCallbackEvent={onSetStageArray} />
 
-          size="middle"
-          type="primary"
-          onClick={() => onFinish()}
-        >
-          保存
-        </Button>
-      </Row>
-      <Row>
-        <Col span={24}>
-          <PipelineStage stageArray={[]} onCallbackEvent={onSetStageArray} />
-        </Col>
-      </Row>
-
+      
     </div>
   );
 };

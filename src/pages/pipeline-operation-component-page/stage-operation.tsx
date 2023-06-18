@@ -1,4 +1,13 @@
-import { Button, Card, Col, Form, Input, Modal, Row, Spin } from "antd";
+import {
+ Button,
+ Card,
+ Col,
+ Drawer,
+ Form,
+ Input,
+ Modal,
+ Row
+} from "antd";
 import {
   formItemSingleRankLayout,
   tailLayout,
@@ -10,10 +19,6 @@ import { IStageDto } from "@/domain/applicationpipelines/applicationpipeline-dto
 import { OperationTypeEnum } from "@/shared/operation/operationType";
 
 interface IProp {
-  /**
-   * 新增阶段事件回调
-   */
-  onAddStageCallback?: any;
 
   /**
    * 回调事件
@@ -25,20 +30,6 @@ interface IProp {
    */
   operationType: OperationTypeEnum;
 
-  /**
-   * 编辑数据
-   */
-  stage?: IStageDto;
-
-  /**
-   * 编辑阶段事件回调
-   */
-  onEditStage?: any;
-
-  /**
-   * 下标
-   */
-  stageIndex?: number;
 }
 
 /***
@@ -64,6 +55,7 @@ const StageOperation = (props: IProp) => {
    * 页面初始化事件
    */
   useEffect(() => {
+    debugger
     onGetLoad();
   }, [formData]);
 
@@ -91,10 +83,6 @@ const StageOperation = (props: IProp) => {
       case OperationTypeEnum.view:
         editOperationState(true, "查看阶段");
         break;
-      case OperationTypeEnum.edit:
-        props.stage && formData.setFieldsValue(props.stage);
-        editOperationState(true, "添加阶段");
-        break;
     }
   };
 
@@ -107,31 +95,15 @@ const StageOperation = (props: IProp) => {
     setOperationState({ visible: _visible, title: _title });
   };
 
-  /**
-   * 底部栏OK事件
-   */
-  const onFinish = () => {
-    let param = formData.getFieldsValue();
-    switch (props.operationType) {
-      case OperationTypeEnum.add:
-        props.onAddStageCallback && props.onAddStageCallback(param.name);
-        break;
-      case OperationTypeEnum.view:
-        editOperationState(true, "查看");
-        break;
-      case OperationTypeEnum.edit:
-        (props.onEditStage || props.stageIndex) &&
-          props.onEditStage(props.stageIndex, param.name);
-        break;
-    }
-  };
+
+
   return (
     <div>
-      <Modal
-        width={1000}
+      <Drawer
+        width={"35%"}
         style={{ borderRadius: 6 }}
         getContainer={false}
-        onCancel={onCancel}
+        onClose={()=>onCancel}
         title={
           <div
             style={{
@@ -141,8 +113,8 @@ const StageOperation = (props: IProp) => {
             {operationState.title}
           </div>
         }
-        closable={false}
-        visible={operationState.visible}
+        // closable={false}
+        open={operationState.visible}
         footer={null}
       >
         <Form
@@ -150,7 +122,7 @@ const StageOperation = (props: IProp) => {
           {...formItemSingleRankLayout}
           name="nest-messages"
           layout="horizontal"
-          onFinish={onFinish}
+          // onFinish={onFinish}
           validateMessages={validateMessages}
         >
           <Row>
@@ -182,7 +154,7 @@ const StageOperation = (props: IProp) => {
             </Col>
           </Row>
         </Form>
-      </Modal>
+      </Drawer>
     </div>
   );
 };
