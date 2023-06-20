@@ -3,33 +3,29 @@ import "./task-list.less"
 
 import {
     Anchor,
-    Avatar,
-    Button,
     Card,
     Col,
     Drawer,
-    Form,
-    Input,
-    Modal,
-    Row,
-    Skeleton
+    Row
 } from "antd";
-import {
-    formItemSingleRankLayout,
-    tailLayout,
-} from "@/constans/layout/optionlayout";
 import { useEffect, useState } from "react";
 
 import { IOperationConfig } from "@/shared/operation/operationConfig";
-import { IStageDto } from "@/domain/applicationpipelines/applicationpipeline-dto";
-import { OperationTypeEnum } from "@/shared/operation/operationType";
+import { IStepDto } from "@/domain/applicationpipelines/applicationpipeline-dto";
+import { taskList } from '@/constans/task';
 
 interface IProp {
 
     /**
      * 回调事件
      */
-    onCallbackEvent: any;
+    onConfirmCallbackEvent: any;
+
+
+    /**
+     * 取消回调事件
+     */
+    onCancelCallbackEvent?: any;
 
     /**
      * 阶段下标
@@ -55,9 +51,18 @@ const TaskList = (props: IProp) => {
     /**
      * 弹框取消事件
      */
+    const onConfirm = (_categoryName: string, step: IStepDto) => {
+        editOperationState(false);
+        props.onConfirmCallbackEvent(props.stageIndex, _categoryName, step);
+    };
+
+
+    /**
+     * 弹框取消事件
+     */
     const onCancel = () => {
         editOperationState(false);
-        props.onCallbackEvent();
+        props.onCancelCallbackEvent && props.onCancelCallbackEvent();
     };
 
     /**
@@ -85,7 +90,6 @@ const TaskList = (props: IProp) => {
                         {operationState.title}
                     </div>
                 }
-                // closable={false}
                 open={operationState.visible}
                 footer={null}
             >
@@ -105,56 +109,31 @@ const TaskList = (props: IProp) => {
                                     </Anchor>
                                 </div>
                                 <div className="pipeline-stage-template-menu-body-content">
-                                    <Row gutter={[15, 10]} style={{ marginTop: "10px" }} >
-                                        <Col span={12}>
-                                            <Card>
-                                                <Skeleton loading={false} avatar active>
-                                                    <Card.Meta
-                                                        avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
-                                                        title="Card title"
-                                                        description="This"
-                                                    />
-                                                </Skeleton>
-                                            </Card>
-                                        </Col>
-                                        <Col span={12}>
-                                            <Card>
-                                                <Skeleton loading={false} avatar active>
-                                                    <Card.Meta
-                                                        avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
-                                                        title="Card title"
-                                                        description="This"
-                                                    />
-                                                </Skeleton>
-                                            </Card>
-                                        </Col>
-                                    </Row>
-                                    <Row gutter={[15, 40]} style={{ marginTop: "10px" }}>
-                                        <Col span={12}>
-                                            <Card >
-                                                <Skeleton loading={false} avatar active>
-                                                    <Card.Meta
-                                                        avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
-                                                        title="Card title"
-                                                        description="This"
-                                                    />
-                                                </Skeleton>
-                                            </Card>
-                                        </Col>
-                                        <Col span={12}>
-                                            <Card>
-                                                <Skeleton loading={false} avatar active>
-                                                    <Card.Meta
-                                                        avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
-                                                        title="Card title"
-                                                        description="This"
-                                                    />
-                                                </Skeleton>
-                                            </Card>
-                                        </Col>
-                                    </Row>
-                                </div>
+                                    {taskList.map(category => {
+                                        return (
+                                            <div>
+                                                <div>{category.name}</div>
+                                                <Row gutter={[15, 10]} style={{ marginTop: "10px" }} >
 
+                                                    {
+                                                        category.tasks.map(step => {
+                                                            return (
+
+                                                                <Col span={12}>
+                                                                    <Card hoverable onClick={() => onConfirm(category.name, step)}>
+                                                                        <div>{step.name}</div>
+                                                                    </Card>
+                                                                </Col>
+
+
+                                                            )
+                                                        })
+                                                    }
+                                                </Row>
+                                            </div>
+                                        )
+                                    })}
+                                </div>
                             </div>
                         </div>
                     </div>

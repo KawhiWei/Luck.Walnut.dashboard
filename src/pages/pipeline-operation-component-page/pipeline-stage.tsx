@@ -15,8 +15,10 @@ import { useEffect, useState } from "react";
 
 import { OperationTypeEnum } from "@/shared/operation/operationType";
 import StageOperation from "./stage-operation";
+import StepOperation from "./step-operation";
 import { StepTypeEnum } from "@/domain/applicationpipelines/applicationpipeline-enum";
 import TaskList from "./task-list";
+import _ from "lodash";
 
 interface IProp {
   /**
@@ -35,7 +37,6 @@ interface IProp {
  */
 const PipelineFlow = (props: IProp) => {
   const [stageList, setStageList] = useState<Array<IStageDto>>([]);
-  const [stageOperationElement, setStageOperationElement] = useState<any>(null);
   const [stepOperationElement, setStepOperationElement] = useState<any>(null);
   const [taskListElement, setTaskListElement] = useState<any>(null);
 
@@ -62,24 +63,6 @@ const PipelineFlow = (props: IProp) => {
   };
 
   /**
-   * 添加阶段
-   */
-  const onShowStageOperation = () => {
-    setStageOperationElement(<StageOperation
-      onCallbackEvent={clearStageOperationElement}
-      operationType={OperationTypeEnum.add}
-    />);
-
-  };
-  /**
-   * 清空阶段弹框
-   */
-  const clearStageOperationElement = () => {
-    setStageOperationElement(null);
-    props.onCallbackEvent && props.onCallbackEvent()
-  };
-
-  /**
    * 清空任务列表组件
    */
   const clearTaskListElement = () => {
@@ -87,12 +70,21 @@ const PipelineFlow = (props: IProp) => {
   }
 
   /**
- * 删除Stage
- */
+   * 清空任务步骤编辑抽屉
+   */
+  const clearStepOperationElement = () => {
+    setStepOperationElement(null)
+  }
+
+
+  /**
+   * 显示任务列表抽屉
+   */
   const onShowTaskList = (_stageIndex: number) => {
     setTaskListElement(<TaskList
       stageIndex={_stageIndex}
-      onCallbackEvent={clearTaskListElement}
+      onConfirmCallbackEvent={onAddStep}
+      onCancelCallbackEvent={clearTaskListElement}
     />)
     setStageList((current) => [...current]);
   };
@@ -111,18 +103,11 @@ const PipelineFlow = (props: IProp) => {
   /**
    * 添加阶段
    */
-  const onAddStep = (_stageIndex: number) => {
-    let name = `阶段-${stageList.length + 1}`
+  const onAddStep = (_stageIndex: number, _categoryName: string, step: IStepDto) => {
     if (_stageIndex <= 0) {
-      let name = `阶段-${stageList.length + 1}`
-      let stageName = `阶段-${stageList.length + 1}`;
       let stage: IStageDto = {
-        name: stageName,
-        steps: [{
-          name: name,
-          stepType: StepTypeEnum.buildImage,
-          content: ""
-        }],
+        name: _categoryName,
+        steps: [step],
       }
       stageList.push(stage);
 
@@ -130,20 +115,40 @@ const PipelineFlow = (props: IProp) => {
     else {
       stageList.filter((item, index) => {
         if (index === _stageIndex) {
-          item.steps.push({
-            name: name,
-            stepType: StepTypeEnum.buildImage,
-            content: ""
-          });
+          item.steps.push(step);
         }
         return item;
       });
     }
 
     setStageList((current) => [...current]);
+    clearTaskListElement();
     props.onCallbackEvent(stageList)
   };
 
+  /**
+   * 添加阶段
+   */
+  const onEditStep = (_stageIndex: number, _stepIndex: number, _step: IStepDto) => {
+    console.log(_stageIndex, _stepIndex, _step)
+  };
+
+  /**
+   * 显示任务编辑抽屉
+   */
+  const onShowStepOperation = (_stageIndex: number, _stepIndex: number, _step: IStepDto) => {
+    console.log(_stageIndex, _stepIndex, _step)
+    setStepOperationElement(
+      <StepOperation
+        onConfirmCallbackEvent={onEditStep}
+        onCancelCallbackEvent={clearStepOperationElement}
+        step={_step}
+        stageIndex={_stageIndex}
+        stepIndex={_stepIndex}
+      ></StepOperation>
+    )
+
+  };
 
   /**
    * 删除步骤
@@ -169,7 +174,6 @@ const PipelineFlow = (props: IProp) => {
       <div className="pipeline-flow-content">
         <div className="pipeline-flow-groups-container">
           <div className="pipeline-flow-groups">
-
             {stageList.map(
               (stage: IStageDto, stageIndex) => {
                 return (
@@ -191,8 +195,8 @@ const PipelineFlow = (props: IProp) => {
                         stage.steps.map((step: IStepDto, stepIndex) => {
                           return (<div className="flow-job-step-container">
                             <div className="flow-job-content">
-                              <span className="flow-job-content-title">代码扫描</span>
-                              <span className="flow-job-content-title"><FormOutlined /></span>
+                              <span className="flow-job-content-title">{step.name}</span>
+                              <span className="flow-job-content-title"><FormOutlined onClick={() => onShowStepOperation(stageIndex, stepIndex, step)} /></span>
                               <span className="flow-job-content-title"><DeleteOutlined onClick={() => onRemoveStep(stageIndex, stepIndex)} style={{ color: "red" }} /></span>
                             </div>
                           </div>)
@@ -232,7 +236,7 @@ const PipelineFlow = (props: IProp) => {
           </div>
         </div>
       </div>
-      {stageOperationElement}
+      {stepOperationElement}
       {taskListElement}
     </div>
   );
