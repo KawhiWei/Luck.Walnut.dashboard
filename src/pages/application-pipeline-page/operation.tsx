@@ -1,16 +1,14 @@
 import "../drawer.less";
 
-import { Button, Drawer, DrawerProps, Space, Spin, message } from "antd";
 import { useEffect, useState } from "react";
 
-import { IApplicationBaseDto } from "@/domain/applications/application-dto";
 import { IApplicationPipelineService } from "@/domain/applicationpipelines/iapplicationpipeline-service";
-import { IApplicationService } from "@/domain/applications/iapplication-service";
 import { IOperationConfig } from "@/shared/operation/operationConfig";
+import { IStageDto } from "@/domain/applicationpipelines/applicationpipeline-dto";
 import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
-import PipelineStage from "./pipeline-stage";
-import { useHistory } from "react-router-dom";
+import PipelineFlow from "../pipeline-operation-component-page/pipeline-flow";
+import { message } from "antd";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
 interface IProp {
@@ -46,7 +44,6 @@ const Operation = (props: IProp) => {
    */
   useEffect(() => {
     onGetLoad();
-    onGetDetailed();
   }, []);
   const [operationState, setOperationState] = useState<IOperationConfig>({
     visible: false,
@@ -77,90 +74,13 @@ const Operation = (props: IProp) => {
     }
 
   };
-
-  /**
- * 弹框取消事件
- */
-  const onCancel = () => {
-    editOperationState(false);
-    props.onCallbackEvent && props.onCallbackEvent();
-  };
-
-  /**
-   *
-   */
-  const onGetDetailed = () => {
-    if (props.pipelineId && props.operationType === OperationTypeEnum.edit) {
-      setLoading(true);
-      _applicationPipelineService
-        .getDetail(props.pipelineId)
-        .then((rep) => {
-          if (!rep.success) {
-            message.error(rep.errorMessage, 3);
-          } else {
-            setPipelineStageElement(
-              <PipelineStage
-                appId={props.appId}
-                operationType={props.operationType}
-                pipelineInfo={rep.result}
-                onCallbackEvent={onCancel}
-              ></PipelineStage>
-            );
-          }
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    } else {
-      setPipelineStageElement(
-        <PipelineStage
-          appId={props.appId}
-          operationType={props.operationType}
-          onCallbackEvent={onCancel}
-        ></PipelineStage>
-      );
-    }
-
-
+  const onSetStageArray = (_stageArray: Array<IStageDto>) => {
+    // console.log(_stageArray)
   };
 
   return (
-    <div id="test">
-      <Drawer
-        style={{ borderRadius: 6 }}
-        maskClosable={false}
-        onClose={() => onCancel()}
-        width="80%"
-        title={
-          <div
-            style={{
-              borderRadius: 10,
-            }}
-          >
-            {operationState.title}
-          </div>
-        }
-        open={operationState.visible}
-        // footer={
-        //   <Space style={{ float: "right" }}>
-        //     <Button
-        //       shape="round"
-        //       disabled={loading}
-        //       onClick={() => onCancel()}
-        //     >
-        //       取消
-        //     </Button>
-        //     <Button
-        //       shape="round"
-        //       style={{ margin: "0 8px" }}
-        //       type="primary"
-        //       loading={loading}
-        //       htmlType="submit"
-        //     >
-        //       保存
-        //     </Button>
-        //   </Space>}
-      >{pipelineStageElement}</Drawer>
+    <div style={{ height: "100%" }}>
+      <PipelineFlow stageArray={[]} onCallbackEvent={onSetStageArray} />
     </div>
   );
 };

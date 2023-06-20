@@ -31,7 +31,7 @@ import { IOperationConfig } from "@/shared/operation/operationConfig";
 import { IStageDto } from "@/domain/applicationpipelines/applicationpipeline-dto";
 import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
-import PipelineFlow from "@/pages/pipeline-operation-component-page/pipeline-stage"
+import PipelineFlow from "@/pages/pipeline-operation-component-page/pipeline-flow"
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
 const validateMessages = {
@@ -98,8 +98,6 @@ const Operation = (props: any) => {
   return (
     <div style={{ height: "100%" }}>
       <PipelineFlow stageArray={[]} onCallbackEvent={onSetStageArray} />
-
-      
     </div>
   );
 };

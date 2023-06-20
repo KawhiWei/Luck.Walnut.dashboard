@@ -1,5 +1,5 @@
 import "../table.less";
-import "../card-operation.less";
+import "./index.less";
 
 import {
   Avatar,
@@ -7,7 +7,6 @@ import {
   Card,
   Col,
   Form,
-  Menu,
   MenuProps,
   PaginationProps,
   Row,
@@ -20,25 +19,23 @@ import {
   BranchesOutlined,
   CameraOutlined,
   EditOutlined,
-  EllipsisOutlined,
   PartitionOutlined,
   PlusOutlined,
   SyncOutlined,
   UserOutlined
 } from "@ant-design/icons";
-import { IApplicationBaseDto, IApplicationOutputDto } from "@/domain/applications/application-dto";
 import {
   initPaginationConfig,
   tacitPagingProps,
 } from "../../shared/ajax/request";
 import { useEffect, useState } from "react";
 
+import { IApplicationOutputDto } from "@/domain/applications/application-dto";
 import { IApplicationService } from "@/domain/applications/iapplication-service";
 import { IProjectService } from "@/domain/projects/iproject-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import Operation from "./operation";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
-import { defineLocale } from "moment";
 import { useHistory } from "react-router-dom";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
@@ -266,54 +263,46 @@ const ApplicationPage = () => {
           {tableData.map((item: IApplicationOutputDto) => {
             return (
               <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={4}>
-                <Card hoverable={true} bordered={false} style={{ borderRadius: 8 }}
-                >
-                  <Row>
-                    <Avatar size={"large"} shape="square" style={{ marginRight: 15, backgroundColor: getAvatarColor(item.appId), fontWeight: 700 }}>{item.appId[0].toUpperCase()}</Avatar>
-                    <Row style={{ fontSize: "16px" }}>{item.appId}</Row>
-                  </Row>
+                <div className="app-card" style={{ borderRadius: 8 }} >
+                  <div className="app-card-title" onClick={() => {
+                    console.log(31231231232121)
+                  }}                >
+                    <Avatar size={35} shape="square" style={{ marginRight: 15, backgroundColor: getAvatarColor(item.appId), fontWeight: 700 }}>{item.appId[0].toUpperCase()}</Avatar>
+                    <div >{item.appId}</div>
+                  </div>
                   <div className="card-operation-label-body">
                     <div className="card-operation-label-filed">
-                      <div >最新镜像</div>
-                      <div style={{ fontWeight: 700 }}>asdasdasd</div>
-                    </div>
-                    <div className="card-operation-label-filed">
-                      <div className="card-operation-label">最近构建</div>
-                      <div style={{ fontWeight: 700 }}>asdasdasdsa</div>
+                      <div >最新镜像：<span>Release20230620</span></div>
                     </div>
                   </div>
-                  <Row>
-                    <Col span={24}>
-                      <div className="card-operation" >
-                        <div className="card-operation-text" >
-                          其他操作
-                        </div>
-                        <div className="card-operation-body">
-                          <div className="card-operation-body-icon">
-                            <Tooltip title="构建过程">
-                              <PartitionOutlined onClick={() => { }} />
-                            </Tooltip>
-                          </div>
-                          <div className="card-operation-body-icon">
-                            <Tooltip title="构建快照">
-                              <CameraOutlined onClick={() => { }} />
-                            </Tooltip>
-                          </div>
-                          <div className="card-operation-body-icon">
-                            <Tooltip title="改动记录">
-                              <BranchesOutlined onClick={() => { }} />
-                            </Tooltip>
-                          </div>
-                          <div className="card-operation-body-icon">
-                            <Tooltip title="编辑">
-                              <EditOutlined onClick={() => editRow(item.id)} />
-                            </Tooltip>
-                          </div>
-                        </div>
+                  <div className="card-operation" >
+                    <div className="card-operation-text" >
+                      其他操作
+                    </div>
+                    <div className="card-operation-body">
+                      <div className="card-operation-body-icon">
+                        <Tooltip title="构建过程">
+                          <PartitionOutlined onClick={() => { console.log("asdasdasdasdassad") }} />
+                        </Tooltip>
                       </div>
-                    </Col>
-                  </Row>
-                </Card>
+                      <div className="card-operation-body-icon">
+                        <Tooltip title="构建快照">
+                          <CameraOutlined onClick={() => { }} />
+                        </Tooltip>
+                      </div>
+                      <div className="card-operation-body-icon">
+                        <Tooltip title="改动记录">
+                          <BranchesOutlined onClick={() => { }} />
+                        </Tooltip>
+                      </div>
+                      <div className="card-operation-body-icon">
+                        <Tooltip title="编辑">
+                          <EditOutlined onClick={() => editRow(item.id)} />
+                        </Tooltip>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </Col>)
           })}
         </Row>

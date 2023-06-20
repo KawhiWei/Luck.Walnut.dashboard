@@ -1,4 +1,4 @@
-import "./pipeline-stage.less"
+import "./pipeline-flow.less"
 
 import { Col, Row, } from "antd";
 import {
