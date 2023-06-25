@@ -1,35 +1,26 @@
-import { Button, Card, Col, Form, Popconfirm, Row, Spin, Tag, Tooltip, message } from "antd";
+import { Button, Card, Col, Row, Space, Spin, Tag, message } from "antd";
 import {
-  CheckCircleOutlined,
   CloudUploadOutlined,
   DeleteOutlined,
   EditOutlined,
   HistoryOutlined,
   PlayCircleOutlined,
   PlusOutlined,
-  ReloadOutlined,
-  SyncOutlined,
-  WarningOutlined
+  SyncOutlined
 } from "@ant-design/icons";
-import {
-  IApplicationPipelineBaseDto,
-  IApplicationPipelineOutputDto,
-} from "@/domain/applicationpipelines/applicationpipeline-dto";
-import {
-  formItemSingleRankLayout,
-  pipelineFormItemSingleRankLayout,
-} from "@/constans/layout/optionlayout";
 import { useEffect, useState } from "react";
 
 import BuildLogs from "./build-log";
 import ExecutedHistory from "./executed-history";
+import {
+  IApplicationPipelineOutputDto,
+} from "@/domain/applicationpipelines/applicationpipeline-dto";
 import { IApplicationPipelineService } from "@/domain/applicationpipelines/iapplicationpipeline-service";
 import { IocTypes } from "@/shared/config/ioc-types";
-import Item from "antd/lib/list/Item";
 import Operation from "./operation";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
+import PipeFlowConfig from "./pipeline-flow-config";
 import { PipelineBuildStateEnum } from "@/domain/applicationpipelines/applicationpipeline-enum";
-import { id } from "inversify";
 import { initPaginationConfig } from "../../shared/ajax/request";
 import { useHistory } from "react-router-dom";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
@@ -38,7 +29,7 @@ interface IProp {
   /**
    * 应用Id
    */
-  appId?: string;
+  appId: string;
 
 
 }
@@ -47,10 +38,12 @@ interface IProp {
  * 应用流水线设计
  */
 const PipelinePage = (props: IProp) => {
+  const history = useHistory();
   const _applicationPipelineService: IApplicationPipelineService =
     useHookProvider(IocTypes.ApplicationPipelineService);
 
   const [subOperationElement, setOperationElement] = useState<any>(null);
+  const [applicationPipelineBasicElement, setApplicationPipelineBasicElement] = useState<any>(null);
 
   const [paginationConfig, setPaginationConfig] =
     useState<initPaginationConfig>(new initPaginationConfig());
@@ -188,20 +181,6 @@ const PipelinePage = (props: IProp) => {
       ></ExecutedHistory>
     );
   };
-  //  {/* <Tooltip placement="top" title="删除">
-  //                         <Popconfirm
-  //                           placement="top"
-  //                           title="确认删除?"
-  //                           onConfirm={() => onDelete(item.id)}
-  //                           icon={<WarningOutlined />}
-  //                         > */}
-  //                           <DeleteOutlined
-  //                             style={{
-  //                               color: "red",
-  //                               fontSize: 20,
-  //                             }} />,
-  //                         {/* </Popconfirm>
-  //                       </Tooltip> */}
   /**
    * 处理标签
    * @param _projectStatus
@@ -225,63 +204,92 @@ const PipelinePage = (props: IProp) => {
   };
 
   /**
-   * 页面初始化获取数据
+   * 页面清空日志组件
    */
   const onExecutedHistoryClear = () => {
     setExecutedHistoryElement(null);
   };
 
-  const editRow = (_pipelineId: string) => {
-    if (props.appId) {
-      setOperationElement(
-        <Operation
-          pipelineId={_pipelineId}
-          appId={props.appId}
-          onCallbackEvent={clearElement}
-          operationType={OperationTypeEnum.edit}
-        ></Operation>
-      );
-    }
-  };
   const clearElement = () => {
     setOperationElement(null);
     getPageList();
   };
-  const addChange = () => {
-    if (props.appId) {
-      setOperationElement(
-        <Operation
-          appId={props.appId}
-          onCallbackEvent={clearElement}
-          operationType={OperationTypeEnum.add}
-        />
-      );
+
+
+
+  /**
+    * 清空流水线基础配置抽屉组件
+    */
+  const clearApplicationPipelineBasicOperation = () => {
+    setApplicationPipelineBasicElement(null);
+  };
+
+  /**
+   * 添加流水线显示抽屉
+   */
+  const showApplicationPipelineBasicOperation = () => {
+    setApplicationPipelineBasicElement(
+      <Operation
+        appId={props.appId}
+        onConfirmCallbackEvent={ConfirmCallbackEvent}
+        onCancelCallbackEvent={clearApplicationPipelineBasicOperation}
+        operationType={OperationTypeEnum.add}
+      />
+    );
+
+  };
+
+  /**
+   * 抽屉确认回调事件，判断是否需要前往流水线配置界面
+   * @param _isGotoPipelineConfig 
+   * @param _id 
+   */
+  const ConfirmCallbackEvent = (_isGotoPipelineConfig: boolean, _id: string) => {
+    if (_isGotoPipelineConfig) {
+      gotoPipelineConfig(_id)
     }
+    else {
+      clearApplicationPipelineBasicOperation();
+    }
+
+  }
+
+
+  /**
+   * 是否前往流水线配置
+   */
+  const gotoPipelineConfig = (_id: string) => {
+    history.push({
+      pathname: "/application/pipeline/flow/operation",
+      state: {
+        id: _id,
+      },
+    });
   };
 
   return (
     <div>
       <Spin spinning={loading}>
         <Row>
-          <Col span="24" style={{ textAlign: "right" }}>
-            <ReloadOutlined
+
+          <Space align="center" >
+
+            <SyncOutlined
               style={{ textAlign: "right", marginRight: 10, fontSize: 16 }}
               onClick={() => {
                 getPageList();
-              }}
-            />
+              }} />
             <Button
-              shape="round"
               type="primary"
               style={{ margin: "8px 8px" }}
+              icon={<PlusOutlined />}
               onClick={() => {
-                addChange();
-              }}
-            >
-              <PlusOutlined />
+                showApplicationPipelineBasicOperation();
+              }}>
               添加流水线
             </Button>
-          </Col>
+          </Space>
+
         </Row>
         <Row gutter={[16, 16]}>
           {tableData.map((item) => {
@@ -310,7 +318,6 @@ const PipelinePage = (props: IProp) => {
                         color: "orange",
                         fontSize: 20,
                       }}
-                      onClick={() => editRow(item.id)}
                     />,
                     <HistoryOutlined
                       onClick={() => onShowExecutedHistory(item.id)}
@@ -362,6 +369,7 @@ const PipelinePage = (props: IProp) => {
         {subBuildLogsElement}
         {subExecutedHistoryElement}
         {subOperationElement}
+        {applicationPipelineBasicElement}
       </Spin>
     </div>
   );

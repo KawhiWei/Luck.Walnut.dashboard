@@ -98,7 +98,6 @@ const Operation = (props: IProp) => {
    */
   const onFinish = () => {
     formData.validateFields().then((values) => {
-
       let param = formData.getFieldsValue();
       switch (props.operationType) {
         case OperationTypeEnum.add:
@@ -178,7 +177,7 @@ const Operation = (props: IProp) => {
     <div>
       <Drawer
         style={{ borderRadius: 6 }}
-        width="80%"
+        width="600"
         title={
           <div
             style={{
@@ -212,17 +211,16 @@ const Operation = (props: IProp) => {
           </Space>
         }>
         <Form
-          {...formItemSingleRankLayout}
           form={formData}
           name="nest-messages"
-          layout="horizontal"
+          layout="vertical"
           validateMessages={validateMessages}
         >
           <Row>
             <Col span="24">
               <Form.Item
                 name="name"
-                label="集成名称："
+                label="集成名称"
                 rules={[{ required: true }]}
               >
                 <Input
@@ -236,7 +234,7 @@ const Operation = (props: IProp) => {
             <Col span="24">
               <Form.Item
                 name="componentType"
-                label="组件类型："
+                label="组件类型"
                 rules={[{ required: true }]}
               >
                 <Radio.Group>
@@ -251,7 +249,7 @@ const Operation = (props: IProp) => {
             <Col span="24">
               <Form.Item
                 name="componentCategory"
-                label="组件分类："
+                label="组件分类"
                 rules={[{ required: true }]}
               >
                 <Radio.Group>
@@ -266,7 +264,7 @@ const Operation = (props: IProp) => {
             <Col span="24">
               <Form.Item
                 name="componentLinkUrl"
-                label="链接地址:"
+                label="链接地址"
                 rules={[{ required: true }]}
               >
                 <Input style={{ borderRadius: 6 }} />
@@ -278,7 +276,7 @@ const Operation = (props: IProp) => {
             <Col span="24">
               <Form.Item
                 name="userName"
-                label="用户名:"
+                label="用户名"
               >
                 <Input style={{ borderRadius: 6 }} />
               </Form.Item>
@@ -288,17 +286,7 @@ const Operation = (props: IProp) => {
             <Col span="24">
               <Form.Item
                 name="passWord"
-                label="密码："
-              >
-                <Input style={{ borderRadius: 6 }} />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row>
-            <Col span="24">
-              <Form.Item
-                name="token"
-                label="Token："
+                label="密码/Token"
               >
                 <Input style={{ borderRadius: 6 }} />
               </Form.Item>

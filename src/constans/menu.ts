@@ -112,9 +112,9 @@ export const menuList: IMenuOutput[] = [
       },
       {
         id: "1001-5",
-        name: "配置中心第一版",
-        path: "/application/pipeline/flow/operation",
-        component: "pages/application-pipeline-page/operation",
+        name: "应用流水线配置",
+        path: "/application/pipeline/flow/config",
+        component: "pages/application-pipeline-page/pipeline-flow-config",
         tabs: [],
         buttonClick: "",
         buttons: [],

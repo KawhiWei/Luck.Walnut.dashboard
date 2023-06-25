@@ -1,88 +1,232 @@
-import "../drawer.less";
-
+import { Button, Checkbox, Drawer, Form, Input, Select, Space, message } from "antd";
 import { useEffect, useState } from "react";
 
+import { CheckboxChangeEvent } from "antd/lib/checkbox";
+import { IApplicationPipelineInputDto } from "@/domain/applicationpipelines/applicationpipeline-dto";
 import { IApplicationPipelineService } from "@/domain/applicationpipelines/iapplicationpipeline-service";
+import { IComponentIntegrationService } from "@/domain/componentintegration/icomponentintegration-service";
 import { IOperationConfig } from "@/shared/operation/operationConfig";
-import { IStageDto } from "@/domain/applicationpipelines/applicationpipeline-dto";
 import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
-import PipelineFlow from "../pipeline-operation-component-page/pipeline-flow";
-import { message } from "antd";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
 interface IProp {
-  /**
-   * 操作成功回调事件
-   */
-  onCallbackEvent?: any;
-  /**
-   * appId
-   */
-  appId: string;
-  /**
-   * Id
-   */
-  pipelineId?: string;
-  /**
-   * 操作类型
-   */
-  operationType: OperationTypeEnum;
+    /**
+     * 应用Id
+     */
+    appId: string;
+
+    /**
+     * 流水线Id
+     */
+    Id?: string;
+
+    /**
+     * 操作类型
+     */
+    operationType: OperationTypeEnum;
+
+    /**
+     * 操作确认回调事件
+     */
+    onConfirmCallbackEvent?: any;
+
+    /**
+     * 操作取消回调事件
+     */
+    onCancelCallbackEvent?: any;
 
 }
-/**
- * 应用流水线设计
- */
+
+
+const validateMessages = {
+    required: "${label} 不可为空",
+    types: {
+        email: "${label} is not a valid email!",
+        number: "${label} is not a valid number!",
+    },
+    number: {
+        range: "${label} must be between ${min} and ${max}",
+    },
+};
+
+
+
 const Operation = (props: IProp) => {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [pipelineStageElement, setPipelineStageElement] = useState<any>(null);
-  const _applicationPipelineService: IApplicationPipelineService =
-    useHookProvider(IocTypes.ApplicationPipelineService);
+    const [checked, setChecked] = useState(true);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [formData] = Form.useForm();
+    const _applicationPipelineService: IApplicationPipelineService =
+        useHookProvider(IocTypes.ApplicationPipelineService);
+    const _componentIntegrationService: IComponentIntegrationService =
+        useHookProvider(IocTypes.ComponentIntegrationService);
+    const [operationState, setOperationState] = useState<IOperationConfig>({
+        visible: false,
+    });
+    const [componentArray, setComponentArray] = useState<Array<any>>([]);
 
-  /**
-   * 页面初始化事件
-   */
-  useEffect(() => {
-    onGetLoad();
-  }, []);
-  const [operationState, setOperationState] = useState<IOperationConfig>({
-    visible: false,
-  });
 
-  /**
- * 修改弹框属性
- * @param _visible
- * @param _title
- */
-  const editOperationState = (_visible: boolean, _title?: string) => {
-    setOperationState({ visible: _visible, title: _title });
-  };
-  /**
-   *
-   */
-  const onGetLoad = () => {
-    switch (props.operationType) {
-      case OperationTypeEnum.add:
-        editOperationState(true, "添加");
-        break;
-      case OperationTypeEnum.view:
-        editOperationState(true, "查看");
-        break;
-      case OperationTypeEnum.edit:
-        props.pipelineId && editOperationState(true, "修改");
-        break;
+
+    /**
+     * 页面初始化事件
+     */
+    useEffect(() => {
+        onLoad();
+    }, []);
+
+    /**
+     * 编辑获取一个表单
+     * @param _id
+     */
+    const onLoad = () => {
+        _componentIntegrationService.getPage({}).then(resp => {
+            if (resp.success) {
+                console.log(resp.result.data)
+                setComponentArray(resp.result.data)
+            }
+        })
+
+        editOperationState(true, "基础配置")
+    };
+
+
+    /**
+     * 修改弹框属性
+     * @param _visible
+     * @param _title
+     */
+    const editOperationState = (_visible: boolean, _title?: string) => {
+        setOperationState({ visible: _visible, title: _title });
+    };
+
+    /**
+     * 
+     * @param e 
+     */
+    const onChange = (e: CheckboxChangeEvent) => {
+        setChecked(e.target.checked);
+    };
+
+    /**
+     * 保存事件
+     */
+    const onFinish = () => {
+        formData.validateFields().then((values) => {
+            let param = formData.getFieldsValue();
+            setLoading(true);
+            switch (props.operationType) {
+                case OperationTypeEnum.add:
+                    onCreate(param);
+                    break;
+            }
+
+        })
+            .catch((error) => {
+            });
     }
 
-  };
-  const onSetStageArray = (_stageArray: Array<IStageDto>) => {
-    // console.log(_stageArray)
-  };
+    /**
+     * 新增保存事件
+     */
+    const onCreate = (_params: IApplicationPipelineInputDto) => {
 
-  return (
-    <div style={{ height: "100%" }}>
-      <PipelineFlow stageArray={[]} onCallbackEvent={onSetStageArray} />
-    </div>
-  );
+        _applicationPipelineService.create(_params)
+            .then(resp => {
+                if (!resp.success) {
+                    message.error(resp.errorMessage, 3);
+                } else {
+                    message.success("保存成功", 3);
+                }
+
+
+            }).finally(() => {
+                setLoading(false);
+            })
+        console.log(_params)
+    }
+
+    /**
+     * 取消抽屉
+     */
+    const onCancel = () => {
+        editOperationState(false)
+        props.onCancelCallbackEvent && props.onCancelCallbackEvent();
+    }
+
+    return (
+        <div>
+            <Drawer
+                title={operationState.title}
+                width={600}
+                placement="right"
+                onClose={() => onCancel()}
+                open={operationState.visible}
+                footer={
+                    <Space style={{ float: "right" }}>
+                        <Checkbox checked={checked} onChange={onChange}>
+                            是否前往配置详情
+                        </Checkbox>
+                        <Button
+                            shape="round"
+                            disabled={loading}
+                            onClick={() => onCancel()}
+                        >
+                            取消
+                        </Button>
+                        <Button
+                            shape="round"
+                            style={{ margin: "0 8px" }}
+                            type="primary"
+                            loading={loading}
+                            onClick={() => onFinish()}
+                        >
+                            保存
+                        </Button>
+                    </Space>}>
+                <p style={{ whiteSpace: "pre" }}>流水线基础信息设置</p>
+                <Form
+                    form={formData}
+                    name="nest-messages"
+                    layout="vertical"
+                    validateMessages={validateMessages}
+                >
+                    <Form.Item
+                        name="name"
+                        label="名称"
+                        rules={[{ required: true }]}
+                        colon={false}
+                    >
+                        <Input
+                            disabled={props.operationType === OperationTypeEnum.edit}
+                        />
+                    </Form.Item>
+                    <Form.Item
+                        name="buildComponentId"
+                        label="构建集群"
+                        rules={[{ required: true }]}
+                    >
+                        <Select allowClear={true} placeholder="请选择构建集群">
+                            {componentArray.map((item: any) => {
+                                return (
+                                    <Select.Option value={item.id}>
+                                        {item.name}
+                                    </Select.Option>
+                                );
+                            })}
+                        </Select>
+                    </Form.Item>
+                    <Form.Item
+                        name="continuousIntegrationImage"
+                        label="CI镜像"
+                        rules={[{ required: true }]}
+                    >
+                        <Input />
+                    </Form.Item>
+                </Form>
+
+            </Drawer>
+        </div>
+    );
 };
 
 export default Operation;

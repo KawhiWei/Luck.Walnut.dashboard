@@ -3,19 +3,19 @@ import { ComponentCategoryEnum, ComponentLinkTypeEnum } from "../componentintegr
 export const ComponentTypeMap = [
     {
         key: ComponentLinkTypeEnum.gitlab,
-        value: "Gitlab代码仓库",
+        value: "Gitlab",
     },
     {
         key: ComponentLinkTypeEnum.goGs,
-        value: "Gogs代码仓库"
+        value: "Gogs"
     },
     {
         key: ComponentLinkTypeEnum.harBor,
-        value: "Harbor镜像仓库"
+        value: "Harbor"
     },
     {
         key: ComponentLinkTypeEnum.jenkins,
-        value: "Jenkins流水线引擎"
+        value: "Jenkins"
     },
 
 ]

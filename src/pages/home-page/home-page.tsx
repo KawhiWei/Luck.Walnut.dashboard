@@ -8,7 +8,7 @@ import {
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 
-import Operation from "../application-pipeline-page/operation";
+import PipeFlowConfig from "../application-pipeline-page/pipeline-flow-config";
 import PipelinePage from "../application-pipeline-page/index";
 // import Draggable from 'react-draggable';
 import StackedLineCharts from "./stacked-line-charts";

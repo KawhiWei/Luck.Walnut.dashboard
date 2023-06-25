@@ -1,11 +1,9 @@
 import "./pipeline-flow.less"
 
-import { Col, Row, } from "antd";
 import {
   DeleteOutlined,
   FormOutlined,
   PlusCircleOutlined,
-  PlusOutlined,
 } from "@ant-design/icons";
 import {
   IStageDto,
@@ -13,10 +11,7 @@ import {
 } from "@/domain/applicationpipelines/applicationpipeline-dto";
 import { useEffect, useState } from "react";
 
-import { OperationTypeEnum } from "@/shared/operation/operationType";
-import StageOperation from "./stage-operation";
 import StepOperation from "./step-operation";
-import { StepTypeEnum } from "@/domain/applicationpipelines/applicationpipeline-enum";
 import TaskList from "./task-list";
 import _ from "lodash";
 

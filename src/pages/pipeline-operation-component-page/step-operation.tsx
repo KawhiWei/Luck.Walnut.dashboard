@@ -157,7 +157,6 @@ const StepOperation = (props: IProp) => {
       <Drawer
         width="600"
         style={{ borderRadius: 6 }}
-        getContainer={false}
         onClose={onCancel}
         title={
           <div

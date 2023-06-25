@@ -10,7 +10,7 @@ import { IocTypes } from "@/shared/config/ioc-types";
 import { useHistory } from "react-router-dom"
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
-const ApplicationPage = () => {
+const DovePage = () => {
     const history = useHistory();
     const _doveLogService: IDoveLogService = useHookProvider(IocTypes.DoveLogService);
     const [tableData, setTableData] = useState<Array<any>>([]);
@@ -170,4 +170,4 @@ const ApplicationPage = () => {
         </Spin>
     </div>)
 }
-export default ApplicationPage;
+export default DovePage;

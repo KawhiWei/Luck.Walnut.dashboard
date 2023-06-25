@@ -7,29 +7,16 @@ import { IEntity } from "@/shared/entity";
  */
 export interface IApplicationPipelineBaseDto {
 
-    /**
-    * 流水线名称
-    */
-    name: string;
-    /**
-     * 是否发布
-     */
-    published: boolean;
 
     /**
-     * 归属环境
-     */
-    appEnvironmentId: string;
-
-    /**
-     * 阶段集合
+     * 应用标识
      */
     appId: string;
 
     /**
-     * 流水线状态
-     */
-     pipelineBuildState: PipelineBuildStateEnum;
+    * 流水线名称
+    */
+    name: string;
 
     /**
      * 流水线Dsl
@@ -37,26 +24,31 @@ export interface IApplicationPipelineBaseDto {
     pipelineScript: Array<IStageDto>;
 
     /**
-     * 
+     * 构建组件
      */
-    nextPipelineId: string;
+    buildComponentId: string;
 
     /**
-     * 开发平台
+     * 构建运行镜像
      */
-    developmentLanguage: string;
-
-    
-
-    
+    continuousIntegrationImage: string;
 
 }
+/**
+ * 流水线编辑输入Dto
+ */
+export interface IApplicationPipelineInputDto extends IApplicationPipelineBaseDto, IEntity<string> {
 
+}
 
 /**
  * 流水线Dto模型接口
  */
-export interface IApplicationPipelineOutputDto extends IApplicationPipelineBaseDto,IEntity<string> {
+export interface IApplicationPipelineOutputDto extends IApplicationPipelineBaseDto, IEntity<string> {
+    /**
+     * 
+     */
+    nextPipelineId: string;
     /**
      * 流水线状态
      */
@@ -65,18 +57,26 @@ export interface IApplicationPipelineOutputDto extends IApplicationPipelineBaseD
     /**
      * JenkinsBuild的Id
      */
-    jenkinsBuildNumber:number;
+    jenkinsBuildNumber: number;
+
+    /**
+     * 流水线状态
+     */
+    pipelineBuildState: PipelineBuildStateEnum;
+
+    /**
+     * 是否发布
+     */
+    published: boolean;
 
     /**
      * 最后一次执行任务的Id
      */
-    lastApplicationPipelineExecutedRecordId:string,
+    lastApplicationPipelineExecutedRecordId: string,
 
 }
 
-export interface IApplicationPipelineSaveDto extends IApplicationPipelineBaseDto, IEntity<string> {
-    componentIntegrationId: string;
-}
+
 
 
 /**

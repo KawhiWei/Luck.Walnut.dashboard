@@ -57,36 +57,12 @@ const ApplicationPage = () => {
   const [componentIntegrationArray, setComponentIntegrationArray] = useState<Array<any>>([]);
 
 
-
-  const handleMenuClick: MenuProps['onClick'] = e => {
-    message.info('Click on menu item.');
-    console.log('click', e);
-  };
-
-  const items: MenuProps['items'] = [
-    {
-      label: '1st menu item',
-      key: '1',
-      icon: <UserOutlined />,
-    },
-    {
-      label: '2nd menu item',
-      key: '2',
-      icon: <UserOutlined />,
-    },
-    {
-      label: '3rd menu item',
-      key: '3',
-      icon: <UserOutlined />,
-    },
-  ];
-
-  const menuProps = {
-    items,
-    onClick: handleMenuClick,
-  };
-
-
+  const PandaSvg = () => (
+    <svg className="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1590" width="200" height="200">
+      <path d="M64.76828 577.792279a129.151919 129.151919 0 0 1 127.67992-109.695932h636.287602a43.199973 43.199973 0 0 0 43.199973-43.199973V256.06448a43.199973 43.199973 0 0 0-43.199973-43.199973H414.848061a175.93589 175.93589 0 0 1-171.967893 137.727914 175.67989 175.67989 0 0 1-175.99989-175.295891A175.67989 175.67989 0 0 1 242.880168 0.00064a175.99989 175.99989 0 0 1 169.215894 126.911921h416.63974c71.295955 0 129.151919 57.855964 129.151919 129.151919v168.831894a129.151919 129.151919 0 0 1-129.151919 129.15192H192.4482a43.199973 43.199973 0 0 0-43.199973 43.199973V768.00016c0 23.871985 19.391988 43.199973 43.199973 43.199973h413.951741a175.93589 175.93589 0 0 1 171.903893-137.727914 175.67989 175.67989 0 0 1 175.99989 175.295891A175.67989 175.67989 0 0 1 778.303834 1024a175.99989 175.99989 0 0 1-169.215895-126.911921h-416.639739A129.151919 129.151919 0 0 1 63.36028 767.93616V597.248267c0-6.591996 0.448-13.119992 1.408-19.455988z m178.111888-316.799802c47.80797 0 86.399946-38.399976 86.399946-85.695947 0-47.23197-38.591976-85.695946-86.399946-85.695946-47.80797 0-86.399946 38.399976-86.399946 85.695946 0 47.23197 38.591976 85.695946 86.399946 85.695947z m535.423666 502.015686c-47.74397 0-86.399946 38.399976-86.399946 85.695947 0 47.23197 38.655976 85.695946 86.399946 85.695946 47.80797 0 86.399946-38.399976 86.399946-85.695946 0-47.23197-38.591976-85.695946-86.399946-85.695947z" fill="#979797" p-id="1591">
+      </path>
+    </svg>
+  );
 
   const pagination: PaginationProps = {
     ...tacitPagingProps,
@@ -128,6 +104,15 @@ const ApplicationPage = () => {
   };
 
   const goToApplicationDashboard = (_appId: string) => {
+    history.push({
+      pathname: "/application/dashboard",
+      state: {
+        appId: _appId,
+      },
+    });
+  };
+
+  const goToApplicationPipeline = (_appId: string) => {
     history.push({
       pathname: "/application/dashboard",
       state: {
@@ -264,9 +249,7 @@ const ApplicationPage = () => {
             return (
               <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={4}>
                 <div className="app-card" style={{ borderRadius: 8 }} >
-                  <div className="app-card-title" onClick={() => {
-                    console.log(31231231232121)
-                  }}                >
+                  <div className="app-card-title" onClick={() => { goToApplicationDashboard(item.appId) }}>
                     <Avatar size={35} shape="square" style={{ marginRight: 15, backgroundColor: getAvatarColor(item.appId), fontWeight: 700 }}>{item.appId[0].toUpperCase()}</Avatar>
                     <div >{item.appId}</div>
                   </div>
@@ -281,8 +264,8 @@ const ApplicationPage = () => {
                     </div>
                     <div className="card-operation-body">
                       <div className="card-operation-body-icon">
-                        <Tooltip title="构建过程">
-                          <PartitionOutlined onClick={() => { console.log("asdasdasdasdassad") }} />
+                        <Tooltip title="流水线">
+                          <PartitionOutlined onClick={() => { goToApplicationDashboard(item.appId) }} />
                         </Tooltip>
                       </div>
                       <div className="card-operation-body-icon">

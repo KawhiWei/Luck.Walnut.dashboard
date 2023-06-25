@@ -183,7 +183,7 @@ const Operation = (props: IProp) => {
   return (
     <div>
       <Drawer
-        width="30%"
+        width="600"
         title={
           <div
             style={{
@@ -224,7 +224,7 @@ const Operation = (props: IProp) => {
         >
           <Form.Item
             name="name"
-            label="应用名称："
+            label="应用名称"
             rules={[{ required: true }]}
           >
             <Input
@@ -233,7 +233,7 @@ const Operation = (props: IProp) => {
           </Form.Item>
           <Form.Item
             name="appId"
-            label="应用标识："
+            label="应用标识"
             rules={[{ required: true }]}
           >
             <Input
@@ -243,7 +243,7 @@ const Operation = (props: IProp) => {
 
           <Form.Item
             name="gitUrl"
-            label="git地址："
+            label="git地址"
             rules={[{ required: true }]}
           >
             <Input />
