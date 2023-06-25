@@ -250,6 +250,7 @@ const PipelinePage = (props: IProp) => {
     }
     else {
       clearApplicationPipelineBasicOperation();
+      getPageList();
     }
 
   }
@@ -260,7 +261,7 @@ const PipelinePage = (props: IProp) => {
    */
   const gotoPipelineConfig = (_id: string) => {
     history.push({
-      pathname: "/application/pipeline/flow/operation",
+      pathname: "/application/pipeline/flow/config",
       state: {
         id: _id,
       },

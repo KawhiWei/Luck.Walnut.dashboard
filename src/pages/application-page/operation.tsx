@@ -131,7 +131,6 @@ const Operation = (props: IProp) => {
    */
   const onFinish = () => {
     formData.validateFields().then((values) => {
-
       let param = formData.getFieldsValue();
       switch (props.operationType) {
         case OperationTypeEnum.add:

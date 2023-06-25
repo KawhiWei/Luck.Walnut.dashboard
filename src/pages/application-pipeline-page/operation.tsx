@@ -129,20 +129,20 @@ const Operation = (props: IProp) => {
      * 新增保存事件
      */
     const onCreate = (_params: IApplicationPipelineInputDto) => {
-
+        _params.appId = props.appId;
+        _params.pipelineScript = [];
         _applicationPipelineService.create(_params)
             .then(resp => {
                 if (!resp.success) {
                     message.error(resp.errorMessage, 3);
                 } else {
                     message.success("保存成功", 3);
+                    props.onConfirmCallbackEvent && props.onConfirmCallbackEvent(checked, resp.result)
                 }
-
-
             }).finally(() => {
                 setLoading(false);
             })
-        console.log(_params)
+
     }
 
     /**

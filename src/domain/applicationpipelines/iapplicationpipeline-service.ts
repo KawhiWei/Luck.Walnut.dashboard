@@ -18,7 +18,7 @@ export interface IApplicationPipelineService {
     * 添加应用
     * @param  
     */
-    create(_param: any): Promise<IServerReturn<any>>;
+    create(_param: any): Promise<IServerReturn<string>>;
 
     /**
      * 获取详情

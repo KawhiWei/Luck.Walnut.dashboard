@@ -18,7 +18,7 @@ export class ApplicationPipelineService extends BaseService implements IApplicat
         return this.dataRequest.getRequest(`${ApplicationPipelineApi.applicationPipeline}/${_id}`)
     }
 
-    create(_param: IApplicationPipelineInputDto): Promise<IServerReturn<any>> {
+    create(_param: IApplicationPipelineInputDto): Promise<IServerReturn<string>> {
         return this.dataRequest.postRequest(`${ApplicationPipelineApi.applicationPipeline}`, _param)
     }
 
