@@ -2,8 +2,9 @@ import "./pipeline-flow.less"
 
 import {
   DeleteOutlined,
+  EditFilled,
   FormOutlined,
-  PlusCircleOutlined,
+  PlusCircleOutlined
 } from "@ant-design/icons";
 import {
   IStageDto,
@@ -25,6 +26,11 @@ interface IProp {
    * 
    */
   stageArray: Array<IStageDto>;
+
+  /**
+   * 流水线信息编辑回调事件，用于编辑基础信息弹框使用
+   */
+  onEditPipeLineInformationCallbackEvent?: any;
 }
 
 /***
@@ -41,20 +47,6 @@ const PipelineFlow = (props: IProp) => {
 
   const onLoad = () => {
     setStageList(props.stageArray);
-  };
-
-
-  /**
-   * 添加阶段
-   */
-  const onAddStage = () => {
-    let name = `阶段-${stageList.length + 1}`
-    stageList.push({
-      name: name,
-      steps: [],
-    });
-    setStageList((current) => [...current]);
-    props.onCallbackEvent(stageList)
   };
 
   /**
@@ -99,7 +91,9 @@ const PipelineFlow = (props: IProp) => {
    * 添加阶段
    */
   const onAddStep = (_stageIndex: number, _categoryName: string, step: IStepDto) => {
-    if (_stageIndex <= 0) {
+
+    debugger
+    if (_stageIndex < 0) {
       let stage: IStageDto = {
         name: _categoryName,
         steps: [step],
@@ -142,7 +136,6 @@ const PipelineFlow = (props: IProp) => {
         stepIndex={_stepIndex}
       ></StepOperation>
     )
-
   };
 
   /**
@@ -164,11 +157,38 @@ const PipelineFlow = (props: IProp) => {
     props.onCallbackEvent(stageList)
   };
 
+  /**
+   * 删除步骤
+   */
+  const onPipeLineInformationCallbackEvent = () => {
+    props.onEditPipeLineInformationCallbackEvent && props.onEditPipeLineInformationCallbackEvent();
+  }
+
+
   return (
     <div className="pipeline-flow">
       <div className="pipeline-flow-content">
         <div className="pipeline-flow-groups-container">
           <div className="pipeline-flow-groups">
+            <div className="flow-group-content flow-group-create">
+              <div className="flow-group-split-line">
+                <div className="flow-group-split-line-button">
+                </div>
+              </div>
+              <div className="flow-group">
+                <div className="group-head">
+                  <div className="editable-label">
+                    <span className="group-head-title">流水线信息</span>
+                  </div>
+                </div>
+                <div className="steps">
+                  <div className="flow-job-content flow-basic-edit-information" onClick={() => onPipeLineInformationCallbackEvent()}>
+                  <EditFilled /><span className="flow-job-create-title">编辑流水线信息</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {stageList.map(
               (stage: IStageDto, stageIndex) => {
                 return (

@@ -8,10 +8,11 @@ import {
     Drawer,
     Row
 } from "antd";
+import { IPipelinePullCodeStepDto, IStepDto } from "@/domain/applicationpipelines/applicationpipeline-dto";
 import { useEffect, useState } from "react";
 
 import { IOperationConfig } from "@/shared/operation/operationConfig";
-import { IStepDto } from "@/domain/applicationpipelines/applicationpipeline-dto";
+import { StepTypeEnum } from '@/domain/applicationpipelines/applicationpipeline-enum';
 import { taskList } from '@/constans/task';
 
 interface IProp {
@@ -52,6 +53,15 @@ const TaskList = (props: IProp) => {
      * 弹框取消事件
      */
     const onConfirm = (_categoryName: string, step: IStepDto) => {
+        switch (step.stepType) {
+            case StepTypeEnum.pullCode:
+                let pullCodeContent: IPipelinePullCodeStepDto = {
+                    name: step.name,
+                    branch: "main"
+                }
+                step.content = JSON.stringify(pullCodeContent)
+                break;
+        }
         editOperationState(false);
         props.onConfirmCallbackEvent(props.stageIndex, _categoryName, step);
     };

@@ -6,6 +6,7 @@ import {
   Input,
   Row,
   Select,
+  Space,
   Steps,
 } from "antd";
 import {
@@ -110,7 +111,6 @@ const StepOperation = (props: IProp) => {
         if (props.step.content !== "") {
           buildImageFormData.setFieldsValue(JSON.parse(props.step.content));
         }
-
         break;
       case StepTypeEnum.compilePublish:
         if (props.step.content !== "") {
@@ -169,32 +169,36 @@ const StepOperation = (props: IProp) => {
         }
         closable={false}
         open={operationState.visible}
-        footer={null}
+        footer={
+          <Space style={{ float: "right" }}>
+            <Button
+              shape="round"
+              onClick={() => onCancel()}
+            >
+              取消
+            </Button>
+            <Button
+              shape="round"
+              style={{ margin: "0 8px" }}
+              type="primary"
+              onClick={() => onFinish()}
+            >
+              保存
+            </Button>
+          </Space>}
       >
         {props.step.stepType === StepTypeEnum.pullCode ? (
           <Form
             form={pullCodeFormData}
-            {...formItemSingleRankLayout}
             name="nest-messages"
-            layout="horizontal"
+            layout="vertical"
             validateMessages={validateMessages}
           >
             <Row>
               <Col span="24">
                 <Form.Item
-                  name="git"
-                  label="拉取代码："
-                  rules={[{ required: true }]}
-                >
-                  <Input style={{ borderRadius: 6 }} disabled />
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row>
-              <Col span="24">
-                <Form.Item
-                  name="branch"
-                  label="分支："
+                  name="name"
+                  label="任务名称"
                   rules={[{ required: true }]}
                 >
                   <Input style={{ borderRadius: 6 }} />
@@ -202,19 +206,13 @@ const StepOperation = (props: IProp) => {
               </Col>
             </Row>
             <Row>
-              <Col span="24" style={{ textAlign: "right" }}>
-                <Form.Item {...tailLayout}>
-                  <Button shape="round" onClick={() => onCancel()}>
-                    取消
-                  </Button>
-                  <Button
-                    shape="round"
-                    style={{ margin: "0 8px" }}
-                    type="primary"
-                    onClick={() => onFinish()}
-                  >
-                    保存
-                  </Button>
+              <Col span="24">
+                <Form.Item
+                  name="branch"
+                  label="分支"
+                  rules={[{ required: true }]}
+                >
+                  <Input style={{ borderRadius: 6 }} />
                 </Form.Item>
               </Col>
             </Row>

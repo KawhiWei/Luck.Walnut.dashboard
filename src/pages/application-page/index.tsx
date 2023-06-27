@@ -20,7 +20,9 @@ import {
   CameraOutlined,
   EditOutlined,
   PartitionOutlined,
+  PlusCircleFilled,
   PlusOutlined,
+  PlusSquareFilled,
   SyncOutlined,
   UserOutlined
 } from "@ant-design/icons";
@@ -236,7 +238,7 @@ const ApplicationPage = () => {
                 style={{ float: "right" }}
                 size="middle"
                 type="primary"
-                icon={<PlusOutlined />}
+                icon={<PlusOutlined />}               
                 onClick={() => addChange()}
               >
                 创建应用

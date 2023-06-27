@@ -19,7 +19,6 @@ import { IApplicationPipelineService } from "@/domain/applicationpipelines/iappl
 import { IocTypes } from "@/shared/config/ioc-types";
 import Operation from "./operation";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
-import PipeFlowConfig from "./pipeline-flow-config";
 import { PipelineBuildStateEnum } from "@/domain/applicationpipelines/applicationpipeline-enum";
 import { initPaginationConfig } from "../../shared/ajax/request";
 import { useHistory } from "react-router-dom";
@@ -240,6 +239,14 @@ const PipelinePage = (props: IProp) => {
   };
 
   /**
+   * 流水线编辑事件
+   * @param _id 
+   */
+  const onEdit = (_id: string) => {
+    gotoPipelineConfig(_id)
+  }
+
+  /**
    * 抽屉确认回调事件，判断是否需要前往流水线配置界面
    * @param _isGotoPipelineConfig 
    * @param _id 
@@ -319,6 +326,7 @@ const PipelinePage = (props: IProp) => {
                         color: "orange",
                         fontSize: 20,
                       }}
+                      onClick={() => onEdit(item.id)}
                     />,
                     <HistoryOutlined
                       onClick={() => onShowExecutedHistory(item.id)}

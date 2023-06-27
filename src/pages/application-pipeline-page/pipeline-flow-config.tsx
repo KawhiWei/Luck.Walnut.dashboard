@@ -6,36 +6,19 @@ import { IApplicationPipelineService } from "@/domain/applicationpipelines/iappl
 import { IOperationConfig } from "@/shared/operation/operationConfig";
 import { IStageDto } from "@/domain/applicationpipelines/applicationpipeline-dto";
 import { IocTypes } from "@/shared/config/ioc-types";
+import Operation from "./operation";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
 import PipelineFlow from "../pipeline-operation-component-page/pipeline-flow";
 import { message } from "antd";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
-interface IProp {
-  /**
-   * 操作成功回调事件
-   */
-  onCallbackEvent?: any;
-  /**
-   * appId
-   */
-  appId: string;
-  /**
-   * Id
-   */
-  pipelineId?: string;
-  /**
-   * 操作类型
-   */
-  operationType: OperationTypeEnum;
-
-}
 /**
  * 应用流水线设计
  */
-const PipeFlowConfig = (props: IProp) => {
+const PipeFlowConfig = (props: any) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [pipelineStageElement, setPipelineStageElement] = useState<any>(null);
+  const [applicationPipelineBasicElement, setApplicationPipelineBasicElement] = useState<any>(null);
   const _applicationPipelineService: IApplicationPipelineService =
     useHookProvider(IocTypes.ApplicationPipelineService);
 
@@ -78,9 +61,44 @@ const PipeFlowConfig = (props: IProp) => {
     // console.log(_stageArray)
   };
 
+  /**
+  * 清空流水线基础配置抽屉组件
+  */
+  const clearApplicationPipelineBasicOperation = () => {
+    setApplicationPipelineBasicElement(null);
+  };
+
+  /**
+ * 抽屉确认回调事件，判断是否需要前往流水线配置界面
+ * @param _isGotoPipelineConfig 
+ * @param _id 
+ */
+  const ConfirmCallbackEvent = (_isGotoPipelineConfig: boolean, _id: string) => {
+
+
+  }
+
+  /**
+   * 
+   */
+  const showApplicationPipelineBasicOperation = () => {
+    setApplicationPipelineBasicElement(
+      <Operation
+        appId={props.appId}
+        id={""}
+        onConfirmCallbackEvent={ConfirmCallbackEvent}
+        onCancelCallbackEvent={clearApplicationPipelineBasicOperation}
+        operationType={OperationTypeEnum.edit}
+      />
+    );
+  };
+
+
+
   return (
     <div style={{ height: "100%" }}>
-      <PipelineFlow stageArray={[]} onCallbackEvent={onSetStageArray} />
+      <PipelineFlow stageArray={[]} onCallbackEvent={onSetStageArray} onEditPipeLineInformationCallbackEvent={showApplicationPipelineBasicOperation} />
+      {applicationPipelineBasicElement}
     </div>
   );
 };

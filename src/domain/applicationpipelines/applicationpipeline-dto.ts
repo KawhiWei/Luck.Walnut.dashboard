@@ -114,3 +114,25 @@ export interface IStepDto {
      */
     content: string;
 }
+
+
+/**
+ * 拉取代码Dto
+ */
+export interface IStepContentBaseDto {
+    /***
+     * 阶段名称
+     */
+    name: string;
+}
+
+/**
+ * 拉取代码Dto
+ */
+export interface IPipelinePullCodeStepDto extends IStepContentBaseDto {
+
+    /**
+     * 分支
+     */
+    branch: string;
+}

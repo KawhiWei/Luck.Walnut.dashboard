@@ -19,7 +19,7 @@ interface IProp {
     /**
      * 流水线Id
      */
-    Id?: string;
+    id?: string;
 
     /**
      * 操作类型
@@ -35,6 +35,8 @@ interface IProp {
      * 操作取消回调事件
      */
     onCancelCallbackEvent?: any;
+
+
 
 }
 
@@ -53,7 +55,7 @@ const validateMessages = {
 
 
 const Operation = (props: IProp) => {
-    const [checked, setChecked] = useState(true);
+    const [checked, setChecked] = useState(props.operationType === OperationTypeEnum.add);
     const [loading, setLoading] = useState<boolean>(false);
     const [formData] = Form.useForm();
     const _applicationPipelineService: IApplicationPipelineService =
@@ -85,7 +87,6 @@ const Operation = (props: IProp) => {
                 setComponentArray(resp.result.data)
             }
         })
-
         editOperationState(true, "基础配置")
     };
 
@@ -163,7 +164,7 @@ const Operation = (props: IProp) => {
                 open={operationState.visible}
                 footer={
                     <Space style={{ float: "right" }}>
-                        <Checkbox checked={checked} onChange={onChange}>
+                        <Checkbox checked={checked} disabled={props.operationType === OperationTypeEnum.edit} onChange={onChange}>
                             是否前往配置详情
                         </Checkbox>
                         <Button
