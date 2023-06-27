@@ -13,7 +13,7 @@ export const StepTypeMap = [
         value: "编译发布"
     },
     {
-        key: StepTypeEnum.buildImage,
+        key: StepTypeEnum.DockerFilePublishAndBuildImage,
         value: "构建镜像"
     },
     {

@@ -1,6 +1,5 @@
+import { IApplicationPipelineFlowUpdateInputDto, IApplicationPipelineOutputDto } from "./applicationpipeline-dto";
 import { IServerPageReturn, IServerReturn } from "@/shared/entity";
-
-import { IApplicationPipelineOutputDto } from "./applicationpipeline-dto";
 
 export interface IApplicationPipelineService {
     /**
@@ -32,6 +31,12 @@ export interface IApplicationPipelineService {
      */
     update(_id: string, _param: any): Promise<IServerReturn<any>>;
 
+    /**
+     * 修改流水线信息
+     * @param _id 
+     * @param _param 
+     */
+    updatePipelineFlow(_id: string, _param: IApplicationPipelineFlowUpdateInputDto): Promise<IServerReturn<any>>;
 
     /**
      * 发布任务到Jenkins

@@ -8,7 +8,7 @@ import {
     Drawer,
     Row
 } from "antd";
-import { IPipelinePullCodeStepDto, IStepDto } from "@/domain/applicationpipelines/applicationpipeline-dto";
+import { IPipelineDockerPublishAndBuildImageStepDto, IPipelinePullCodeStepDto, IStepDto } from "@/domain/applicationpipelines/applicationpipeline-dto";
 import { useEffect, useState } from "react";
 
 import { IOperationConfig } from "@/shared/operation/operationConfig";
@@ -60,6 +60,13 @@ const TaskList = (props: IProp) => {
                     branch: "main"
                 }
                 step.content = JSON.stringify(pullCodeContent)
+                break;
+            case StepTypeEnum.DockerFilePublishAndBuildImage:
+                let PipelineDockerPublishAndBuildImageContent: IPipelineDockerPublishAndBuildImageStepDto = {
+                    name: step.name,
+                    dockerFileSrc: "src"
+                }
+                step.content = JSON.stringify(PipelineDockerPublishAndBuildImageContent)
                 break;
         }
         editOperationState(false);
@@ -134,7 +141,6 @@ const TaskList = (props: IProp) => {
                                                                         <div>{step.name}</div>
                                                                     </Card>
                                                                 </Col>
-
 
                                                             )
                                                         })

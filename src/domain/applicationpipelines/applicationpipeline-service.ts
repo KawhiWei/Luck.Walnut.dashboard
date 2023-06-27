@@ -1,4 +1,4 @@
-import { IApplicationPipelineInputDto, IApplicationPipelineOutputDto } from "./applicationpipeline-dto";
+import { IApplicationPipelineFlowUpdateInputDto, IApplicationPipelineInputDto, IApplicationPipelineOutputDto } from "./applicationpipeline-dto";
 import { IServerPageReturn, IServerReturn } from "@/shared/entity";
 
 import { ApplicationPipelineApi } from "@/constans/api";
@@ -13,6 +13,11 @@ export class ApplicationPipelineService extends BaseService implements IApplicat
     update(_id: string, _param: IApplicationPipelineInputDto): Promise<IServerReturn<any>> {
         return this.dataRequest.putRequest(`${ApplicationPipelineApi.applicationPipeline}/${_id}`, _param)
     }
+
+    updatePipelineFlow(_id: string, _param: IApplicationPipelineFlowUpdateInputDto): Promise<IServerReturn<any>> {
+        return this.dataRequest.putRequest(`${ApplicationPipelineApi.applicationPipeline}/${_id}/pipeline/flow`, _param)
+    }
+
 
     getDetail(_id: string): Promise<IServerReturn<IApplicationPipelineOutputDto>> {
         return this.dataRequest.getRequest(`${ApplicationPipelineApi.applicationPipeline}/${_id}`)

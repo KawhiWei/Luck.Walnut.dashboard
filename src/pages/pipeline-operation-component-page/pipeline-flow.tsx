@@ -37,17 +37,11 @@ interface IProp {
  * 应用流水线设计
  */
 const PipelineFlow = (props: IProp) => {
-  const [stageList, setStageList] = useState<Array<IStageDto>>([]);
   const [stepOperationElement, setStepOperationElement] = useState<any>(null);
   const [taskListElement, setTaskListElement] = useState<any>(null);
 
   useEffect(() => {
-    onLoad();
-  }, [stageList]);
-
-  const onLoad = () => {
-    setStageList(props.stageArray);
-  };
+  }, [props.stageArray]);
 
   /**
    * 清空任务列表组件
@@ -73,7 +67,6 @@ const PipelineFlow = (props: IProp) => {
       onConfirmCallbackEvent={onAddStep}
       onCancelCallbackEvent={clearTaskListElement}
     />)
-    setStageList((current) => [...current]);
   };
 
 
@@ -81,8 +74,9 @@ const PipelineFlow = (props: IProp) => {
    * 删除Stage
    */
   const onRemoveStage = (_stageIndex: number) => {
-    stageList.splice(_stageIndex, 1);
-    setStageList((current) => [...current]);
+    let { stageArray } = props;
+    stageArray.splice(_stageIndex, 1);
+    props.onCallbackEvent(stageArray)
   };
 
 
@@ -91,32 +85,28 @@ const PipelineFlow = (props: IProp) => {
    * 添加阶段
    */
   const onAddStep = (_stageIndex: number, _categoryName: string, step: IStepDto) => {
-
-    debugger
+    let { stageArray } = props;
     if (_stageIndex < 0) {
       let stage: IStageDto = {
         name: _categoryName,
         steps: [step],
       }
-      stageList.push(stage);
-
+      stageArray.push(stage);
     }
     else {
-      stageList.filter((item, index) => {
+      stageArray.filter((item, index) => {
         if (index === _stageIndex) {
           item.steps.push(step);
         }
         return item;
       });
     }
-
-    setStageList((current) => [...current]);
     clearTaskListElement();
-    props.onCallbackEvent(stageList)
+    props.onCallbackEvent(stageArray)
   };
 
   /**
-   * 添加阶段
+   * 编辑阶段
    */
   const onEditStep = (_stageIndex: number, _stepIndex: number, _step: IStepDto) => {
     console.log(_stageIndex, _stepIndex, _step)
@@ -142,19 +132,19 @@ const PipelineFlow = (props: IProp) => {
    * 删除步骤
    */
   const onRemoveStep = (_stageIndex: number, _stepIndex: number) => {
-    stageList.filter((item, index) => {
+    let { stageArray } = props;
+
+    stageArray.filter((item, index) => {
       if (index === _stageIndex) {
         item.steps.splice(_stepIndex, 1);
       }
       return item;
     });
-    let currentStage = stageList[_stageIndex];
+    let currentStage = stageArray[_stageIndex];
     if (currentStage && currentStage.steps.length <= 0) {
-      stageList.splice(_stageIndex, 1);
+      stageArray.splice(_stageIndex, 1);
     }
-
-    setStageList((current) => [...current]);
-    props.onCallbackEvent(stageList)
+    props.onCallbackEvent(stageArray)
   };
 
   /**
@@ -183,13 +173,13 @@ const PipelineFlow = (props: IProp) => {
                 </div>
                 <div className="steps">
                   <div className="flow-job-content flow-basic-edit-information" onClick={() => onPipeLineInformationCallbackEvent()}>
-                  <EditFilled /><span className="flow-job-create-title">编辑流水线信息</span>
+                    <EditFilled /><span className="flow-job-create-title">编辑流水线信息</span>
                   </div>
                 </div>
               </div>
             </div>
 
-            {stageList.map(
+            {props.stageArray.map(
               (stage: IStageDto, stageIndex) => {
                 return (
                   <div className="flow-group-content">

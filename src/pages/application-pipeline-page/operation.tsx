@@ -36,8 +36,6 @@ interface IProp {
      */
     onCancelCallbackEvent?: any;
 
-
-
 }
 
 
@@ -119,6 +117,9 @@ const Operation = (props: IProp) => {
                 case OperationTypeEnum.add:
                     onCreate(param);
                     break;
+                case OperationTypeEnum.edit:
+                    onUpdate(param);
+                    break;
             }
 
         })
@@ -131,8 +132,27 @@ const Operation = (props: IProp) => {
      */
     const onCreate = (_params: IApplicationPipelineInputDto) => {
         _params.appId = props.appId;
-        _params.pipelineScript = [];
         _applicationPipelineService.create(_params)
+            .then(resp => {
+                if (!resp.success) {
+                    message.error(resp.errorMessage, 3);
+                } else {
+                    message.success("保存成功", 3);
+                    props.onConfirmCallbackEvent && props.onConfirmCallbackEvent(checked, resp.result)
+                }
+            }).finally(() => {
+                setLoading(false);
+            })
+
+    }
+
+    /**
+     * 编辑保存事件
+     */
+    const onUpdate = (_params: IApplicationPipelineInputDto) => {
+        debugger
+        _params.appId = props.appId;
+        props.id && _applicationPipelineService.update(props.id,_params)
             .then(resp => {
                 if (!resp.success) {
                     message.error(resp.errorMessage, 3);

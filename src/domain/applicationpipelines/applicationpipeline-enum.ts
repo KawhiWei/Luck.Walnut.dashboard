@@ -14,7 +14,7 @@ export enum StepTypeEnum {
     /**
      * 构建Docker镜像
      */
-    buildImage = 3,
+    DockerFilePublishAndBuildImage = 3,
     /**
      * 执行命令
      */

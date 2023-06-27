@@ -209,13 +209,6 @@ const PipelinePage = (props: IProp) => {
     setExecutedHistoryElement(null);
   };
 
-  const clearElement = () => {
-    setOperationElement(null);
-    getPageList();
-  };
-
-
-
   /**
     * 清空流水线基础配置抽屉组件
     */

@@ -107,7 +107,7 @@ const StepOperation = (props: IProp) => {
           pullCodeFormData.setFieldsValue(JSON.parse(props.step.content));
         }
         break;
-      case StepTypeEnum.buildImage:
+      case StepTypeEnum.DockerFilePublishAndBuildImage:
         if (props.step.content !== "") {
           buildImageFormData.setFieldsValue(JSON.parse(props.step.content));
         }
@@ -139,7 +139,7 @@ const StepOperation = (props: IProp) => {
       case StepTypeEnum.pullCode:
         content = JSON.stringify(pullCodeFormData.getFieldsValue());
         break;
-      case StepTypeEnum.buildImage:
+      case StepTypeEnum.DockerFilePublishAndBuildImage:
         content = JSON.stringify(buildImageFormData.getFieldsValue());
         break;
       case StepTypeEnum.compilePublish:
@@ -287,7 +287,7 @@ const StepOperation = (props: IProp) => {
             </Form>
           ) : null}
         {
-          props.step.stepType === StepTypeEnum.buildImage ? (
+          props.step.stepType === StepTypeEnum.DockerFilePublishAndBuildImage ? (
             <Form
               form={buildImageFormData}
               {...formItemSingleRankLayout}

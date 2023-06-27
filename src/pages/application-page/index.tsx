@@ -46,17 +46,13 @@ const ApplicationPage = () => {
   const _applicationService: IApplicationService = useHookProvider(
     IocTypes.ApplicationService
   );
-  const _projectService: IProjectService = useHookProvider(
-    IocTypes.ProjectService
-  );
+
   const [tableData, setTableData] = useState<Array<IApplicationOutputDto>>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [paginationConfig, setPaginationConfig] =
     useState<initPaginationConfig>(new initPaginationConfig());
   const [subOperationElement, setOperationElement] = useState<any>(null);
   const [formData] = Form.useForm();
-  const [projectArray, setProjectArray] = useState<Array<any>>([]);
-  const [componentIntegrationArray, setComponentIntegrationArray] = useState<Array<any>>([]);
 
 
   const PandaSvg = () => (
@@ -106,15 +102,6 @@ const ApplicationPage = () => {
   };
 
   const goToApplicationDashboard = (_appId: string) => {
-    history.push({
-      pathname: "/application/dashboard",
-      state: {
-        appId: _appId,
-      },
-    });
-  };
-
-  const goToApplicationPipeline = (_appId: string) => {
     history.push({
       pathname: "/application/dashboard",
       state: {

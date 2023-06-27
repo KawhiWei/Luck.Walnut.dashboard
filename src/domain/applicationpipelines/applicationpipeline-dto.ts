@@ -19,11 +19,6 @@ export interface IApplicationPipelineBaseDto {
     name: string;
 
     /**
-     * 流水线Dsl
-     */
-    pipelineScript: Array<IStageDto>;
-
-    /**
      * 构建组件
      */
     buildComponentId: string;
@@ -42,6 +37,15 @@ export interface IApplicationPipelineInputDto extends IApplicationPipelineBaseDt
 }
 
 /**
+ * 流水线编辑输入Dto
+ */
+export interface IApplicationPipelineFlowUpdateInputDto  {
+    /**
+     * 流水线Dsl
+     */
+    pipelineScript: Array<IStageDto>;
+}
+/**
  * 流水线Dto模型接口
  */
 export interface IApplicationPipelineOutputDto extends IApplicationPipelineBaseDto, IEntity<string> {
@@ -53,6 +57,11 @@ export interface IApplicationPipelineOutputDto extends IApplicationPipelineBaseD
      * 流水线状态
      */
     pipelineBuildStateName: string;
+
+    /**
+     * 流水线Dsl
+     */
+    pipelineScript: Array<IStageDto>;
 
     /**
      * JenkinsBuild的Id
@@ -135,4 +144,16 @@ export interface IPipelinePullCodeStepDto extends IStepContentBaseDto {
      * 分支
      */
     branch: string;
+}
+
+
+/**
+ * 拉取代码Dto
+ */
+export interface IPipelineDockerPublishAndBuildImageStepDto extends IStepContentBaseDto {
+
+    /**
+     * DockerFile路径
+     */
+    dockerFileSrc: string;
 }
