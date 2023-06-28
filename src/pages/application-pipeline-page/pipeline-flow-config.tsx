@@ -57,8 +57,6 @@ const PipeFlowConfig = (props: any) => {
     setApplicationPipelineStageArray({
       pipelineScript: _stageArray
     });
-    let { pipelineScript } = applicationPipeline;
-    console.log("保存回调事件", pipelineScript);
   };
 
   /**
@@ -66,6 +64,7 @@ const PipeFlowConfig = (props: any) => {
   */
   const clearApplicationPipelineBasicOperation = () => {
     setApplicationPipelineBasicElement(null);
+    setLoading(false);
   };
 
   /**
@@ -75,6 +74,7 @@ const PipeFlowConfig = (props: any) => {
   */
   const ConfirmCallbackEvent = (_isGotoPipelineConfig: boolean, _id: string) => {
     clearApplicationPipelineBasicOperation();
+    setLoading(false);
   }
 
   /**
@@ -101,6 +101,7 @@ const PipeFlowConfig = (props: any) => {
    * 
    */
   const showApplicationPipelineBasicOperation = () => {
+    setLoading(true);
     setApplicationPipelineBasicElement(
       <Operation
         appId=""

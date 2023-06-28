@@ -109,14 +109,25 @@ const PipelineFlow = (props: IProp) => {
    * 编辑阶段
    */
   const onEditStep = (_stageIndex: number, _stepIndex: number, _step: IStepDto) => {
-    console.log(_stageIndex, _stepIndex, _step)
+    let { stageArray } = props;
+    let stage = stageArray[_stageIndex];
+    if (stage) {
+      stage.steps.filter((step, index) => {
+        if (index === _stepIndex) {
+          step = _step
+        }
+        return step;
+
+      })
+    }
+    clearStepOperationElement();
+    props.onCallbackEvent(stageArray)
   };
 
   /**
    * 显示任务编辑抽屉
    */
   const onShowStepOperation = (_stageIndex: number, _stepIndex: number, _step: IStepDto) => {
-    console.log(_stageIndex, _stepIndex, _step)
     setStepOperationElement(
       <StepOperation
         onConfirmCallbackEvent={onEditStep}
@@ -133,7 +144,6 @@ const PipelineFlow = (props: IProp) => {
    */
   const onRemoveStep = (_stageIndex: number, _stepIndex: number) => {
     let { stageArray } = props;
-
     stageArray.filter((item, index) => {
       if (index === _stageIndex) {
         item.steps.splice(_stepIndex, 1);

@@ -85,7 +85,27 @@ const Operation = (props: IProp) => {
                 setComponentArray(resp.result.data)
             }
         })
-        editOperationState(true, "基础配置")
+        switch (props.operationType) {
+            case OperationTypeEnum.add:
+                editOperationState(true, "基础配置")
+                break;
+            case OperationTypeEnum.edit:
+                props.id && _applicationPipelineService.getDetail(props.id).then(resp => {
+                    if (resp.success) {
+        
+                        formData.setFieldsValue(resp.result)
+                        editOperationState(true, "基础配置")
+                    }
+                })
+                .finally(()=>{
+                    
+                })
+                break;
+        }
+
+        
+
+
     };
 
 
@@ -152,7 +172,7 @@ const Operation = (props: IProp) => {
     const onUpdate = (_params: IApplicationPipelineInputDto) => {
         debugger
         _params.appId = props.appId;
-        props.id && _applicationPipelineService.update(props.id,_params)
+        props.id && _applicationPipelineService.update(props.id, _params)
             .then(resp => {
                 if (!resp.success) {
                     message.error(resp.errorMessage, 3);
@@ -222,6 +242,14 @@ const Operation = (props: IProp) => {
                         />
                     </Form.Item>
                     <Form.Item
+                        name="continuousIntegrationImage"
+                        label="CI镜像"
+                        rules={[{ required: true }]}
+                    >
+                        <Input />
+                    </Form.Item>
+
+                    <Form.Item
                         name="buildComponentId"
                         label="构建集群"
                         rules={[{ required: true }]}
@@ -237,11 +265,19 @@ const Operation = (props: IProp) => {
                         </Select>
                     </Form.Item>
                     <Form.Item
-                        name="continuousIntegrationImage"
-                        label="CI镜像"
+                        name="imageWareHouseComponentId"
+                        label="镜像仓库"
                         rules={[{ required: true }]}
                     >
-                        <Input />
+                        <Select allowClear={true} placeholder="请选择镜像仓库">
+                            {componentArray.map((item: any) => {
+                                return (
+                                    <Select.Option value={item.id}>
+                                        {item.name}
+                                    </Select.Option>
+                                );
+                            })}
+                        </Select>
                     </Form.Item>
                 </Form>
 

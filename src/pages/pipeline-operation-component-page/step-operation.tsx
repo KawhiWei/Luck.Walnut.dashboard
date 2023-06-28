@@ -134,20 +134,23 @@ const StepOperation = (props: IProp) => {
    * 底部栏OK事件
    */
   const onFinish = () => {
-    let content = "";
+    let { step } = props;
+    let name = "";
     switch (props.step.stepType) {
       case StepTypeEnum.pullCode:
-        content = JSON.stringify(pullCodeFormData.getFieldsValue());
+        step.name = pullCodeFormData.getFieldValue("name");
+        step.content = JSON.stringify(pullCodeFormData.getFieldsValue());
         break;
       case StepTypeEnum.DockerFilePublishAndBuildImage:
-        content = JSON.stringify(buildImageFormData.getFieldsValue());
+        step.name = buildImageFormData.getFieldValue("name");
+        step.content = JSON.stringify(buildImageFormData.getFieldsValue());
         break;
       case StepTypeEnum.compilePublish:
-        content = JSON.stringify(compilePublishFormData.getFieldsValue());
-        debugger
+        step.name = compilePublishFormData.getFieldValue("name");
+        step.content = JSON.stringify(compilePublishFormData.getFieldsValue());
         break;
     }
-
+    props.onConfirmCallbackEvent(props.stageIndex, props.stepIndex, step)
 
   };
 
@@ -224,7 +227,7 @@ const StepOperation = (props: IProp) => {
               form={compilePublishFormData}
               {...formItemSingleRankLayout}
               name="nest-messages"
-              layout="horizontal"
+              layout="vertical"
               validateMessages={validateMessages}
               initialValues={compilePublishFormData}
             >
@@ -290,46 +293,19 @@ const StepOperation = (props: IProp) => {
           props.step.stepType === StepTypeEnum.DockerFilePublishAndBuildImage ? (
             <Form
               form={buildImageFormData}
-              {...formItemSingleRankLayout}
               name="nest-messages"
-              layout="horizontal"
+              layout="vertical"
               validateMessages={validateMessages}
               initialValues={buildImageFormData}
             >
               <Row>
                 <Col span="24">
                   <Form.Item
-                    name="buildImageName"
-                    label="依赖镜像："
-                    rules={[{ required: true }]}>
-                    <Input style={{ borderRadius: 6 }} disabled />
-                  </Form.Item>
-                </Col>
-              </Row>
-              <Row>
-                <Col span="24">
-                  <Form.Item
-                    name="version"
-                    label="镜像版本："
+                    name="name"
+                    label="名称："
                     rules={[{ required: true }]}
                   >
-                    <Select
-                      style={{ width: 180 }}
-                      allowClear={true}
-                      placeholder="请选择镜像版本"
-                    >
-                    </Select>
-                  </Form.Item>
-                </Col>
-              </Row>
-              <Row>
-                <Col span="24">
-                  <Form.Item
-                    name="compileScript"
-                    label="构建脚本："
-                    rules={[{ required: true }]}
-                  >
-                    <TextArea autoSize={{ minRows: 6, maxRows: 16 }} />
+                    <Input />
                   </Form.Item>
                 </Col>
               </Row>
@@ -337,27 +313,10 @@ const StepOperation = (props: IProp) => {
                 <Col span="24">
                   <Form.Item
                     name="dockerFileSrc"
-                    label="DockerFile路径："
+                    label="DockerFile路径"
                     rules={[{ required: true }]}
                   >
-                    <TextArea autoSize={{ minRows: 6, maxRows: 16 }} />
-                  </Form.Item>
-                </Col>
-              </Row>
-              <Row>
-                <Col span="24" style={{ textAlign: "right" }}>
-                  <Form.Item {...tailLayout}>
-                    <Button shape="round" onClick={() => onCancel()}>
-                      取消
-                    </Button>
-                    <Button
-                      shape="round"
-                      style={{ margin: "0 8px" }}
-                      type="primary"
-                      onClick={() => onFinish()}
-                    >
-                      保存
-                    </Button>
+                    <Input />
                   </Form.Item>
                 </Col>
               </Row>

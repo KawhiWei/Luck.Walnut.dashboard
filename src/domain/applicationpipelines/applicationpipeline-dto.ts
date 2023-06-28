@@ -28,6 +28,12 @@ export interface IApplicationPipelineBaseDto {
      */
     continuousIntegrationImage: string;
 
+    /**
+     * 镜像仓库配置
+     */
+    imageWareHouseComponentId: string;
+    
+
 }
 /**
  * 流水线编辑输入Dto

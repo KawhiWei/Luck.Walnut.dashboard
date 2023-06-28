@@ -20,29 +20,11 @@ export const taskList: ITaskCategoryDto[] = [
         name: "镜像构建",
         tasks: [
             {
-                name: "DockerFile编译构建推送",
+                name: "DockerFile发布构建镜像",
                 content: "",
-                stepType: StepTypeEnum.pullCode,
+                stepType: StepTypeEnum.DockerFilePublishAndBuildImage,
                 icon: ""
             },
-            {
-                name: "DockerFile编译构建推送",
-                content: "",
-                stepType: StepTypeEnum.pullCode,
-                icon: ""
-            },
-            {
-                name: "DockerFile编译构建推送",
-                content: "",
-                stepType: StepTypeEnum.pullCode,
-                icon: ""
-            },
-            {
-                name: "DockerFile编译构建推送",
-                content: "",
-                stepType: StepTypeEnum.pullCode,
-                icon: ""
-            }
         ]
     }
 ]
