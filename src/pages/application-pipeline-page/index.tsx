@@ -329,7 +329,9 @@ const PipelinePage = (props: IProp) => {
                       style={{
                         color: "red",
                         fontSize: 20,
-                      }} />,
+                      }}
+                      onClick={() => onDelete(item.id)}
+                      />,
                   ]}
                 >
                   <Row style={{ marginBottom: 10 }}>
