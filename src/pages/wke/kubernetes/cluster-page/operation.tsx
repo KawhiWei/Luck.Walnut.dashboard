@@ -8,14 +8,14 @@ import {
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 
+import { IClusterInputDto } from "@/domain/kubernetes/clusters/cluster-dto";
+import { IClusterService } from "@/domain/kubernetes/clusters/icluster-service";
 import { IOperationConfig } from "@/shared/operation/operationConfig";
 import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
+import TextArea from "antd/lib/input/TextArea";
 import { formItemSingleRankLayout } from "@/constans/layout/optionlayout";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
-import { IClusterService } from "@/domain/kubernetes/clusters/icluster-service";
-import { IClusterInputDto } from "@/domain/kubernetes/clusters/cluster-dto";
-import TextArea from "antd/lib/input/TextArea";
 
 // import "../description.less";
 
@@ -58,6 +58,7 @@ const Operation = (props: IProp) => {
     const [nameSpace, setNameSpace] = useState<IClusterInputDto>({
         config: '',
         name: '',
+        clusterVersion: ''
     });
     const [nameSpaceFormData] = Form.useForm();
 
@@ -174,7 +175,7 @@ const Operation = (props: IProp) => {
     return (
         <div>
             <Drawer style={{ borderRadius: 6 }}
-                width="80%"
+                width="600"
                 title={
                     <div
                         style={{
@@ -208,33 +209,33 @@ const Operation = (props: IProp) => {
                     </Space>
                 }>
                 <Form
-                    {...formItemSingleRankLayout}
                     form={nameSpaceFormData}
                     name="nest-messages"
-                    layout="horizontal"
+                    layout="vertical"
                     onFinish={onFinish}
                     validateMessages={validateMessages}
                 >
-                    <Row>
-                        <Col span="24">
-                            <Form.Item
-                                name="name"
-                                label="集群名称："
-                                rules={[{ required: true }]}>
-                                <Input />
-                            </Form.Item>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col span="24">
-                            <Form.Item
-                                name="config"
-                                label="Config："
-                                rules={[{ required: true }]}>
-                                <TextArea  rows={40} disabled={props.operationType === OperationTypeEnum.view} />
-                            </Form.Item>
-                        </Col>
-                    </Row>
+
+                    <Form.Item
+                        name="name"
+                        label="集群名称"
+                        rules={[{ required: true }]}>
+                        <Input />
+                    </Form.Item>
+                    <Form.Item
+                        name="clusterVersion"
+                        label="集群版本"
+                        rules={[{ required: true }]}>
+                        <Input />
+                    </Form.Item>
+
+                    <Form.Item
+                        name="config"
+                        label="Config"
+                        rules={[{ required: true }]}>
+                        <TextArea rows={30} disabled={props.operationType === OperationTypeEnum.view} />
+                    </Form.Item>
+
                 </Form>
             </Drawer>
         </div>

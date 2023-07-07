@@ -25,13 +25,13 @@ import {
 } from "../../../../shared/ajax/request";
 import { useEffect, useState } from "react";
 
+import { IClusterOutputDto } from "@/domain/kubernetes/clusters/cluster-dto";
+import { IClusterService } from "@/domain/kubernetes/clusters/icluster-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import Operation from "./operation";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
 import { searchFormItemDoubleRankLayout } from "@/constans/layout/optionlayout";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
-import { IClusterService } from "@/domain/kubernetes/clusters/icluster-service";
-import { IClusterOutputDto } from "@/domain/kubernetes/clusters/cluster-dto";
 
 const ClusterPage = (props: any) => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -49,6 +49,11 @@ const ClusterPage = (props: any) => {
         {
             title: "名称",
             dataIndex: "name",
+        },
+        {
+            title: "集群版本",
+            dataIndex: "clusterVersion",
+            ellipsis: true,
         },
         {
             title: "Config",

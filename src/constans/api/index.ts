@@ -33,8 +33,8 @@ export const BuildImageApi = {
 }
 
 
-export const KubernetesApi = {
-  cluster: "/kube/api/clusters",
+export const ClustersApi = {
+  cluster: "/walnut/api/clusters",
 }
 
 export const DeploymentApi = {
