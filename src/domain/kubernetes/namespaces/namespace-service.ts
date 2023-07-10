@@ -17,7 +17,7 @@ export default class NameSpaceService extends BaseService implements INameSpaceS
         return this.dataRequest.putRequest(`${NameSpaceApi.nameSpaces}/${_id}`, _params);
     }
     getNameSpacePageList(_params: any): Promise<IServerReturn<IServerPageReturn<INameSpaceOutputDto>>> {
-        return this.dataRequest.getRequest(`${NameSpaceApi.nameSpaces}`, _params);
+        return this.dataRequest.getRequest(`${NameSpaceApi.nameSpaces}/page/list`, _params);
     }
     getNameSpaceDetail(_id: string): Promise<IServerReturn<INameSpaceOutputDto>> {
         return this.dataRequest.getRequest(`${NameSpaceApi.nameSpaces}/${_id}`);

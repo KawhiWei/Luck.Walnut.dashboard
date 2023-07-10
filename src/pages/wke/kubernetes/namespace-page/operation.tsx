@@ -114,6 +114,7 @@ const Operation = (props: IProp) => {
                 setClusterData(rep.result)
 
             } else {
+                debugger
                 message.error(rep.errorMessage, 3);
             }
         })
@@ -193,7 +194,7 @@ const Operation = (props: IProp) => {
     return (
         <div>
             <Drawer style={{ borderRadius: 6 }}
-                width="80%"
+                width="600"
                 title={
                     <div
                         style={{
@@ -227,19 +228,17 @@ const Operation = (props: IProp) => {
                     </Space>
                 }>
                 <Form
-                    {...formItemDoubleRankLayout}
                     form={nameSpaceFormData}
                     name="nest-messages"
-                    layout="horizontal"
+                    layout="vertical"
                     onFinish={onFinish}
                     validateMessages={validateMessages}
                 >
-                    <Row>
-                        <Col span="12">
+
                             <Form.Item
                                 name="clusterId"
-                                label="绑定集群："
-                                rules={[{ required: true }]}>
+                                label="绑定集群"
+                                rules={[{ required: true}]}>
                                 <Select
                                     allowClear={true}
                                     placeholder="绑定集群"
@@ -253,28 +252,21 @@ const Operation = (props: IProp) => {
                                     })}
                                 </Select>
                             </Form.Item>
-                        </Col>
-
-                    </Row>
-                    <Row>
-                        <Col span="12">
-                            <Form.Item
-                                name="chineseName"
-                                label="中文名称："
-                                rules={[{ required: true }]}>
-                                <Input />
-                            </Form.Item>
-                        </Col>
-                        <Col span="12">
                             <Form.Item
                                 name="name"
-                                label="NameSpace："
+                                label="NameSpace"
                                 rules={[{ required: true }]}>
                                 <Input />
                             </Form.Item>
-                        </Col>
+                            
+                            <Form.Item
+                                name="chineseName"
+                                label="中文名称"
+                                rules={[{ required: true }]}>
+                                <Input />
+                            </Form.Item>
 
-                    </Row>
+
                 </Form>
             </Drawer>
         </div>

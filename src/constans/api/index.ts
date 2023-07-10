@@ -38,20 +38,20 @@ export const ClustersApi = {
 }
 
 export const DeploymentApi = {
-  deployments: "/kube/api/deployments",
+  deployments: "/walnut/api/deployments",
 }
 
 
 export const InitContainerApi = {
-  initContainers: "/kube/api/init/containers",
+  initContainers: "/walnut/api/init/containers",
 }
 
 export const NameSpaceApi = {
-  nameSpaces: "/kube/api/namespaces",
+  nameSpaces: "/walnut/api/namespaces",
 }
 
 export const ServiceApi = {
-  services: "/kube/api/services",
+  services: "/walnut/api/services",
 }
 
 export const PipelineTemplateApi = {
