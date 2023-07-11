@@ -271,7 +271,7 @@ const Operation = (props: IProp) => {
     return (
         <div>
             <Drawer
-                width="80%"
+                width="600px"
                 title={
                     <div
                         style={{
@@ -313,7 +313,7 @@ const Operation = (props: IProp) => {
                         validateMessages={validateMessages}
                     >
                         <Row>
-                            <Col span="12">
+                            <Col span="24">
                                 <Form.Item
                                     name="chineseName"
                                     label="中文名称："
@@ -321,7 +321,10 @@ const Operation = (props: IProp) => {
                                     <Input />
                                 </Form.Item>
                             </Col>
-                            <Col span="12">
+                            
+                        </Row>
+                        <Row>
+                            <Col span="24">
                                 <Form.Item
                                     name="name"
                                     label="名称："
@@ -331,7 +334,7 @@ const Operation = (props: IProp) => {
                             </Col>
                         </Row>
                         <Row>
-                            <Col span="12">
+                            <Col span="24">
                                 <Form.Item
                                     name="environmentName"
                                     label="部署环境："
@@ -342,7 +345,7 @@ const Operation = (props: IProp) => {
                             </Col>
                         </Row>
                         <Row>
-                            <Col span="12">
+                            <Col span="24">
                                 <Form.Item
                                     name="clusterId"
                                     label="集群："
@@ -363,7 +366,9 @@ const Operation = (props: IProp) => {
                                     </Select>
                                 </Form.Item>
                             </Col>
-                            <Col span="12">
+                        </Row>
+                        <Row>
+                            <Col span="24">
                                 <Form.Item
                                     name="nameSpaceId"
                                     label="命名空间："
@@ -384,7 +389,7 @@ const Operation = (props: IProp) => {
 
                         </Row>
                         <Row>
-                            <Col span="12">
+                            <Col span="24">
                                 <Form.Item
                                     name="applicationRuntimeType"
                                     label="运行时类型："
@@ -401,7 +406,9 @@ const Operation = (props: IProp) => {
                                     </Select>
                                 </Form.Item>
                             </Col>
-                            <Col span="12">
+                        </Row>
+                        <Row>
+                            <Col span="24">
                                 <Form.Item
                                     name="deploymentType"
                                     label="部署类型："
@@ -422,7 +429,7 @@ const Operation = (props: IProp) => {
 
                         </Row>
                         <Row>
-                            <Col span="12">
+                            <Col span="24">
                                 <Form.Item
                                     name="imagePullSecretId"
                                     label="镜像拉取证书："
@@ -430,7 +437,9 @@ const Operation = (props: IProp) => {
                                     <Input />
                                 </Form.Item>
                             </Col>
-                            <Col span="12">
+                        </Row>
+                        <Row>
+                            <Col span="24">
                                 <Form.Item
                                     name="sideCarPlugins"
                                     label="SideCar插件："
@@ -450,7 +459,7 @@ const Operation = (props: IProp) => {
                             </Col>
                         </Row>
                         <Row>
-                            <Col span="12">
+                            <Col span="24">
                                 <Form.Item
                                     name="replicas"
                                     label="部署副本数量："
@@ -461,7 +470,7 @@ const Operation = (props: IProp) => {
                             </Col>
                         </Row>
                         <Row>
-                            <Col span="12">
+                            <Col span="24">
                                 <Form.Item
                                     name={["strategy", "type"]}
                                     label="更新策略类型："
@@ -474,7 +483,9 @@ const Operation = (props: IProp) => {
                                     </Select>
                                 </Form.Item>
                             </Col>
-                            <Col span="12">
+                        </Row>
+                        <Row>
+                            <Col span="24">
                                 <Form.Item
                                     name={["strategy", "maxUnavailable"]}
                                     label="最大不可用："
@@ -485,7 +496,7 @@ const Operation = (props: IProp) => {
                             </Col>
                         </Row>
                         <Row>
-                            <Col span="12">
+                            <Col span="24">
                                 <Form.Item
                                     name={["strategy", "maxSurge"]}
                                     label="可调度数量：">
@@ -506,7 +517,7 @@ const Operation = (props: IProp) => {
                     >
                         <Card title="容器基础配置" size="small" bordered={false}  >
                             <Row>
-                                <Col span="12">
+                                <Col span="24">
                                     <Form.Item
                                         name="containerName"
                                         label="容器名称："
@@ -514,7 +525,9 @@ const Operation = (props: IProp) => {
                                         <Input />
                                     </Form.Item>
                                 </Col>
-                                <Col span="12">
+                            </Row>
+                            <Row>
+                                <Col span="24">
                                     <Form.Item
                                         name="isInitContainer"
                                         label="是否初始容器："
@@ -526,7 +539,7 @@ const Operation = (props: IProp) => {
                                 </Col>
                             </Row>
                             <Row>
-                                <Col span="12">
+                                <Col span="24">
                                     <Form.Item
                                         name="restartPolicy"
                                         label="重启规则："
@@ -547,7 +560,9 @@ const Operation = (props: IProp) => {
                                     </Form.Item>
 
                                 </Col>
-                                <Col span="12">
+                            </Row>
+                            <Row>
+                                <Col span="24">
                                     <Form.Item
                                         name="imagePullPolicy"
                                         label="镜像拉取规则："
@@ -571,7 +586,7 @@ const Operation = (props: IProp) => {
                         </Card>
                         <Card title="存活探针配置" size="small" bordered={false}  >
                             <Row>
-                                <Col span="12">
+                                <Col span="24">
                                     <Form.Item
                                         name={["readinessProbe", "scheme"]}
                                         label="方案："
@@ -580,7 +595,9 @@ const Operation = (props: IProp) => {
                                         />
                                     </Form.Item>
                                 </Col>
-                                <Col span="12">
+                            </Row>
+                            <Row>
+                                <Col span="24">
                                     <Form.Item
                                         name={["readinessProbe", "path"]}
                                         label="路径："
@@ -590,7 +607,7 @@ const Operation = (props: IProp) => {
                                 </Col>
                             </Row>
                             <Row>
-                                <Col span="12">
+                                <Col span="24">
                                     <Form.Item
                                         name={["readinessProbe", "port"]}
                                         label="端口："
@@ -598,7 +615,9 @@ const Operation = (props: IProp) => {
                                         <InputNumber />
                                     </Form.Item>
                                 </Col>
-                                <Col span="12">
+                            </Row>
+                            <Row>
+                                <Col span="24">
                                     <Form.Item
                                         name={["readinessProbe", "initialDelaySeconds"]}
                                         label="延迟时间："
@@ -608,7 +627,7 @@ const Operation = (props: IProp) => {
                                 </Col>
                             </Row>
                             <Row>
-                                <Col span="12">
+                                <Col span="24">
                                     <Form.Item
                                         name={["readinessProbe", "periodSeconds"]}
                                         label="间隔时间："
@@ -620,7 +639,7 @@ const Operation = (props: IProp) => {
                         </Card>
                         <Card title="准备探针配置" size="small" bordered={false}  >
                             <Row>
-                                <Col span="12">
+                                <Col span="24">
                                     <Form.Item
                                         name={["liveNessProbe", "scheme"]}
                                         label="方案："
@@ -629,7 +648,9 @@ const Operation = (props: IProp) => {
                                         />
                                     </Form.Item>
                                 </Col>
-                                <Col span="12">
+                            </Row>
+                            <Row>
+                                <Col span="24">
                                     <Form.Item
                                         name={["liveNessProbe", "path"]}
                                         label="路径："
@@ -639,7 +660,7 @@ const Operation = (props: IProp) => {
                                 </Col>
                             </Row>
                             <Row>
-                                <Col span="12">
+                                <Col span="24">
                                     <Form.Item
                                         name={["liveNessProbe", "port"]}
                                         label="端口："
@@ -647,7 +668,9 @@ const Operation = (props: IProp) => {
                                         <InputNumber />
                                     </Form.Item>
                                 </Col>
-                                <Col span="12">
+                            </Row>
+                            <Row>
+                                <Col span="24">
                                     <Form.Item
                                         name={["liveNessProbe", "initialDelaySeconds"]}
                                         label="延迟时间："
@@ -657,7 +680,7 @@ const Operation = (props: IProp) => {
                                 </Col>
                             </Row>
                             <Row>
-                                <Col span="12">
+                                <Col span="24">
                                     <Form.Item
                                         name={["liveNessProbe", "periodSeconds"]}
                                         label="间隔时间："
@@ -669,7 +692,7 @@ const Operation = (props: IProp) => {
                         </Card>
                         <Card title="limit资源配置" size="small" bordered={false}  >
                             <Row>
-                                <Col span="12">
+                                <Col span="24">
                                     <Form.Item
                                         name={["limits", "cpu"]}
                                         label="Cpu："
@@ -678,7 +701,9 @@ const Operation = (props: IProp) => {
                                         />
                                     </Form.Item>
                                 </Col>
-                                <Col span="12">
+                            </Row>
+                            <Row>
+                                <Col span="24">
                                     <Form.Item
                                         name={["limits", "memory"]}
                                         label="Memory："
@@ -690,7 +715,7 @@ const Operation = (props: IProp) => {
                         </Card>
                         <Card title="request资源配置" size="small" bordered={false}  >
                             <Row>
-                                <Col span="12">
+                                <Col span="24">
                                     <Form.Item
                                         name={["requests", "cpu"]}
                                         label="Cpu："
@@ -699,7 +724,9 @@ const Operation = (props: IProp) => {
                                         />
                                     </Form.Item>
                                 </Col>
-                                <Col span="12">
+                            </Row>
+                            <Row>
+                                <Col span="24">
                                     <Form.Item
                                         name={["requests", "memory"]}
                                         label="Memory："
