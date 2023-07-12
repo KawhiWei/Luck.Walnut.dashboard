@@ -1,4 +1,4 @@
-import { Button, Col, Form, Input, Modal, Row, message } from "antd";
+import { Button, Col, Drawer, Form, Input, Modal, Row, Space, message } from "antd";
 import { formItemDoubleRankLayout, tailLayout } from "@/constans/layout/optionlayout";
 import { useEffect, useState } from "react";
 
@@ -14,13 +14,16 @@ interface IProp {
      */
     onCallbackEvent?: any;
     /**
-     * Id
-     */
-    appId?: string;
-    /**
      * 操作类型
      */
-    operationType: OperationTypeEnum
+    operationType: OperationTypeEnum,
+
+
+    /**
+     * 表单数据
+     */
+    id?: any;
+
 }
 
 const validateMessages = {
@@ -38,6 +41,7 @@ const Operation = (props: IProp) => {
     const _environmentService: IEnvironmentService = useHookProvider(IocTypes.EnvironmentService);
     const [operationState, setOperationState] = useState<IOperationConfig>({ visible: false })
     const [formData] = Form.useForm();
+    const [loading, setLoading] = useState<boolean>(false);
 
     /**
          * 页面初始化事件
@@ -50,19 +54,22 @@ const Operation = (props: IProp) => {
         switch (props.operationType) {
             case OperationTypeEnum.add:
                 editOperationState(true, "添加")
-                // formData.setFieldsValue(initformData);
                 break;
             case OperationTypeEnum.view:
                 editOperationState(true, "查看")
                 break;
-            // case OperationTypeEnum.edit:
-            //     props.id && _environmentService.getDetail(props.id).then(rep => {
-            //         if (rep.success) {
-            //             formData.setFieldsValue(rep.result);
-            //             editOperationState(true, "修改")
-            //         }
-            //     })
-            //     break;
+            case OperationTypeEnum.edit:
+                props.id && _environmentService.getDetail(props.id).then(rep => {
+                    debugger
+                    if (rep.success) {
+                        formData.setFieldsValue(rep.result);
+                        editOperationState(true, "修改")
+                    }
+                    else{
+                        
+                    }
+                })
+                break;
         }
     }
 
@@ -71,22 +78,25 @@ const Operation = (props: IProp) => {
     }
 
     const onFinish = () => {
-        let field = formData.getFieldsValue();
-        let param = {
-            environmentName: field.environmentName,
-            appId: props.appId
-        }
-        switch (props.operationType) {
-            case OperationTypeEnum.add:
-                onAdd(param);
-                break;
-            // case OperationTypeEnum.edit:
-            //     onUpdate(param);
-            //     break;
-        }
+        formData.validateFields().then((values) => {
+            switch (props.operationType) {
+                case OperationTypeEnum.add:
+                    onAddEnvironment(values);
+                    break;
+                case OperationTypeEnum.edit:
+                    //onUpdate(param);
+                    break;
+            }
+        })
+            .catch((error) => {
+            });
+
+
+
+
     };
 
-    const onAdd = (_param: any) => {
+    const onAddEnvironment = (_param: any) => {
         _environmentService.addEnvironment(_param).then(res => {
             if (!res.success) {
                 message.error(res.errorMessage, 3)
@@ -105,37 +115,66 @@ const Operation = (props: IProp) => {
         editOperationState(false)
         props.onCallbackEvent && props.onCallbackEvent()
     };
-    return (<div>
-        <Modal width={"70%"} getContainer={false}
-            onCancel={onCancel}
-            title={operationState.title}
-            closable={false}
-            visible={operationState.visible}
-            footer={null}
-        >
-            <Form form={formData}
-                {...formItemDoubleRankLayout}
-                name="nest-messages"
-                onFinish={onFinish}
-                validateMessages={validateMessages}
-            >
-                <Form.Item
-                    name="environmentName"
-                    label="环境名称"
-                    rules={[{ required: true }]}
-                    style={{ textAlign: 'left' }}
+    return (
+        <div>
+            <Drawer width={"600"}
+                onClose={onCancel}
+                title={
+                    <div
+                        style={{
+                            borderRadius: 10,
+                        }}
+                    >
+                        {operationState.title}
+                    </div>
+                }
+                closable={false}
+                open={operationState.visible}
+                footer={
+                    <Space style={{ float: "right" }}>
+                        <Button
+                            shape="round"
+                            disabled={loading}
+                            onClick={() => onCancel()}
+                        >
+                            取消
+                        </Button>
+                        <Button
+                            shape="round"
+                            style={{ margin: "0 8px" }}
+                            type="primary"
+                            loading={loading}
+                            onClick={() => onFinish()}
+                        >
+                            保存
+                        </Button>
+                    </Space>}>
+                <Form form={formData}
+                    name="nest-messages"
+                    onFinish={onFinish}
+                    layout="vertical"
+                    validateMessages={validateMessages}
                 >
-                    <Input style={{ borderRadius: 6 }} />
-                </Form.Item>
-                <Form.Item
-                    {...tailLayout}
-                    style={{ textAlign: 'right' }}
-                >
-                    <Button shape="round" onClick={() => onCancel()}>取消</Button>
-                    <Button shape="round" style={{ margin: '0 8px' }} type="primary" htmlType="submit">保存</Button>
-                </Form.Item>
-            </Form>
-        </Modal>
-    </div>)
+                    <Form.Item
+                        name="chinesName"
+                        label="环境中文名称"
+                        rules={[{ required: true }]}
+                        style={{ textAlign: 'left' }}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item
+                        name="name"
+                        label="环境名称"
+                        rules={[{ required: true }]}
+                        style={{ textAlign: 'left' }}
+                    >
+                        <Input />
+                    </Form.Item>
+
+                </Form>
+            </Drawer>
+        </div>
+    )
 }
 export default Operation;

@@ -200,7 +200,7 @@ const ApplicationPage = () => {
     });
   };
 
-  const addChange = () => {
+  const addApplication = () => {
     setOperationElement(
       <Operation
         onCallbackEvent={clearElement}
@@ -226,7 +226,7 @@ const ApplicationPage = () => {
                 size="middle"
                 type="primary"
                 icon={<PlusOutlined />}               
-                onClick={() => addChange()}
+                onClick={() => addApplication()}
               >
                 创建应用
               </Button>

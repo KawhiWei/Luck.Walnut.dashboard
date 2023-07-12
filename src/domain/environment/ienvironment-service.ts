@@ -4,26 +4,34 @@ export interface IEnvironmentService{
     /**
      * 获取环境列表
      */
-     getEnvironmentList(_applicationId:string): Promise<IServerReturn<any>>;
+    getPage(_params:any): Promise<IServerReturn<IServerPageReturn<any>>>;
 
 
     /**
      * 删除一行数据
      * @param _id 
      */
-    deleteEnvironment(_id: string): Promise<IServerReturn<any>>;
+    delete(_id: string): Promise<IServerReturn<any>>;
 
     // /**
     //  * 查询明细
-    //  * @param _id 
+    //  * @_id 
     //  */
-    // getDetail(_id: string): Promise<IServerPageReturn<any>>;
+    getDetail(_id: string): Promise<IServerReturn<any>>;
 
     /**
      * 添加环境
      * @param _param 
      */
     addEnvironment(_param: any): Promise<IServerReturn<any>>;
+
+
+    /**
+     * 
+     * @param _id 
+     * @param _param 
+     */
+    updateEnvironment(_id: string,_param: any): Promise<IServerReturn<any>>;
 
 
     /**
