@@ -118,7 +118,7 @@ const Operation = (props: IProp) => {
      * @param _id
      */
     const onLoad = () => {
-        onGetInitContainerList();
+        // onGetInitContainerList();
         onClusterList();
         onGetNameSpaceByClusterIdData();
         switch (props.operationType) {
@@ -239,7 +239,7 @@ const Operation = (props: IProp) => {
      */
     const onCreate = (_param: IDeploymentInputDto) => {
         setLoading(true);
-        _deploymentConfigurationService.createDeploymentConfiguration(_param).then(rep => {
+        _deploymentConfigurationService.createDeployment(_param).then(rep => {
             if (!rep.success) {
                 message.error(rep.errorMessage, 3);
             } else {

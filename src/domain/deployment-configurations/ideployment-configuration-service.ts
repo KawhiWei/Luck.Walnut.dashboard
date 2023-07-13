@@ -7,19 +7,19 @@ export interface IDeploymentConfigurationService {
      * @param _appId 
      * @param _param 
      */
-    getDeploymentConfigurationPageList(_appId: string, _param: any): Promise<IServerReturn<IServerPageReturn<IDeploymentConfigurationOutputDto>>>;
+    getPage(_appId: string, _param: any): Promise<IServerReturn<IServerPageReturn<IDeploymentConfigurationOutputDto>>>;
 
     /**
      * 删除一个部署
      * @param _id 
      */
-    deleteDeploymentConfiguration(_id: string): Promise<IServerReturn<any>>;
+    deleteDeployment(_id: string): Promise<IServerReturn<any>>;
 
     /**
      * 创建一个部署
      * @param _params 
      */
-    createDeploymentConfiguration(_params: IDeploymentInputDto): Promise<IServerReturn<any>>;
+    createDeployment(_params: IDeploymentInputDto): Promise<IServerReturn<any>>;
 
 
     /**

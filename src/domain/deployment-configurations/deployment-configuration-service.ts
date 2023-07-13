@@ -13,7 +13,7 @@ export default class DeploymentConfigurationService extends BaseService implemen
      * @param _param 
      * @returns 
      */
-    getDeploymentConfigurationPageList(_appId: string, _param: any): Promise<IServerReturn<IServerPageReturn<IDeploymentConfigurationOutputDto>>> {
+    getPage(_appId: string, _param: any): Promise<IServerReturn<IServerPageReturn<IDeploymentConfigurationOutputDto>>> {
         return this.dataRequest.getRequest(`${DeploymentApi.deployments}/${_appId}/page/list`, _param);
     }
 
@@ -22,7 +22,7 @@ export default class DeploymentConfigurationService extends BaseService implemen
      * @param _id 
      * @returns 
      */
-    deleteDeploymentConfiguration(_id: string): Promise<IServerReturn<any>> {
+    deleteDeployment(_id: string): Promise<IServerReturn<any>> {
         return this.dataRequest.deleteRequest(`${DeploymentApi.deployments}/${_id}`)
     }
     /**
@@ -30,7 +30,7 @@ export default class DeploymentConfigurationService extends BaseService implemen
      * @param _params 
      * @returns 
      */
-    createDeploymentConfiguration(_params: IDeploymentInputDto): Promise<IServerReturn<any>> {
+    createDeployment(_params: IDeploymentInputDto): Promise<IServerReturn<any>> {
         return this.dataRequest.postRequest(`${DeploymentApi.deployments}`, _params)
     }
 

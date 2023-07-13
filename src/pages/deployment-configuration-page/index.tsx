@@ -167,7 +167,7 @@ const DeploymentConfigurationPage = (props: IProp) => {
             pageSize: paginationConfig.pageSize,
             pageIndex: paginationConfig.current,
         }
-        _deploymentConfigurationService.getDeploymentConfigurationPageList(props.appId, _param).then((x) => {
+        _deploymentConfigurationService.getPage(props.appId, _param).then((x) => {
             if (x.success) {
                 setTableData(x.result.data);
             }
@@ -194,7 +194,7 @@ const DeploymentConfigurationPage = (props: IProp) => {
 
     }
     const deleteRow = (_id: string) => {
-        _deploymentConfigurationService.deleteDeploymentConfiguration(_id).then(res => {
+        _deploymentConfigurationService.deleteDeployment(_id).then(res => {
             if (!res.success) {
                 message.error(res.errorMessage, 3);
             } else {
