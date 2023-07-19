@@ -2,7 +2,7 @@ import { Button, Card, Col, Layout, Row, Spin, Tabs } from "antd";
 import { useEffect, useState } from "react";
 
 import ApplicationInformation from "./application-information";
-import DeploymentConfigurationPage from "../deployment-configuration-page/index";
+import DeploymentConfigurationPage from "../deployment/index";
 import { IApplicationBaseDto } from "@/domain/applications/application-dto";
 import { IApplicationService } from "@/domain/applications/iapplication-service";
 import { IocTypes } from "@/shared/config/ioc-types";
