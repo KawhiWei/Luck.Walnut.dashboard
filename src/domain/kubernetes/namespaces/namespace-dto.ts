@@ -16,10 +16,7 @@ export interface INameSpaceBase {
      * 集群id
      */
     clusterId: string;
-    /**
-     * 
-     */
-    isPublish: boolean;
+
 }
 
 /**
@@ -36,4 +33,8 @@ export interface INameSpaceOutputDto extends INameSpaceBase, IEntity<string> {
      * 集群id
      */
     clusterName: string;
+    /**
+     * 
+     */
+    onlineStatus: number;
 }

@@ -63,7 +63,6 @@ const Operation = (props: IProp) => {
         chineseName: '',
         name: '',
         clusterId: '',
-        isPublish: false
     });
 
     const [nameSpaceFormData] = Form.useForm();

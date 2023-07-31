@@ -54,23 +54,23 @@ const DeploymentConfigurationPage = (props: IProp) => {
 
     const columns = [
         {
-            title: "应用Id",
-            dataIndex: "appId",
+            title: "中文名称",
+            dataIndex: "chineseName",
         },
         {
             title: "名称",
             dataIndex: "name",
         },
         {
-            title: "中文名称",
-            dataIndex: "chineseName",
-        },
-        {
             title: "部署环境",
             dataIndex: "environmentName",
         },
         {
-            title: "应用运行时",
+            title: "集群",
+            dataIndex: "clusterName",
+        },
+        {
+            title: "运行环境",
             dataIndex: "applicationRuntimeTypeName",
         },
         {
@@ -78,20 +78,12 @@ const DeploymentConfigurationPage = (props: IProp) => {
             dataIndex: "deploymentTypeName",
         },
         {
-            title: "集群",
-            dataIndex: "clusterName",
-        },
-        {
             title: "NameSpace",
-            dataIndex: "nameSpaceName",
+            dataIndex: "nameSpace",
         },
         {
             title: "部署副本数量",
             dataIndex: "replicas",
-        },
-        {
-            title: "最大不可用",
-            dataIndex: "maxUnavailable",
         },
         {
             title: "操作",
@@ -126,7 +118,6 @@ const DeploymentConfigurationPage = (props: IProp) => {
                 )
             }
         }
-
     ]
     const pagination: PaginationProps = {
         ...tacitPagingProps,

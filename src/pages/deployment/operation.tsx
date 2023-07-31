@@ -18,6 +18,7 @@ import ContainerConfigurationOperation from "./container-configuration-operation
 import { IClusterOutputDto } from "@/domain/kubernetes/clusters/cluster-dto";
 import { IClusterService } from "@/domain/kubernetes/clusters/icluster-service";
 import { IDeploymentConfigurationService } from "@/domain/deployment-configurations/ideployment-configuration-service";
+import { IEnvironmentService } from "@/domain/environment/ienvironment-service";
 import { IInitContainerConfigurationOutputDto } from "@/domain/init-container-configurations/iinit-container-service-dto";
 import { IInitContainerService } from "@/domain/init-container-configurations/iinit-container-service";
 import { INameSpaceOutputDto } from "@/domain/kubernetes/namespaces/namespace-dto";
@@ -72,16 +73,24 @@ const validateMessages = {
 const Operation = (props: IProp) => {
     const _nameSpaceService: INameSpaceService = useHookProvider(IocTypes.NameSpaceService);
     const _clusterService: IClusterService = useHookProvider(IocTypes.ClusterService);
+    const _environmentService: IEnvironmentService =
+        useHookProvider(IocTypes.EnvironmentService);
+    const _deploymentConfigurationService: IDeploymentConfigurationService = useHookProvider(IocTypes.DeploymentConfigurationService);
+
+        
     const [clusterData, setClusterData] = useState<Array<IClusterOutputDto>>([]);
     const [nameSpaceArrayData, setNameSpaceArrayData] = useState<Array<INameSpaceOutputDto>>([]);
-    const _deploymentConfigurationService: IDeploymentConfigurationService = useHookProvider(IocTypes.DeploymentConfigurationService);
+
     const _initContainerService: IInitContainerService = useHookProvider(IocTypes.InitContainerService);
     const [operationState, setOperationState] = useState<IOperationConfig>({
         visible: false,
     });
-    const [deploymentConfigurationFormData] = Form.useForm();
-    const [masterContainerConfigurationFormData] = Form.useForm();
+
     const [loading, setLoading] = useState<boolean>(false);
+
+    const [clusterId, setClusterId] = useState<string>('');
+    const [environmentData, setEnvironmentData] = useState<Array<any>>([]);
+    
     const [initContainerData, setInitContainerData] = useState<Array<IInitContainerConfigurationOutputDto>>([]);
     const [deploymentConfigurationData, setDeploymentConfigurationData] = useState<IDeploymentConfigurationDto>({
         name: "",
@@ -90,7 +99,7 @@ const Operation = (props: IProp) => {
         deploymentType: DeploymentTypeEnum.deployment,
         chineseName: "",
         appId: "",
-        nameSpaceId: "",
+        nameSpace: "",
         replicas: 1,
         imagePullSecretId: "",
         sideCarPlugins: [],
@@ -103,7 +112,8 @@ const Operation = (props: IProp) => {
         imagePullPolicy: 'Always'
     });
 
-
+    const [deploymentConfigurationFormData] = Form.useForm();
+    const [masterContainerConfigurationFormData] = Form.useForm();
 
 
     /**
@@ -118,13 +128,12 @@ const Operation = (props: IProp) => {
      * @param _id
      */
     const onLoad = () => {
-        // onGetInitContainerList();
         onClusterList();
-        onGetNameSpaceByClusterIdData();
+        onGetNameSpaceList();
+        onGetEnvironmentList();
         switch (props.operationType) {
             case OperationTypeEnum.add:
                 deploymentConfigurationFormData.setFieldsValue(deploymentConfigurationData)
-                masterContainerConfigurationFormData.setFieldsValue(masterContainerConfiguration)
                 editOperationState(true, "添加");
                 break;
             case OperationTypeEnum.edit:
@@ -150,10 +159,37 @@ const Operation = (props: IProp) => {
             }
         })
     }
+
+    const onChangeClusterId = (_clusterId: string) => {
+        setClusterId(_clusterId)
+    };
+
     /**
       * 查询命名空间根据集群Id
       */
-    const onGetNameSpaceByClusterIdData = () => {
+    const onGetEnvironmentList = () => {
+
+        let _param = {
+            pageSize: 100,
+            pageIndex: 1,
+        };
+        _environmentService.getPage(_param).then(rep => {
+            if (rep.success) {
+                console.log(rep.result)
+                setEnvironmentData(rep.result.data)
+
+            } else {
+                message.error(rep.errorMessage, 3);
+            }
+        })
+
+    };
+
+    
+    /**
+      * 查询命名空间根据集群Id
+      */
+    const onGetNameSpaceList = () => {
         _nameSpaceService.getNameSpaceList().then(rep => {
             if (rep.success) {
                 console.log(rep.result)
@@ -196,22 +232,17 @@ const Operation = (props: IProp) => {
      */
     const onFinish = () => {
         deploymentConfigurationFormData.validateFields().then((_deployment: IDeploymentConfigurationDto) => {
+            debugger
+            _deployment.appId = props.appId;
+            switch (props.operationType) {
+                case OperationTypeEnum.add:
+                    onCreate(_deployment);
+                    break;
+                case OperationTypeEnum.edit:
+                    props.id && onUpdateDeployment(_deployment)
+                    break;
+            }
 
-            masterContainerConfigurationFormData.validateFields().then((_masterContainer: IMasterContainerConfigurationInputDto) => {
-                _deployment.appId = props.appId;
-                let param = {
-                    deploymentConfiguration: _deployment,
-                    masterContainerConfiguration: _masterContainer
-                }
-                switch (props.operationType) {
-                    case OperationTypeEnum.add:
-                        onCreate(param);
-                        break;
-                    case OperationTypeEnum.edit:
-                        props.id && onUpdateDeployment(param)
-                        break;
-                }
-            }).catch((error) => { })
 
 
         }).catch((error) => { });
@@ -220,24 +251,24 @@ const Operation = (props: IProp) => {
     /**
      * 修改事件
      */
-    const onUpdateDeployment = (_deployment: IDeploymentInputDto) => {
+    const onUpdateDeployment = (_deployment: IDeploymentConfigurationDto) => {
         setLoading(true);
-        (props.id && props.masterContainerId) && _deploymentConfigurationService.updateDeployment(props.id, props.masterContainerId, _deployment).then(rep => {
-            if (!rep.success) {
-                message.error(rep.errorMessage, 3);
-            } else {
-                message.success("保存成功", 3);
-                props.onCallbackEvent && props.onCallbackEvent();
-            }
-        }).finally(() => {
-            setLoading(false);
-        });
+        // (props.id && props.masterContainerId) && _deploymentConfigurationService.updateDeployment(props.id, props.masterContainerId, _deployment).then(rep => {
+        //     if (!rep.success) {
+        //         message.error(rep.errorMessage, 3);
+        //     } else {
+        //         message.success("保存成功", 3);
+        //         props.onCallbackEvent && props.onCallbackEvent();
+        //     }
+        // }).finally(() => {
+        //     setLoading(false);
+        // });
     };
 
     /**
      * 弹框取消事件
      */
-    const onCreate = (_param: IDeploymentInputDto) => {
+    const onCreate = (_param: IDeploymentConfigurationDto) => {
         setLoading(true);
         _deploymentConfigurationService.createDeployment(_param).then(rep => {
             if (!rep.success) {
@@ -328,8 +359,21 @@ const Operation = (props: IProp) => {
                         label="部署环境"
                         rules={[{ required: true }]}
                     >
-                        <Input />
+                        <Select
+                            allowClear={true}
+                            placeholder="部署环境"
+                            onChange={onChangeClusterId}
+                        >
+                            {environmentData.map((item: any) => {
+                                return (
+                                    <Select.Option value={item.name}>
+                                        {item.name}
+                                    </Select.Option>
+                                );
+                            })}
+                        </Select>
                     </Form.Item>
+                    
                     <Form.Item
                         name="clusterId"
                         label="部署集群"
@@ -338,7 +382,7 @@ const Operation = (props: IProp) => {
                         <Select
                             allowClear={true}
                             placeholder="绑定集群"
-                            onChange={onGetNameSpaceByClusterIdData}
+                            onChange={onChangeClusterId}
                         >
                             {clusterData.map((item: IClusterOutputDto) => {
                                 return (
@@ -350,15 +394,15 @@ const Operation = (props: IProp) => {
                         </Select>
                     </Form.Item>
                     <Form.Item
-                        name="nameSpaceId"
+                        name="nameSpace"
                         label="命名空间"
                         rules={[{ required: true }]}>
                         <Select
                             allowClear={true}
                         >
-                            {nameSpaceArrayData.map((item: INameSpaceOutputDto) => {
+                            {nameSpaceArrayData.filter(x => x.clusterId === clusterId).map((item: INameSpaceOutputDto) => {
                                 return (
-                                    <Select.Option value={item.id}>
+                                    <Select.Option value={item.name}>
                                         {item.name}
                                     </Select.Option>
                                 );

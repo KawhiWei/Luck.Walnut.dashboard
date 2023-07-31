@@ -31,7 +31,7 @@ export interface IDeploymentConfigurationBaseDto {
     /**
      * 命名空间Id
      */
-    nameSpaceId: string;
+    nameSpace: string;
     /**
      * 集群Id
      */

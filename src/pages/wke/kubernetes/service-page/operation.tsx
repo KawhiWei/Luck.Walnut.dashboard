@@ -141,7 +141,7 @@ const Operation = (props: IProp) => {
         let deployment=deploymentConfigurationData.find(x=>x.id===_deploymentId)
         if(deployment){
             serviceFormData.setFieldValue("clusterId",deployment.clusterId)
-            serviceFormData.setFieldValue("nameSpaceId",deployment.nameSpaceId)
+            serviceFormData.setFieldValue("nameSpaceId",deployment.nameSpaceName)
         }
     };
 

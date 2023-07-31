@@ -22,26 +22,10 @@ const ConfigPage = (props: any) => {
    * 页面初始化事件
    */
   useEffect(() => {
-    getEnvironmentList();
+    
   },[appId]);
 
-  /**
-   * 获取环境列表信息
-   */
-  const getEnvironmentList = () => {
-    if (props.location.state.appId) {
-        setLoading(true);
-        setAppId(props.location.state.appId)
-        _environmentService.getEnvironmentList(props.location.state.appId).then((x) => {
-          if (x.success) {
-            setEnvironmentList(x.result);
-          }
-        }).finally(()=>{
-          setLoading(false);
-        });
-    }
-    
-  };
+
 
   /**
    * 跳转到配置中心

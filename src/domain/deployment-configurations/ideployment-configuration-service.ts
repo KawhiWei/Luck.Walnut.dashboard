@@ -19,7 +19,7 @@ export interface IDeploymentConfigurationService {
      * 创建一个部署
      * @param _params 
      */
-    createDeployment(_params: IDeploymentInputDto): Promise<IServerReturn<any>>;
+    createDeployment(_params: IDeploymentConfigurationDto): Promise<IServerReturn<any>>;
 
 
     /**

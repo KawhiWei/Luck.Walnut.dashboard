@@ -8,6 +8,7 @@ import {
     Spin,
     Switch,
     Table,
+    Tag,
     Tooltip,
     message
 } from "antd";
@@ -66,7 +67,12 @@ const NameSpacePage = (props: any) => {
             render: (text: any, record: INameSpaceOutputDto) => {
                 return (
                     <div className="table-operation">
-                        <Switch checked={record.isPublish} disabled ></Switch>
+                        {
+                            record.onlineStatus == 0 ? (<Tag color="success">运行中</Tag>) : null
+                        }
+                        {
+                            record.onlineStatus == 5 ? (<Tag color="processing">未发布</Tag>) : null
+                        }
                     </div>
                 )
             }
@@ -83,21 +89,41 @@ const NameSpacePage = (props: any) => {
                                 style={{ color: "orange", marginRight: 20, fontSize: 16 }}
                                 onClick={() => editRow(record.id)} />
                         </Tooltip>
-                        <Tooltip placement="top" title="发布">
-                            <CloudUploadOutlined
-                                style={{ color: "#1677ff", marginRight: 20, fontSize: 16 }}
-                                onClick={() => publishNameSpace(record.id)} />
-                        </Tooltip>
-                        <Tooltip placement="top" title="下线">
-                            <CloudDownloadOutlined
-                                style={{ color: "orange", marginRight: 20, fontSize: 16 }}
-                                onClick={() => publishNameSpace(record.id)} />
-                        </Tooltip>
 
+                        {
+                            record.onlineStatus == 0 ? (<Tooltip placement="top" title="上线">
+                                <Popconfirm
+                                    placement="top"
+                                    title="您确认上线吗?"
+                                    okText="确定"
+                                    cancelText="取消"
+                                    onConfirm={() => publishNameSpace(record.id)}
+                                    icon={<WarningOutlined />}
+                                >
+                                    <CloudUploadOutlined
+                                        style={{ color: "#1677ff", marginRight: 20, fontSize: 16 }} />
+                                </Popconfirm>
+                            </Tooltip>) : null
+                        }
+                        {
+                            record.onlineStatus == 5 ? (<Tooltip placement="top" title="下线">
+                                <Popconfirm
+                                    placement="top"
+                                    title="您确认下线吗?"
+                                    okText="确定"
+                                    cancelText="取消"
+                                    onConfirm={() => publishNameSpace(record.id)}
+                                    icon={<WarningOutlined />}
+                                >
+                                    <CloudDownloadOutlined
+                                        style={{ color: "orange", marginRight: 20, fontSize: 16 }} />
+                                </Popconfirm>
+                            </Tooltip>) : null
+                        }
                         <Tooltip placement="top" title="删除">
                             <Popconfirm
                                 placement="top"
-                                title="确认删除?"
+                                title="您确认删除吗?"
                                 okText="确定"
                                 cancelText="取消"
                                 onConfirm={() => deleteRow(record.id)}
