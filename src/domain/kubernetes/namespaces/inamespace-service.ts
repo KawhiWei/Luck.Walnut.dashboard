@@ -34,7 +34,14 @@ export interface INameSpaceService {
      * @param _id 
      * @param _params 
      */
-    publishNameSpace(_id: string): Promise<IServerReturn<any>>;
+    onlineNameSpace(_id: string): Promise<IServerReturn<any>>;
+
+    /**
+     * 
+     * @param _id 
+     * @param _params 
+     */
+    offlineNameSpace(_id: string): Promise<IServerReturn<any>>;
 
     /**
      * 

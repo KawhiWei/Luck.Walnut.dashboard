@@ -22,8 +22,12 @@ export default class NameSpaceService extends BaseService implements INameSpaceS
     getNameSpaceDetail(_id: string): Promise<IServerReturn<INameSpaceOutputDto>> {
         return this.dataRequest.getRequest(`${NameSpaceApi.nameSpaces}/${_id}`);
     }
-    publishNameSpace(_id: string): Promise<IServerReturn<any>> {
+    onlineNameSpace(_id: string): Promise<IServerReturn<any>> {
         return this.dataRequest.putRequest(`${NameSpaceApi.nameSpaces}/${_id}/online`, {});
+    }
+
+    offlineNameSpace(_id: string): Promise<IServerReturn<any>> {
+        return this.dataRequest.putRequest(`${NameSpaceApi.nameSpaces}/${_id}/offline`, {});
     }
     deleteNameSpace(_id: string): Promise<IServerReturn<any>> {
         return this.dataRequest.deleteRequest(`${NameSpaceApi.nameSpaces}/${_id}`);

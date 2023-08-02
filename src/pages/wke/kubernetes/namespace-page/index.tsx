@@ -89,34 +89,31 @@ const NameSpacePage = (props: any) => {
                                 style={{ color: "orange", marginRight: 20, fontSize: 16 }}
                                 onClick={() => editRow(record.id)} />
                         </Tooltip>
-
                         {
-                            record.onlineStatus == 0 ? (<Tooltip placement="top" title="上线">
+                            record.onlineStatus == 0 ? (<Tooltip placement="top" title="K8S删除">
                                 <Popconfirm
                                     placement="top"
-                                    title="您确认上线吗?"
+                                    title="您确认从K8S删除吗?"
                                     okText="确定"
                                     cancelText="取消"
-                                    onConfirm={() => publishNameSpace(record.id)}
+                                    onConfirm={() => offlineNameSpace(record.id)}
                                     icon={<WarningOutlined />}
                                 >
-                                    <CloudUploadOutlined
-                                        style={{ color: "#1677ff", marginRight: 20, fontSize: 16 }} />
+                                    <CloudDownloadOutlined color="volcano" style={{ marginRight: 20, fontSize: 16 }} />
                                 </Popconfirm>
                             </Tooltip>) : null
                         }
                         {
-                            record.onlineStatus == 5 ? (<Tooltip placement="top" title="下线">
+                            record.onlineStatus == 5 ? (<Tooltip placement="top" title="发布到K8S">
                                 <Popconfirm
                                     placement="top"
-                                    title="您确认下线吗?"
+                                    title="您确认发布到K8S吗?"
                                     okText="确定"
                                     cancelText="取消"
-                                    onConfirm={() => publishNameSpace(record.id)}
+                                    onConfirm={() => onlineNameSpace(record.id)}
                                     icon={<WarningOutlined />}
                                 >
-                                    <CloudDownloadOutlined
-                                        style={{ color: "orange", marginRight: 20, fontSize: 16 }} />
+                                    <CloudUploadOutlined style={{ color: "#1677ff", marginRight: 20, fontSize: 16 }} />
                                 </Popconfirm>
                             </Tooltip>) : null
                         }
@@ -210,8 +207,22 @@ const NameSpacePage = (props: any) => {
      * 
      * @param _id 
      */
-    const publishNameSpace = (_id: string) => {
-        _nameSpaceService.publishNameSpace(_id).then(res => {
+    const onlineNameSpace = (_id: string) => {
+        _nameSpaceService.onlineNameSpace(_id).then(res => {
+            if (!res.success) {
+                message.error(res.errorMessage, 3);
+            } else {
+                getPageList();
+            }
+        });
+    }
+
+    /**
+     * 
+     * @param _id 
+     */
+    const offlineNameSpace = (_id: string) => {
+        _nameSpaceService.offlineNameSpace(_id).then(res => {
             if (!res.success) {
                 message.error(res.errorMessage, 3);
             } else {
