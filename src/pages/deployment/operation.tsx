@@ -2,19 +2,10 @@ import "../drawer.less";
 
 import { ApplicationRuntimeTypeEnum, DeploymentTypeEnum } from "@/domain/deployment-configurations/deployment-configuration-enum";
 import { ApplicationRuntimeTypeMap, DeploymentTypeMap } from "@/domain/maps/deployment-configuration-map";
-import { Button, Card, Col, Drawer, Form, Input, InputNumber, Popconfirm, Row, Select, Space, Switch, Table, Tooltip, message } from "antd";
-import {
-    DeleteOutlined,
-    EditOutlined,
-    MinusCircleOutlined,
-    PlusOutlined,
-    WarningOutlined
-} from "@ant-design/icons";
-import { IDeploymentConfigurationDto, IDeploymentInputDto, IMasterContainerConfigurationInputDto, IMasterContainerConfigurationOutputDto } from "@/domain/deployment-configurations/deployment-configuration-dto";
-import { ImagePullPolicyTypeMap, RestartPolicyTypeMap } from "@/domain/maps/container-map";
+import { Button, Drawer, Form, Input, InputNumber, Select, Space, message } from "antd";
+import { IDeploymentConfigurationDto, IMasterContainerConfigurationInputDto } from "@/domain/deployment-configurations/deployment-configuration-dto";
 import { useEffect, useState } from "react";
 
-import ContainerConfigurationOperation from "./container-configuration-operation";
 import { IClusterOutputDto } from "@/domain/kubernetes/clusters/cluster-dto";
 import { IClusterService } from "@/domain/kubernetes/clusters/icluster-service";
 import { IDeploymentConfigurationService } from "@/domain/deployment-configurations/ideployment-configuration-service";
@@ -27,7 +18,6 @@ import { IOperationConfig } from "@/shared/operation/operationConfig";
 import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
 import _ from "lodash";
-import { formItemDoubleRankLayout } from "@/constans/layout/optionlayout";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
 // import "../description.less";
@@ -77,7 +67,7 @@ const Operation = (props: IProp) => {
         useHookProvider(IocTypes.EnvironmentService);
     const _deploymentConfigurationService: IDeploymentConfigurationService = useHookProvider(IocTypes.DeploymentConfigurationService);
 
-        
+
     const [clusterData, setClusterData] = useState<Array<IClusterOutputDto>>([]);
     const [nameSpaceArrayData, setNameSpaceArrayData] = useState<Array<INameSpaceOutputDto>>([]);
 
@@ -90,21 +80,9 @@ const Operation = (props: IProp) => {
 
     const [clusterId, setClusterId] = useState<string>('');
     const [environmentData, setEnvironmentData] = useState<Array<any>>([]);
-    
+
     const [initContainerData, setInitContainerData] = useState<Array<IInitContainerConfigurationOutputDto>>([]);
-    const [deploymentConfigurationData, setDeploymentConfigurationData] = useState<IDeploymentConfigurationDto>({
-        name: "",
-        environmentName: "",
-        applicationRuntimeType: ApplicationRuntimeTypeEnum.kubernetes,
-        deploymentType: DeploymentTypeEnum.deployment,
-        chineseName: "",
-        appId: "",
-        nameSpace: "",
-        replicas: 1,
-        imagePullSecretId: "",
-        sideCarPlugins: [],
-        clusterId: ""
-    });
+    const [deploymentConfigurationData, setDeploymentConfigurationData] = useState<IDeploymentConfigurationDto>();
     const [masterContainerConfiguration, setMasterContainerConfiguration] = useState<IMasterContainerConfigurationInputDto>({
         containerName: '',
         restartPolicy: 'always',
@@ -137,7 +115,7 @@ const Operation = (props: IProp) => {
                 editOperationState(true, "添加");
                 break;
             case OperationTypeEnum.edit:
-                onGetDeploymentConfigurationDetail()
+                onGetDeploymentDetail()
                 break;
             case OperationTypeEnum.view:
                 editOperationState(true, "查看");
@@ -168,14 +146,12 @@ const Operation = (props: IProp) => {
       * 查询命名空间根据集群Id
       */
     const onGetEnvironmentList = () => {
-
         let _param = {
             pageSize: 100,
             pageIndex: 1,
         };
         _environmentService.getPage(_param).then(rep => {
             if (rep.success) {
-                console.log(rep.result)
                 setEnvironmentData(rep.result.data)
 
             } else {
@@ -185,14 +161,13 @@ const Operation = (props: IProp) => {
 
     };
 
-    
+
     /**
       * 查询命名空间根据集群Id
       */
     const onGetNameSpaceList = () => {
         _nameSpaceService.getNameSpaceList().then(rep => {
             if (rep.success) {
-                console.log(rep.result)
                 setNameSpaceArrayData(rep.result)
 
             } else {
@@ -215,11 +190,11 @@ const Operation = (props: IProp) => {
     /**
      * 查询配置详情
      */
-    const onGetDeploymentConfigurationDetail = () => {
-        (props.id && props.masterContainerId) && _deploymentConfigurationService.getDeploymentConfigurationDetail(props.id, props.masterContainerId).then(rep => {
+    const onGetDeploymentDetail = () => {
+        props.id && _deploymentConfigurationService.getDeploymentDetail(props.id).then(rep => {
             if (rep.success) {
-                deploymentConfigurationFormData.setFieldsValue(rep.result.deploymentConfiguration);
-                masterContainerConfigurationFormData.setFieldsValue(rep.result.masterContainerConfiguration)
+                deploymentConfigurationFormData.setFieldsValue(rep.result);
+                console.log(rep.result)
                 editOperationState(true, "编辑");
             } else {
                 message.error(rep.errorMessage, 3);
@@ -232,7 +207,6 @@ const Operation = (props: IProp) => {
      */
     const onFinish = () => {
         deploymentConfigurationFormData.validateFields().then((_deployment: IDeploymentConfigurationDto) => {
-            debugger
             _deployment.appId = props.appId;
             switch (props.operationType) {
                 case OperationTypeEnum.add:
@@ -242,8 +216,6 @@ const Operation = (props: IProp) => {
                     props.id && onUpdateDeployment(_deployment)
                     break;
             }
-
-
 
         }).catch((error) => { });
     };
@@ -373,7 +345,7 @@ const Operation = (props: IProp) => {
                             })}
                         </Select>
                     </Form.Item>
-                    
+
                     <Form.Item
                         name="clusterId"
                         label="部署集群"
@@ -474,7 +446,7 @@ const Operation = (props: IProp) => {
                     </Form.Item>
 
                     <Form.Item
-                        name={["strategy", "type"]}
+                        name={["deploymentPlugins", "strategy", "type"]}
                         label="更新策略类型"
                     >
                         <Select allowClear={true}
@@ -486,13 +458,13 @@ const Operation = (props: IProp) => {
                     </Form.Item>
 
                     <Form.Item
-                        name={["strategy", "maxUnavailable"]}
+                        name={["deploymentPlugins", "strategy", "maxUnavailable"]}
                         label="最大不可用">
                         <Input />
                     </Form.Item>
 
                     <Form.Item
-                        name={["strategy", "maxSurge"]}
+                        name={["deploymentPlugins", "strategy", "maxSurge"]}
                         label="可调度数量">
                         <Input />
                     </Form.Item>

@@ -40,10 +40,7 @@ export interface IDeploymentConfigurationBaseDto {
      * 部署副本数量
      */
     replicas: number;
-    /**
-     * 部署更新策略
-     */
-    strategy?: IStrategyDto;
+
     /**
      * 镜像拉取证书
      */
@@ -53,9 +50,18 @@ export interface IDeploymentConfigurationBaseDto {
      * 绑定初始容器
      */
     sideCarPlugins: Array<string>;
+
 }
 
-
+/**
+ * 部署扩展插件
+ */
+export interface IDeploymentPlugin {
+    /**
+     * 部署更新策略
+     */
+    strategy?: IStrategyDto;
+}
 export interface IStrategyDto {
 
     /**
@@ -78,6 +84,20 @@ export interface IStrategyDto {
  * DeploymentConfiguration输入Dto
  */
 export interface IDeploymentConfigurationDto extends IDeploymentConfigurationBaseDto {
+    /**
+     * 部署扩展插件
+     */
+    deploymentPlugins: IDeploymentPlugin;
+    /**
+     * 部署类型
+     */
+    deploymentTypeName: string;
+
+    /**
+     * 应用运行时类型
+     */
+    applicationRuntimeTypeName: string;
+
 }
 /**
  * 配置对象输出Dto

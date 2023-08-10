@@ -43,22 +43,20 @@ const ExecutedHistory = (props: IProp) => {
   const [tableData, setTableData] = useState<Array<any>>([]);
   const columns = [
     {
-      title: "JenkinsNumber",
+      title: "Number",
       dataIndex: "jenkinsBuildNumber",
       key: "jenkinsBuildNumber",
-      width: 150,
     },
     {
       title: "镜像版本",
       dataIndex: "imageVersion",
       key: "imageVersion",
-      width: 400,
+      width: 210,
     },
     {
       title: "执行结果",
       dataIndex: "id",
       key: "id",
-      width: 120,
       render: (text: any, record: any) => {
         return (
           <div>
@@ -75,7 +73,6 @@ const ExecutedHistory = (props: IProp) => {
     {
       title: "操作",
       key: "id",
-      width: 120,
       fixed: false,
       render: (text: any, record: any) => {
         return (
@@ -214,7 +211,7 @@ const ExecutedHistory = (props: IProp) => {
     <div>
       <Drawer
         title="构建历史"
-        width={"80%"}
+        width={600}
         placement="right"
         maskClosable={false}
         onClose={() => editOperationState(false)}

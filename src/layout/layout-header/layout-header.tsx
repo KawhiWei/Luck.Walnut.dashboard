@@ -20,19 +20,20 @@ const LayoutHeader = () => {
     return (
         <div>
             <Layout.Header className="luck-layout-header">
-                {/* <Button ghost={true} type="primary" onClick={logout}>退出登录</Button> */}
-                <div>
-                    {React.createElement(collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
-                        className: 'trigger',
-                        style: { color: "white" },
-                        onClick: () => setCollapsed(!collapsed),
-                    })}
-                    <Space wrap size={30}>
-                    </Space>
-
-                </div>
-
-
+               {/* <Space> */}
+                    {/* <Button ghost={true} type="primary" onClick={logout}>退出登录</Button> */}
+                    <div className="sub-menu-fold">
+                        <div>
+                        {
+                            collapsed === true ? (<MenuUnfoldOutlined />) : (<MenuFoldOutlined />)
+                        }
+                        </div>
+                        
+                    </div>
+                    {/* <div className="avatar">
+                        个人信息
+                    </div> */}
+                    {/* </Space> */}
             </Layout.Header>
         </div>
     )

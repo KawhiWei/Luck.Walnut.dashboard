@@ -109,8 +109,7 @@ const DeploymentConfigurationPage = (props: IProp) => {
                                 okText="确定"
                                 cancelText="取消"
                                 onConfirm={() => deleteRow(record.id)}
-                                icon={<WarningOutlined />}
-                            >
+                                icon={<WarningOutlined />}>
                                 <DeleteOutlined style={{ color: "red", fontSize: 16 }} />
                             </Popconfirm>
                         </Tooltip>
@@ -174,7 +173,7 @@ const DeploymentConfigurationPage = (props: IProp) => {
      * 修改一个配置
      */
     const editRow = (_id: string, _masterContainerId: string) => {
-        setOperationElement(<Operation operationType={OperationTypeEnum.edit} appId={props.appId} id={_id} masterContainerId={_masterContainerId} onCallbackEvent={clearElement}></Operation>)
+        setOperationElement(<Operation operationType={OperationTypeEnum.edit} appId={props.appId} id={_id}  onCallbackEvent={clearElement}></Operation>)
     }
 
     /***

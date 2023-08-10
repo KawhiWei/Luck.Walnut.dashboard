@@ -212,7 +212,7 @@ const ApplicationPage = () => {
   return (
     <div >
       <Spin spinning={loading}>
-        <Row style={{ marginBottom: "10px", backgroundColor: "white", height: "56px", padding: "0px 28px", }}>
+        <Row style={{ height: "50px", padding: "0px 18px", }}>
           <Row>
             <Space align="center" >
               <SyncOutlined

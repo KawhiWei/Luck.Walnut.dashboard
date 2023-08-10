@@ -322,30 +322,7 @@ const ProjectOperation = (props: IProp) => {
             <Col span="24">
               <Form.Item name="describe" label="项目描述">
                 <TextArea style={{ borderRadius: 6 }} rows={14}></TextArea>
-                {/* <Editor
-                                    onInit={(evt, editor) => editorRef.current = editor}
-                                    initialValue="<p>This is the initial content of the editor.</p>"
-                                    init={{
-                                        height: 500,
-                                        menubar: false,
-                                        plugins: [
-                                            'advlist autolink lists link image charmap print preview anchor',
-                                            'searchreplace visualblocks code fullscreen',
-                                            'insertdatetime media table paste code help wordcount'
-                                        ],
-                                        toolbar: 'undo redo | formatselect | ' +
-                                            'bold italic backcolor | alignleft aligncenter ' +
-                                            'alignright alignjustify | bullist numlist outdent indent | ' +
-                                            'removeformat | help',
-                                        content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
-                                    }}
-                                /> */}
-                {/* <span>
-                                    <Slate editor={editor} value={initialValue}
-                                    >
-                                        <Editable />
-                                    </Slate>
-                                </span> */}
+               
               </Form.Item>
             </Col>
           </Row>

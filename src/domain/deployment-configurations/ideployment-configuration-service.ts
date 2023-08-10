@@ -26,7 +26,7 @@ export interface IDeploymentConfigurationService {
      * 根据Id获取一个部署
      * @param _id 
      */
-    getDeploymentConfigurationDetail(_deploymentId: string, _masterContainerId: string): Promise<IServerReturn<IDeploymentOutputDto>>;
+    getDeploymentDetail(_deploymentId: string): Promise<IServerReturn<IDeploymentOutputDto>>;
 
     /**
      * 

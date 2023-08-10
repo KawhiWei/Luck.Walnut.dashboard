@@ -23,10 +23,9 @@ const LayoutView = (props: IProp) => {
     return (
 
         <Layout className="luck-layout">
-
             <BrowserRouter>
 
-                <LayoutSider menus={menuList} defaultpath="/user" />
+                <LayoutSider menus={menuList} defaultpath="/home" />
                 <Layout>
                     <Layoutheader />
                     <Layout.Content className="luck-layout-content"  >
