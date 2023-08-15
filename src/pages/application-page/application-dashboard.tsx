@@ -63,43 +63,34 @@ const ApplicationDashboard = (props: any) => {
   };
 
   return (
-    <Layout className="luck-layout">
-      <Spin spinning={loading}>
-        <Row gutter={12} style={{ margin: 5, textAlign: "left" }}>
-          <Col span="24">
-            <Tabs
-              defaultActiveKey={defaultActiveKey}
-              items={[
-                {
-                  label: `基础信息`,
-                  key: "1",
-                  children: (
-                    <ApplicationInformation
-                      applicationData={applicationData}
-                    />
-                  ),
-                },
-                {
-                  label: `应用流水线`,
-                  key: "2",
-                  children: <PipelinePage appId={appId} />,
-                },
-                {
-                  label: `部署配置`,
-                  key: "3",
-                  children: <DeploymentConfigurationPage appId={appId} />,
-                },
-                {
-                  label: `Service`,
-                  key: "4",
-                  children: <ServicePage appId={appId} />,
-                },
-              ]}
-            ></Tabs>
-          </Col>
-        </Row>
-      </Spin>
-      </Layout>
+    <Spin spinning={loading}>
+      <Tabs
+        tabPosition="left"
+        size="small"
+        defaultActiveKey={defaultActiveKey}
+        items={[
+          {
+            label: `基础信息`,
+            key: "1",
+            children: (
+              <ApplicationInformation
+                applicationData={applicationData}
+              />
+            ),
+          },
+          {
+            label: `持续集成`,
+            key: "2",
+            children: <PipelinePage appId={appId} />,
+          },
+          {
+            label: `持续部署`,
+            key: "3",
+            children: <DeploymentConfigurationPage appId={appId} />,
+          },
+        ]}
+      ></Tabs>
+    </Spin>
   );
 };
 export default ApplicationDashboard;

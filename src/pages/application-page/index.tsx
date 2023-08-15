@@ -1,16 +1,15 @@
 import "../table.less";
 import "./index.less";
+import "../search-panel.less"
 
 import {
   Avatar,
   Button,
-  Card,
   Col,
+  Empty,
   Form,
-  MenuProps,
   PaginationProps,
   Row,
-  Space,
   Spin,
   Tooltip,
   message
@@ -20,11 +19,8 @@ import {
   CameraOutlined,
   EditOutlined,
   PartitionOutlined,
-  PlusCircleFilled,
   PlusOutlined,
-  PlusSquareFilled,
-  SyncOutlined,
-  UserOutlined
+  SyncOutlined
 } from "@ant-design/icons";
 import {
   initPaginationConfig,
@@ -34,7 +30,6 @@ import { useEffect, useState } from "react";
 
 import { IApplicationOutputDto } from "@/domain/applications/application-dto";
 import { IApplicationService } from "@/domain/applications/iapplication-service";
-import { IProjectService } from "@/domain/projects/iproject-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import Operation from "./operation";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
@@ -212,72 +207,72 @@ const ApplicationPage = () => {
   return (
     <div >
       <Spin spinning={loading}>
-        <Row style={{ height: "50px", padding: "0px 18px", }}>
-          <Row>
-            <Space align="center" >
-              <SyncOutlined
-                style={{ textAlign: "right", marginRight: 10, fontSize: 16 }}
-                onClick={() => {
-                  getPageList();
-                }}
-              />
-              <Button
-                style={{ float: "right" }}
-                size="middle"
-                type="primary"
-                icon={<PlusOutlined />}               
-                onClick={() => addApplication()}
-              >
-                创建应用
-              </Button>
-            </Space>
+        <Row className="search-panel">
+          <Row className="search-button">
+            <SyncOutlined
+              style={{ textAlign: "right", marginRight: 10, fontSize: 16 }}
+              onClick={() => {
+                getPageList();
+              }} />
+            <Button
+              style={{ float: "right" }}
+              size="middle"
+              icon={<PlusOutlined />}
+              onClick={() => addApplication()}
+            >
+              创建应用
+            </Button>
           </Row>
         </Row>
-        <Row gutter={[12, 12]} style={{ padding: "0px 8px", }} >
-          {tableData.map((item: IApplicationOutputDto) => {
-            return (
-              <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={4}>
-                <div className="app-card" style={{ borderRadius: 8 }} >
-                  <div className="app-card-title" onClick={() => { goToApplicationDashboard(item.appId) }}>
-                    <Avatar size={35} shape="square" style={{ marginRight: 15, backgroundColor: getAvatarColor(item.appId), fontWeight: 700 }}>{item.appId[0].toUpperCase()}</Avatar>
-                    <div >{item.appId}</div>
-                  </div>
-                  <div className="card-operation-label-body">
-                    <div className="card-operation-label-filed">
-                      <div >最新镜像：<span>Release20230620</span></div>
+
+        {
+          tableData.length === 0 ?
+            <Empty/> : <Row gutter={[12, 12]} style={{ padding: "0px 8px", }} >
+              {tableData.map((item: IApplicationOutputDto) => {
+                return (
+                  <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={4}>
+                    <div className="app-card" style={{ borderRadius: 8 }} >
+                      <div className="app-card-title" onClick={() => { goToApplicationDashboard(item.appId) }}>
+                        <Avatar size={35} shape="square" style={{ marginRight: 15, backgroundColor: getAvatarColor(item.appId), fontWeight: 700 }}>{item.appId[0].toUpperCase()}</Avatar>
+                        <div >{item.appId}</div>
+                      </div>
+                      <div className="card-operation-label-body">
+                        <div className="card-operation-label-filed">
+                          <div >最新镜像：<span>Release20230620</span></div>
+                        </div>
+                      </div>
+                      <div className="card-operation" >
+                        <div className="card-operation-text" >
+                          其他操作
+                        </div>
+                        <div className="card-operation-body">
+                          <div className="card-operation-body-icon">
+                            <Tooltip title="流水线">
+                              <PartitionOutlined onClick={() => { goToApplicationDashboard(item.appId) }} />
+                            </Tooltip>
+                          </div>
+                          <div className="card-operation-body-icon">
+                            <Tooltip title="构建快照">
+                              <CameraOutlined onClick={() => { }} />
+                            </Tooltip>
+                          </div>
+                          <div className="card-operation-body-icon">
+                            <Tooltip title="改动记录">
+                              <BranchesOutlined onClick={() => { }} />
+                            </Tooltip>
+                          </div>
+                          <div className="card-operation-body-icon">
+                            <Tooltip title="编辑">
+                              <EditOutlined onClick={() => editRow(item.id)} />
+                            </Tooltip>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  <div className="card-operation" >
-                    <div className="card-operation-text" >
-                      其他操作
-                    </div>
-                    <div className="card-operation-body">
-                      <div className="card-operation-body-icon">
-                        <Tooltip title="流水线">
-                          <PartitionOutlined onClick={() => { goToApplicationDashboard(item.appId) }} />
-                        </Tooltip>
-                      </div>
-                      <div className="card-operation-body-icon">
-                        <Tooltip title="构建快照">
-                          <CameraOutlined onClick={() => { }} />
-                        </Tooltip>
-                      </div>
-                      <div className="card-operation-body-icon">
-                        <Tooltip title="改动记录">
-                          <BranchesOutlined onClick={() => { }} />
-                        </Tooltip>
-                      </div>
-                      <div className="card-operation-body-icon">
-                        <Tooltip title="编辑">
-                          <EditOutlined onClick={() => editRow(item.id)} />
-                        </Tooltip>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </Col>)
-          })}
-        </Row>
+                  </Col>)
+              })}
+            </Row>
+        }
         {subOperationElement}
       </Spin>
     </div>

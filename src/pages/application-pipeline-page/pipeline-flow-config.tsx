@@ -1,15 +1,19 @@
 import "../drawer.less";
+import "../search-panel.less"
 
+import { Button, Row, Spin, message } from "antd";
+import { IApplicationPipelineFlowUpdateInputDto, IStageDto } from "@/domain/applicationpipelines/applicationpipeline-dto";
+import {
+  PlusOutlined,
+  SaveOutlined
+} from "@ant-design/icons";
 import { useEffect, useReducer, useState } from "react";
 
 import { IApplicationPipelineService } from "@/domain/applicationpipelines/iapplicationpipeline-service";
-import { IOperationConfig } from "@/shared/operation/operationConfig";
-import { IApplicationPipelineFlowUpdateInputDto, IApplicationPipelineInputDto, IStageDto } from "@/domain/applicationpipelines/applicationpipeline-dto";
 import { IocTypes } from "@/shared/config/ioc-types";
 import Operation from "./operation";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
 import PipelineFlow from "../pipeline-operation-component-page/pipeline-flow";
-import { Button, Row, Space, Spin, message } from "antd";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
 const initialize: IApplicationPipelineFlowUpdateInputDto = {
@@ -116,20 +120,21 @@ const PipeFlowConfig = (props: any) => {
   return (
     <div style={{ height: "100%" }}>
       <Spin spinning={loading}>
-        <Row style={{ marginBottom: "10px", backgroundColor: "white", height: "56px", padding: "0px 28px", }}>
-          <Row>
-            <Space align="center" >
-              <Button
-                style={{ float: "right" }}
-                size="middle"
-                type="primary"
-                onClick={() => onSave()}
-              >
-                保存流水线
-              </Button>
-            </Space>
+      <Row className="search-panel">
+          <Row className="search-button">
+            <Button
+              style={{ margin: "8px 8px" }}
+              icon={<SaveOutlined />}
+              onClick={() => {
+                showApplicationPipelineBasicOperation();
+              }}>
+              保存构建计划
+            </Button>
+
           </Row>
+
         </Row>
+
         <PipelineFlow stageArray={applicationPipeline.pipelineScript} onCallbackEvent={onSetStageArray} onEditPipeLineInformationCallbackEvent={showApplicationPipelineBasicOperation} />
       </Spin>
       {applicationPipelineBasicElement}

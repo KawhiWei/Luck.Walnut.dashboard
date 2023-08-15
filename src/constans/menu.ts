@@ -169,7 +169,7 @@ export const menuList: IMenuOutput[] = [
   },
   {
     id: "1004",
-    name: "基础管理",
+    name: "基础设施",
     path: "/componentintegration",
     component: "pages/componentintegration-page/index",
     tabs: [],

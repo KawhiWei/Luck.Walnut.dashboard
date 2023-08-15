@@ -1,4 +1,6 @@
-import { Button, Card, Col, Row, Space, Spin, Tag, message } from "antd";
+import "../search-panel.less"
+
+import { Button, Card, Col, Empty, Row, Space, Spin, Tag, message } from "antd";
 import {
   CloudUploadOutlined,
   DeleteOutlined,
@@ -271,105 +273,108 @@ const PipelinePage = (props: IProp) => {
   return (
     <div>
       <Spin spinning={loading}>
-        <Row>
-
-          <Space align="center" >
-
+        <Row className="search-panel">
+          <Row className="search-button">
             <SyncOutlined
               style={{ textAlign: "right", marginRight: 10, fontSize: 16 }}
               onClick={() => {
                 getPageList();
               }} />
             <Button
-              type="primary"
-              style={{ margin: "8px 8px" }}
               icon={<PlusOutlined />}
               onClick={() => {
                 showApplicationPipelineBasicOperation();
               }}>
-              添加流水线
+              创建构建计划
             </Button>
-          </Space>
+
+          </Row>
 
         </Row>
-        <Row gutter={[16, 16]}>
-          {tableData.map((item) => {
-            return (
-              <Col span={4}>
-                <Card
-                  title={item.name}
-                  actions={[
 
-                    <PlayCircleOutlined
-                      style={{
-                        fontSize: 20,
-                      }}
-                      onClick={() => onExecuteJob(item)}
-                    />,
-                    <CloudUploadOutlined
-                      key="setting"
-                      style={{
-                        color: "#2db7f5",
-                        fontSize: 20,
-                      }}
-                      onClick={() => onPublish(item.id)}
-                    />,
-                    <EditOutlined
-                      style={{
-                        color: "orange",
-                        fontSize: 20,
-                      }}
-                      onClick={() => onEdit(item.id)}
-                    />,
-                    <HistoryOutlined
-                      onClick={() => onShowExecutedHistory(item.id)}
-                    />,
+        {
+          tableData.length === 0 ? <Empty /> :
+            <Row gutter={[16, 16]}>
+              {tableData.map((item) => {
+                return (
+                  <Col span={4}>
+                    <Card
+                      title={item.name}
+                      actions={[
 
-                    <DeleteOutlined
-                      style={{
-                        color: "red",
-                        fontSize: 20,
-                      }}
-                      onClick={() => onDelete(item.id)}
-                      />,
-                  ]}
-                >
-                  <Row style={{ marginBottom: 10 }}>
-                    <Col span="24">
-                      最近任务：
-                      <Tag
-                        style={{ textAlign: "center" }}
-                        color={onPipelineBuildStateTag(item.pipelineBuildState)}
-                        onClick={() => {
-                          onShowLog(
-                            item.id,
-                            item.lastApplicationPipelineExecutedRecordId
-                          );
-                        }}
-                      >
-                        {item.jenkinsBuildNumber}
-                      </Tag>
-                    </Col>
-                  </Row>
-                  <Row style={{ marginBottom: 10 }}>
-                    <Col span="24">
-                      是否发布：
-                      {item.published ? (
-                        <Tag style={{ textAlign: "center" }} color="processing">
-                          已发布
-                        </Tag>
-                      ) : (
-                        <Tag style={{ textAlign: "center" }} color="gold">
-                          未发布
-                        </Tag>
-                      )}
-                    </Col>
-                  </Row>
-                </Card>
-              </Col>
-            );
-          })}
-        </Row>
+                        <PlayCircleOutlined
+                          style={{
+                            fontSize: 20,
+                          }}
+                          onClick={() => onExecuteJob(item)}
+                        />,
+                        <CloudUploadOutlined
+                          key="setting"
+                          style={{
+                            color: "#2db7f5",
+                            fontSize: 20,
+                          }}
+                          onClick={() => onPublish(item.id)}
+                        />,
+                        <EditOutlined
+                          style={{
+                            color: "orange",
+                            fontSize: 20,
+                          }}
+                          onClick={() => onEdit(item.id)}
+                        />,
+                        <HistoryOutlined
+                          onClick={() => onShowExecutedHistory(item.id)}
+                        />,
+
+
+
+                        <DeleteOutlined
+                          style={{
+                            color: "red",
+                            fontSize: 20,
+                          }}
+                          onClick={() => onDelete(item.id)}
+                        />,
+                      ]}
+                    >
+                      <Row style={{ marginBottom: 10 }}>
+                        <Col span="24">
+                          最近任务：
+                          <Tag
+                            style={{ textAlign: "center" }}
+                            color={onPipelineBuildStateTag(item.pipelineBuildState)}
+                            onClick={() => {
+                              onShowLog(
+                                item.id,
+                                item.lastApplicationPipelineExecutedRecordId
+                              );
+                            }}
+                          >
+                            {item.jenkinsBuildNumber}
+                          </Tag>
+                        </Col>
+                      </Row>
+                      <Row style={{ marginBottom: 10 }}>
+                        <Col span="24">
+                          是否发布：
+                          {item.published ? (
+                            <Tag style={{ textAlign: "center" }} color="processing">
+                              已发布
+                            </Tag>
+                          ) : (
+                            <Tag style={{ textAlign: "center" }} color="gold">
+                              未发布
+                            </Tag>
+                          )}
+                        </Col>
+                      </Row>
+                    </Card>
+                  </Col>
+                );
+              })}
+            </Row>
+        }
         {subBuildLogsElement}
         {subExecutedHistoryElement}
         {subOperationElement}

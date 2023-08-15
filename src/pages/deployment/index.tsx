@@ -1,3 +1,5 @@
+import "../search-panel.less"
+
 import {
     Button,
     Col,
@@ -16,6 +18,7 @@ import {
     EditOutlined,
     PlusOutlined,
     ReloadOutlined,
+    SyncOutlined,
     WarningOutlined
 } from "@ant-design/icons";
 import {
@@ -173,7 +176,7 @@ const DeploymentConfigurationPage = (props: IProp) => {
      * 修改一个配置
      */
     const editRow = (_id: string, _masterContainerId: string) => {
-        setOperationElement(<Operation operationType={OperationTypeEnum.edit} appId={props.appId} id={_id}  onCallbackEvent={clearElement}></Operation>)
+        setOperationElement(<Operation operationType={OperationTypeEnum.edit} appId={props.appId} id={_id} onCallbackEvent={clearElement}></Operation>)
     }
 
     /***
@@ -198,45 +201,32 @@ const DeploymentConfigurationPage = (props: IProp) => {
     };
 
     return (
-        <div>
-            <Spin spinning={loading}>
-                <Form form={formData}
-                    name="query"
-                    layout="horizontal"
-                    {...searchFormItemDoubleRankLayout}
-                    onFinish={onSearch}
-                >
-                    <Row>
-                        <Col span="24" style={{ textAlign: "right" }}>
-                            <ReloadOutlined
-                                style={{ textAlign: "right", marginRight: 10, fontSize: 16 }}
-                                onClick={() => {
-                                    onSearch();
-                                }}
-                            />
-                            <Button
-                                shape="round"
-                                type="primary"
-                                style={{ margin: "8px 8px" }}
-                                onClick={() => {
-                                    addChange();
-                                }}
-                            >
-                                <PlusOutlined />
-                                添加部署
-                            </Button>
-                        </Col>
-                    </Row>
-                </Form>
-                <Table columns={columns}
-                    dataSource={tableData}
-                    pagination={pagination}
-                    scroll={{ y: 700 }}
-                    size="small"
-                />
-                {subOperationElement}
-            </Spin>
-        </div>
+
+        <Spin spinning={loading}>
+            <Row className="search-panel">
+                <Row className="search-button">
+                    <SyncOutlined
+                        style={{ textAlign: "right", marginRight: 10, fontSize: 16 }}
+                        onClick={() => {
+                            onSearch();
+                        }} />
+                    <Button
+                        icon={<PlusOutlined />}
+                        onClick={() => {
+                            addChange();
+                        }}>
+                        创建部署计划
+                    </Button>
+                </Row>
+            </Row>
+            <Table columns={columns}
+                dataSource={tableData}
+                pagination={pagination}
+                scroll={{ y: 700 }}
+                size="small"
+            />
+            {subOperationElement}
+        </Spin>
     )
 }
 

@@ -1,4 +1,4 @@
-import { Descriptions, Tag } from "antd";
+import { Card, Col, Descriptions, Row, Tag } from "antd";
 
 import ApplicationStateTag from "./applicationStateTag";
 import { IApplicationBaseDto } from "@/domain/applications/application-dto";
@@ -17,14 +17,27 @@ interface IProp {
 const ApplicationInformation = (props: IProp) => {
   return (
     <div>
-        <Descriptions size="small" bordered column={1} style={{ padding: "10px" }}>
-          <Descriptions.Item label="应用标识：">
-            {props.applicationData?.appId}
-          </Descriptions.Item>
-          <Descriptions.Item label="应用描述：">
-            {props.applicationData?.describe}
-          </Descriptions.Item>
-        </Descriptions>
+      <Row gutter={16} style={{ height: "365px" }}>
+        <Col span={12}>
+          <Card title="应用简介" style={{ height: "365px" }}>
+            <p>Card content</p>
+          </Card>
+        </Col>
+        <Col span={12}>
+          <Card title="部署历史"  style={{ height: "170px" }}>
+            <p>Card content</p>
+          </Card>
+          <Card  title="CI记录" style={{ height: "179px", marginTop: "16px" }}>
+            <p>Card content</p>
+          </Card>
+        </Col>
+      </Row>
+
+      <Card title="应用监控"  style={{ marginTop: "16px" }}>
+        <p>Card content</p>
+        <p>Card content</p>
+        <p>Card content</p>
+      </Card>
     </div>
   );
 };
