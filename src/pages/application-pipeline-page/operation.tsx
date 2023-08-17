@@ -102,10 +102,6 @@ const Operation = (props: IProp) => {
                 })
                 break;
         }
-
-        
-
-
     };
 
 
@@ -170,7 +166,6 @@ const Operation = (props: IProp) => {
      * 编辑保存事件
      */
     const onUpdate = (_params: IApplicationPipelineInputDto) => {
-        debugger
         _params.appId = props.appId;
         props.id && _applicationPipelineService.update(props.id, _params)
             .then(resp => {

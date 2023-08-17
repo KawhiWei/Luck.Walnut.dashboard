@@ -1,4 +1,4 @@
-import { Button, Card, Col, Layout, Row, Spin, Tabs } from "antd";
+import { Button, Card, Col, Layout, Row, Spin, Tabs, Tag, Timeline } from "antd";
 import { useEffect, useState } from "react";
 
 import ApplicationInformation from "./application-information";
@@ -24,34 +24,40 @@ const ApplicationDashboard = (props: any) => {
     IocTypes.ApplicationService
   );
   const [appId, setAppId] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
+  const [appLoading, setAppLoading] = useState<boolean>(false);
   const [applicationData, setApplicationData] = useState<IApplicationBaseDto>();
 
-  const DashboardDetail = () => {
+  const Load = () => {
     if (props.location.state && props.location.state.appId) {
       setAppId(props.location.state.appId);
-      setLoading(true);
-      _applicationService
-        .getApplicationDashboardDetail(props.location.state.appId)
-        .then((rep) => {
-          if (rep.success) {
-            setApplicationData(rep.result.application);
-          }
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-      if (props.location.state.defaultActiveKey) {
-        setDefaultActiveKey(props.location.state.defaultActiveKey);
-      }
+      onGetApplication(props.location.state.appId)
     } else {
       backToApplicationList();
     }
   };
   useEffect(() => {
-    DashboardDetail();
+    Load();
   }, []);
 
+  const onGetApplication = (_appId: string) => {
+
+    setAppLoading(true);
+    _applicationService
+      .getApplicationDashboardDetail(props.location.state.appId)
+      .then((rep) => {
+        if (rep.success) {
+          setApplicationData(rep.result.application);
+        }
+      })
+      .finally(() => {
+        setAppLoading(false);
+      });
+    if (props.location.state.defaultActiveKey) {
+      setDefaultActiveKey(props.location.state.defaultActiveKey);
+    }
+
+
+  }
   /**
    * 跳转到应用列表
    * @param _appId
@@ -63,34 +69,79 @@ const ApplicationDashboard = (props: any) => {
   };
 
   return (
-    <Spin spinning={loading}>
-      <Tabs
-        tabPosition="left"
-        size="small"
-        defaultActiveKey={defaultActiveKey}
-        items={[
-          {
-            label: `基础信息`,
-            key: "1",
-            children: (
-              <ApplicationInformation
-                applicationData={applicationData}
-              />
-            ),
-          },
-          {
-            label: `持续集成`,
-            key: "2",
-            children: <PipelinePage appId={appId} />,
-          },
-          {
-            label: `持续部署`,
-            key: "3",
-            children: <DeploymentConfigurationPage appId={appId} />,
-          },
-        ]}
-      ></Tabs>
-    </Spin>
+    <Tabs
+      tabPosition="left"
+      size="small"
+      defaultActiveKey={defaultActiveKey}
+      items={[
+        {
+          label: `基础信息`,
+          key: "1",
+          children: (
+            <div>
+              <Row gutter={8} style={{ height: "365px" }}>
+                <Col span={10}>
+                  <Spin spinning={appLoading}>
+                    <Card title={props.applicationData?.appId} style={{ overflowY: 'auto', height: "365px" }}>
+                      <p><Tag>管理人员</Tag>{applicationData?.describe}</p>
+                      <p><Tag>应用名称</Tag>{applicationData?.name}</p>
+                      <p><Tag>Git地址</Tag>{applicationData?.gitUrl}</p>
+                      <p><Tag>应用描述</Tag>{applicationData?.describe}</p>
+                    </Card>
+                  </Spin>
+                </Col>
+                <Col span={14}>
+                  <Card size="small" title="构建计划" style={{ height: "365px" }}>
+                    <div style={{ overflow: 'auto', paddingTop:"5px", height: "300px" }}>
+                      <Timeline>
+                        <Timeline.Item color="red">
+                          <p>Solve initial network problems 1</p>
+                        </Timeline.Item>
+                        <Timeline.Item>
+                          <p>Technical testing 1</p>
+                        </Timeline.Item>
+                        <Timeline.Item>
+                          <p>Technical testing 1</p>
+                        </Timeline.Item>
+                        <Timeline.Item>
+                          <p>Technical testing 1</p>
+                        </Timeline.Item>
+                        <Timeline.Item>
+                          <p>Technical testing 1</p>
+                        </Timeline.Item>
+                        <Timeline.Item>
+                          <p>Technical testing 1</p>
+                        </Timeline.Item>
+                        <Timeline.Item>
+                          <p>Technical testing 1</p>
+                        </Timeline.Item>
+                      </Timeline>
+                    </div>
+                  </Card>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={24}>
+                  <Card size="small" title="应用监控" style={{ marginTop: "8px" }}>
+
+                  </Card>
+                </Col>
+
+              </Row>
+            </div>
+          ),
+        },
+        {
+          label: `持续集成`,
+          key: "2",
+          children: <PipelinePage appId={appId} />,
+        },
+        {
+          label: `持续部署`,
+          key: "3",
+          children: <DeploymentConfigurationPage appId={appId} />,
+        },
+      ]}></Tabs>
   );
 };
 export default ApplicationDashboard;

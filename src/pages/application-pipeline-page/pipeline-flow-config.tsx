@@ -126,7 +126,7 @@ const PipeFlowConfig = (props: any) => {
               style={{ margin: "8px 8px" }}
               icon={<SaveOutlined />}
               onClick={() => {
-                showApplicationPipelineBasicOperation();
+                onSave();
               }}>
               保存构建计划
             </Button>

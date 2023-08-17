@@ -27,6 +27,7 @@ import { useEffect, useState } from "react";
 
 import { IApplicationService } from "@/domain/applications/iapplication-service";
 import { IBuildImageService } from "@/domain/buildimages/ibuildimage-service";
+import { IEnvironmentService } from "@/domain/environment/ienvironment-service";
 import { IOperationConfig } from "@/shared/operation/operationConfig";
 import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
@@ -69,15 +70,17 @@ const Operation = (props: IProp) => {
     IocTypes.ApplicationService
   );
   const [loading, setLoading] = useState<boolean>(false);
+  /**
+   * 
+   */
+  const [environmentArray, setEnvironmentArray] = useState<Array<any>>([]);
+
   const [operationState, setOperationState] = useState<IOperationConfig>({
     visible: false,
   });
   const [formData] = Form.useForm();
 
-
-
-
-  const _buildImageService: IBuildImageService = useHookProvider(IocTypes.BuildImageService);
+  const _environmentService: IEnvironmentService = useHookProvider(IocTypes.EnvironmentService);
 
   /**
    * 页面初始化事件
@@ -239,7 +242,6 @@ const Operation = (props: IProp) => {
               disabled={props.operationType === OperationTypeEnum.edit}
             />
           </Form.Item>
-
           <Form.Item
             name="gitUrl"
             label="git地址"
