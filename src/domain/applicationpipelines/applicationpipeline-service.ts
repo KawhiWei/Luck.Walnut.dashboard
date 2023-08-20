@@ -17,7 +17,7 @@ export class ApplicationPipelineService extends BaseService implements IApplicat
     updatePipelineFlow(_id: string, _param: IApplicationPipelineFlowUpdateInputDto): Promise<IServerReturn<any>> {
         return this.dataRequest.putRequest(`${ApplicationPipelineApi.applicationPipeline}/${_id}/pipeline/flow`, _param)
     }
-
+    
 
     getDetail(_id: string): Promise<IServerReturn<IApplicationPipelineOutputDto>> {
         return this.dataRequest.getRequest(`${ApplicationPipelineApi.applicationPipeline}/${_id}`)
@@ -49,10 +49,13 @@ export class ApplicationPipelineService extends BaseService implements IApplicat
         return this.dataRequest.postRequest(`${ApplicationPipelineApi.applicationPipeline}/${_id}/execute/job`, {})
     }
 
-    getExecutedRecordPageList(_id: string,_param:any): Promise<IServerReturn<IServerPageReturn<IApplicationPipelineOutputDto>>> {
-        return this.dataRequest.getRequest(`${ApplicationPipelineApi.applicationPipeline}/${_id}/executed/record/page/list`, _param)
+    getPipeLineHistoryForPipeLineIdPageList(_id: string,_param:any): Promise<IServerReturn<IServerPageReturn<IApplicationPipelineOutputDto>>> {
+        return this.dataRequest.getRequest(`${ApplicationPipelineApi.applicationPipeline}/${_id}/pipelineId/page/list`, _param)
     }
 
+    getPipeLineHistoryForAppIdPageList(_id: string,_param:any): Promise<IServerReturn<IServerPageReturn<any>>> {
+        return this.dataRequest.getRequest(`${ApplicationPipelineApi.applicationPipeline}/${_id}/appId/page/list`, _param)
+    }
     
 
 }

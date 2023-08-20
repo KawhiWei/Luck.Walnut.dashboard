@@ -62,6 +62,9 @@ export interface IApplicationPipelineService {
      * @param _id 
      * @param _param 
      */
-    getExecutedRecordPageList(_id: string,_param:any): Promise<IServerReturn<IServerPageReturn<any>>>
+    getPipeLineHistoryForPipeLineIdPageList(_id: string,_param:any): Promise<IServerReturn<IServerPageReturn<any>>>
+
+
+    getPipeLineHistoryForAppIdPageList(_id: string,_param:any): Promise<IServerReturn<IServerPageReturn<any>>>;
 
 }

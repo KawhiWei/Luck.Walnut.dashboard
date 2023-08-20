@@ -96,7 +96,6 @@ const TaskList = (props: IProp) => {
             <Drawer
                 width={600}
                 style={{ borderRadius: 6 }}
-                getContainer={false}
                 onClose={() => onCancel()}
                 title={
                     <div
@@ -117,14 +116,14 @@ const TaskList = (props: IProp) => {
 
                             <div className="pipeline-stage-template-menu-body">
 
-                                <div className="pipeline-stage-template-menu-body-sidebar">
+                                {/* <div className="pipeline-stage-template-menu-body-sidebar">
                                     <Anchor affix={true}>
                                         <Anchor.Link href="#components-anchor-demo-basic" title="代码扫描" />
                                         <Anchor.Link href="#components-anchor-demo-static" title="构建" />
                                         <Anchor.Link href="#Anchor-Props" title="测试" />
                                         <Anchor.Link href="#Link-Props" title="镜像构建" />
                                     </Anchor>
-                                </div>
+                                </div> */}
                                 <div className="pipeline-stage-template-menu-body-content">
                                     {taskList.map(category => {
                                         return (

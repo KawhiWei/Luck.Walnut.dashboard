@@ -147,7 +147,7 @@ const ExecutedHistory = (props: IProp) => {
       pageIndex: paginationConfig.current,
     };
     _applicationPipelineService
-      .getExecutedRecordPageList(props.id, _param)
+      .getPipeLineHistoryForPipeLineIdPageList(props.id, _param)
       .then((rep) => {
         if (rep.success) {
           setPaginationConfig((Pagination) => {

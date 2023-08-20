@@ -202,7 +202,7 @@ const DeploymentConfigurationPage = (props: IProp) => {
 
     return (
 
-        <Spin spinning={loading}>
+        <Spin spinning={loading} >
             <Row className="search-panel">
                 <Row className="search-button">
                     <SyncOutlined
@@ -219,7 +219,7 @@ const DeploymentConfigurationPage = (props: IProp) => {
                     </Button>
                 </Row>
             </Row>
-            <Table columns={columns}
+            <Table   columns={columns}
                 dataSource={tableData}
                 pagination={pagination}
                 scroll={{ y: 700 }}

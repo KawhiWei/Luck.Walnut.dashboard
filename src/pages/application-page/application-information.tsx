@@ -59,7 +59,8 @@ const ApplicationInformation = (props: IProp) => {
           </Card>
         </Col>
       </Row>
-      <Card size="small" title="应用监控" style={{ marginTop: "8px" }}>
+      <Card size="small" title="应用监控" style={{ marginTop: "8px",height:"1000px"}}>
+        
       </Card>
     </div>
   );
