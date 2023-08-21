@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 import { CheckboxChangeEvent } from "antd/lib/checkbox";
 import { IApplicationPipelineInputDto } from "@/domain/applicationpipelines/applicationpipeline-dto";
-import { IApplicationPipelineService } from "@/domain/applicationpipelines/iapplicationpipeline-service";
+import { IApplicationPipelineService } from "@/domain/applicationpipelines/iapplication-pipeline-service";
 import { IComponentIntegrationService } from "@/domain/componentintegration/icomponentintegration-service";
 import { IOperationConfig } from "@/shared/operation/operationConfig";
 import { IocTypes } from "@/shared/config/ioc-types";

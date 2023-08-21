@@ -11,12 +11,12 @@ import { useEffect, useState } from "react";
 
 import { IClusterOutputDto } from "@/domain/kubernetes/clusters/cluster-dto";
 import { IClusterService } from "@/domain/kubernetes/clusters/icluster-service";
-import { IDeploymentConfigurationOutputDto } from "@/domain/deployment-configurations/deployment-configuration-dto";
-import { IDeploymentConfigurationService } from "@/domain/deployment-configurations/ideployment-configuration-service";
+import { IDeploymentConfigurationOutputDto } from "@/domain/kubernetes/workloads/workload-dto";
 import { INameSpaceService } from "@/domain/kubernetes/namespaces/inamespace-service";
 import { IOperationConfig } from "@/shared/operation/operationConfig";
 import { IServiceInputDto } from "@/domain/kubernetes/services/service-dto";
 import { IServiceService } from "@/domain/kubernetes/services/iservice-service";
+import { IWorkLoadService } from "@/domain/kubernetes/workloads/iworkload-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
 import { PortTypeMap } from "@/domain/maps/port-type-map";
@@ -76,7 +76,7 @@ const Operation = (props: IProp) => {
     });
     const [serviceFormData] = Form.useForm();
     const [servicePortsFormData] = Form.useForm();
-    const _deploymentConfigurationService: IDeploymentConfigurationService = useHookProvider(IocTypes.DeploymentConfigurationService);
+    const _deploymentConfigurationService: IWorkLoadService = useHookProvider(IocTypes.WorkLoadService);
     /**
      * 初始化加载事件
      */
@@ -137,16 +137,15 @@ const Operation = (props: IProp) => {
     /**
        * 选择部署时触发
        */
-    const onChangeDeployment = (_deploymentId:string) => {
-        let deployment=deploymentConfigurationData.find(x=>x.id===_deploymentId)
-        if(deployment){
-            serviceFormData.setFieldValue("clusterId",deployment.clusterId)
-            serviceFormData.setFieldValue("nameSpaceId",deployment.nameSpaceName)
+    const onChangeDeployment = (_deploymentId: string) => {
+        let deployment = deploymentConfigurationData.find(x => x.id === _deploymentId)
+        if (deployment) {
+            serviceFormData.setFieldValue("clusterId", deployment.clusterId)
         }
     };
 
     const onGetDeploymentConfigurationData = () => {
-        _deploymentConfigurationService.getDeploymentConfigurationByAppIdList(props.appId).then(rep => {
+        _deploymentConfigurationService.getWorkLoadByAppIdList(props.appId).then(rep => {
             if (rep.success) {
                 setDeploymentConfigurationData(rep.result)
 

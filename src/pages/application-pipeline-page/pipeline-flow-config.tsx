@@ -9,7 +9,7 @@ import {
 } from "@ant-design/icons";
 import { useEffect, useReducer, useState } from "react";
 
-import { IApplicationPipelineService } from "@/domain/applicationpipelines/iapplicationpipeline-service";
+import { IApplicationPipelineService } from "@/domain/applicationpipelines/iapplication-pipeline-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import Operation from "./operation";
 import { OperationTypeEnum } from "@/shared/operation/operationType";

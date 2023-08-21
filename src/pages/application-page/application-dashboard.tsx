@@ -1,10 +1,9 @@
-import { Button, Card, Col, Layout, PageHeader, Row, Spin, Tabs, Tag, Timeline } from "antd";
+import { Button, Card, Col, Divider, Layout, PageHeader, Row, Spin, Tabs, Tag, Timeline } from "antd";
 import { useEffect, useState } from "react";
 
-import ApplicationInformation from "./application-information";
-import DeploymentConfigurationPage from "../deployment/index";
+import DeploymentConfigurationPage from "@/pages/wke/kubernetes/workload-page";
 import { IApplicationBaseDto } from "@/domain/applications/application-dto";
-import { IApplicationPipelineService } from "@/domain/applicationpipelines/iapplicationpipeline-service";
+import { IApplicationPipelineService } from "@/domain/applicationpipelines/iapplication-pipeline-service";
 import { IApplicationService } from "@/domain/applications/iapplication-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import PipelinePage from "../application-pipeline-page/index";
@@ -196,6 +195,15 @@ const ApplicationDashboard = (props: any) => {
             label: `持续部署`,
             key: "3",
             children: <DeploymentConfigurationPage appId={appId} />,
+          },
+          {
+            label: `服务发现`,
+            key: "4",
+            children: (
+            <div>
+              服务发现界面
+            </div>
+            ),
           },
         ]}></Tabs>
     </div>

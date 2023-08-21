@@ -1,4 +1,4 @@
-import "../search-panel.less"
+import "@/pages/search-panel.less"
 
 import {
     Button,
@@ -24,11 +24,11 @@ import {
 import {
     initPaginationConfig,
     tacitPagingProps,
-} from "../../shared/ajax/request";
+} from "../../../../shared/ajax/request";
 import { useEffect, useState } from "react";
 
-import { IDeploymentConfigurationOutputDto } from "@/domain/deployment-configurations/deployment-configuration-dto";
-import { IDeploymentConfigurationService } from "@/domain/deployment-configurations/ideployment-configuration-service";
+import { IDeploymentConfigurationOutputDto } from "@/domain/kubernetes/workloads/workload-dto";
+import { IWorkLoadService } from "@/domain/kubernetes/workloads/iworkload-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import Operation from "./operation";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
@@ -50,7 +50,7 @@ const DeploymentConfigurationPage = (props: IProp) => {
     const [subOperationElement, setOperationElement] = useState<any>(null);
     const [paginationConfig, setPaginationConfig] =
         useState<initPaginationConfig>(new initPaginationConfig());
-    const _deploymentConfigurationService: IDeploymentConfigurationService = useHookProvider(IocTypes.DeploymentConfigurationService);
+    const _deploymentConfigurationService: IWorkLoadService = useHookProvider(IocTypes.WorkLoadService);
     useEffect(() => {
         getPageList();
     }, [paginationConfig])
@@ -98,7 +98,7 @@ const DeploymentConfigurationPage = (props: IProp) => {
                         <Tooltip placement="top" title="编辑">
                             <EditOutlined
                                 style={{ color: "orange", marginRight: 10, fontSize: 16 }}
-                                onClick={() => editRow(record.id, record.masterContainerId)} />
+                                onClick={() => editRow(record.id)} />
                         </Tooltip>
                         <Tooltip placement="top" title="发布">
                             <CloudUploadOutlined
@@ -160,7 +160,7 @@ const DeploymentConfigurationPage = (props: IProp) => {
             pageSize: paginationConfig.pageSize,
             pageIndex: paginationConfig.current,
         }
-        _deploymentConfigurationService.getPage(props.appId, _param).then((x) => {
+        _deploymentConfigurationService.getWorkLoadPage(props.appId, _param).then((x) => {
             if (x.success) {
                 setTableData(x.result.data);
             }
@@ -175,7 +175,7 @@ const DeploymentConfigurationPage = (props: IProp) => {
     /***
      * 修改一个配置
      */
-    const editRow = (_id: string, _masterContainerId: string) => {
+    const editRow = (_id: string) => {
         setOperationElement(<Operation operationType={OperationTypeEnum.edit} appId={props.appId} id={_id} onCallbackEvent={clearElement}></Operation>)
     }
 
@@ -187,7 +187,7 @@ const DeploymentConfigurationPage = (props: IProp) => {
 
     }
     const deleteRow = (_id: string) => {
-        _deploymentConfigurationService.deleteDeployment(_id).then(res => {
+        _deploymentConfigurationService.deleteWorkLoad(_id).then(res => {
             if (!res.success) {
                 message.error(res.errorMessage, 3);
             } else {

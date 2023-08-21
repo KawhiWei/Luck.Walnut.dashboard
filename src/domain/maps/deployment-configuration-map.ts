@@ -1,4 +1,4 @@
-import { ApplicationRuntimeTypeEnum, DeploymentTypeEnum } from "../deployment-configurations/deployment-configuration-enum";
+import { ApplicationRuntimeTypeEnum, DeploymentTypeEnum } from "../kubernetes/workloads/workload-enum";
 
 export const ApplicationRuntimeTypeMap = [
     {

@@ -1,32 +1,32 @@
-import { IDeploymentConfigurationDto, IDeploymentConfigurationOutputDto, IDeploymentInputDto, IDeploymentOutputDto, IMasterContainerConfigurationInputDto, IMasterContainerConfigurationOutputDto } from "./deployment-configuration-dto";
+import { IDeploymentConfigurationOutputDto, IDeploymentInputDto, IDeploymentOutputDto, IMasterContainerConfigurationInputDto, IMasterContainerConfigurationOutputDto, IWorkLoadInputDto } from "./workload-dto";
 import { IServerPageReturn, IServerReturn } from "@/shared/entity";
 
-export interface IDeploymentConfigurationService {
+export interface IWorkLoadService {
     /**
      * 获取部署分页列表
      * @param _appId 
      * @param _param 
      */
-    getPage(_appId: string, _param: any): Promise<IServerReturn<IServerPageReturn<IDeploymentConfigurationOutputDto>>>;
+    getWorkLoadPage(_appId: string, _param: any): Promise<IServerReturn<IServerPageReturn<IDeploymentConfigurationOutputDto>>>;
 
     /**
      * 删除一个部署
      * @param _id 
      */
-    deleteDeployment(_id: string): Promise<IServerReturn<any>>;
+    deleteWorkLoad(_id: string): Promise<IServerReturn<any>>;
 
     /**
      * 创建一个部署
      * @param _params 
      */
-    createDeployment(_params: IDeploymentConfigurationDto): Promise<IServerReturn<any>>;
+    createWorkLoad(_params: IWorkLoadInputDto): Promise<IServerReturn<any>>;
 
 
     /**
      * 根据Id获取一个部署
      * @param _id 
      */
-    getDeploymentDetail(_deploymentId: string): Promise<IServerReturn<IDeploymentOutputDto>>;
+    getWorkLoadDetail(_deploymentId: string): Promise<IServerReturn<IDeploymentOutputDto>>;
 
     /**
      * 
@@ -34,7 +34,7 @@ export interface IDeploymentConfigurationService {
      * @param _masterContainerId 
      * @param _params 
      */
-    updateDeployment(_deploymentId: string, _masterContainerId: string, _params: IDeploymentInputDto): Promise<IServerReturn<any>>;
+    updateWorkLoad(_deploymentId: string, _masterContainerId: string, _params: IDeploymentInputDto): Promise<IServerReturn<any>>;
 
     /**
          * 根据应用Id获取部署列表
@@ -42,17 +42,8 @@ export interface IDeploymentConfigurationService {
          * @param _param 
          * @returns 
          */
-    getDeploymentConfigurationByAppIdList(_appId: string): Promise<IServerReturn<Array<IDeploymentConfigurationOutputDto>>>;
+    getWorkLoadByAppIdList(_appId: string): Promise<IServerReturn<Array<IDeploymentConfigurationOutputDto>>>;
 
-
-
-
-
-    /**
-     * 创建一个容器配置
-     * @param _params 
-     */
-    createDeploymentContainerConfiguration(_deploymentId: string, _params: IMasterContainerConfigurationInputDto): Promise<IServerReturn<any>>;
 
     /**
      * 修改一个容器配置

@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: test
+  namespace: toyar
   name: toyar-app-api-svc
 spec:
   selector:

@@ -1,4 +1,4 @@
-import { IContainerPortConfiguration, IContainerResourceQuantity, INessProbe } from "../deployment-configurations/deployment-configuration-dto";
+import { IContainerPortConfiguration, IContainerResourceQuantity, INessProbe } from "../kubernetes/workloads/workload-dto";
 
 import { IEntity } from "@/shared/entity";
 

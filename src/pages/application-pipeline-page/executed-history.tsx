@@ -12,7 +12,7 @@ import { initPaginationConfig, tacitPagingProps } from "@/shared/ajax/request";
 import { useEffect, useState } from "react";
 
 import BuildLogs from "./build-log";
-import { IApplicationPipelineService } from "@/domain/applicationpipelines/iapplicationpipeline-service";
+import { IApplicationPipelineService } from "@/domain/applicationpipelines/iapplication-pipeline-service";
 import { IOperationConfig } from "@/shared/operation/operationConfig";
 import { IocTypes } from "@/shared/config/ioc-types";
 import { PipelineBuildStateEnum } from "@/domain/applicationpipelines/applicationpipeline-enum";

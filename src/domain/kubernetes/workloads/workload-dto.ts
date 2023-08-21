@@ -3,7 +3,7 @@ import { IEntity } from "@/shared/entity";
 /**
  * 应用部署配置Dto
  */
-export interface IDeploymentConfigurationBaseDto {
+export interface IWorkLoadBaseDto {
     /**
      * 部署环境
      */
@@ -56,7 +56,7 @@ export interface IDeploymentConfigurationBaseDto {
 /**
  * 部署扩展插件
  */
-export interface IDeploymentPlugin {
+export interface IWorkLoadPlugin {
     /**
      * 部署更新策略
      */
@@ -81,42 +81,19 @@ export interface IStrategyDto {
 }
 
 /**
- * DeploymentConfiguration输入Dto
+ * 
  */
-export interface IDeploymentConfigurationDto extends IDeploymentConfigurationBaseDto {
+export interface IWorkLoadInputDto extends IWorkLoadBaseDto {
     /**
-     * 部署扩展插件
+     * 
      */
-    deploymentPlugins: IDeploymentPlugin;
-    /**
-     * 部署类型
-     */
-    deploymentTypeName: string;
-
-    /**
-     * 应用运行时类型
-     */
-    applicationRuntimeTypeName: string;
+    workLoadPlugins?:IWorkLoadPlugin;
 
 }
 /**
  * 配置对象输出Dto
  */
-export interface IDeploymentConfigurationOutputDto extends IDeploymentConfigurationBaseDto, IEntity<string> {
-    /**
-     * 应用容器配置列表
-     */
-    masterContainerId: string;
-
-    /**
-     * 
-     */
-    clusterName: string;
-
-    /**
-     * 
-     */
-    nameSpaceName: string;
+export interface IDeploymentConfigurationOutputDto extends IWorkLoadBaseDto, IEntity<string> {
 
 
 }
@@ -144,7 +121,7 @@ export interface IDeploymentInputDto {
     /**
      * 部署配置
      */
-    deploymentConfiguration: IDeploymentConfigurationDto;
+    deploymentConfiguration: IWorkLoadInputDto;
 
     /**
      * 容器配置Dto

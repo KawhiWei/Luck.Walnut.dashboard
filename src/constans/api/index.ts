@@ -38,7 +38,7 @@ export const ClustersApi = {
 }
 
 export const DeploymentApi = {
-  deployments: "/walnut/api/workloads",
+  workloads: "/walnut/api/workloads",
 }
 
 

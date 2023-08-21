@@ -3,7 +3,7 @@ import { IServerPageReturn, IServerReturn } from "@/shared/entity";
 
 import { ApplicationPipelineApi } from "@/constans/api";
 import BaseService from "@/shared/service/BaseService/BaseService";
-import { IApplicationPipelineService } from "./iapplicationpipeline-service";
+import { IApplicationPipelineService } from "./iapplication-pipeline-service";
 
 export class ApplicationPipelineService extends BaseService implements IApplicationPipelineService {
     getBuildLog(_appId: string,_id: string): Promise<IServerReturn<any>> {
