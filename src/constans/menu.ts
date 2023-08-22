@@ -113,7 +113,7 @@ export const menuList: IMenuOutput[] = [
       {
         id: "1001-5",
         name: "WorkLoad配置",
-        path: "/application/workload/config",
+        path: "/wke/kubernetes/workload/config",
         component: "pages/wke/kubernetes/workload-page/workload-config",
         tabs: [],
         buttonClick: "",

@@ -130,11 +130,8 @@ const PipeFlowConfig = (props: any) => {
               }}>
               保存构建计划
             </Button>
-
           </Row>
-
         </Row>
-
         <PipelineFlow stageArray={applicationPipeline.pipelineScript} onCallbackEvent={onSetStageArray} onEditPipeLineInformationCallbackEvent={showApplicationPipelineBasicOperation} />
       </Spin>
       {applicationPipelineBasicElement}

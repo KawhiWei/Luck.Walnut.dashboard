@@ -2,29 +2,28 @@ import "@/pages/drawer.less";
 
 import { ApplicationRuntimeTypeMap, DeploymentTypeMap } from "@/domain/maps/deployment-configuration-map";
 import { Button, Checkbox, Drawer, Form, Input, InputNumber, Select, Space, message } from "antd";
-import { IMasterContainerConfigurationInputDto, IWorkLoadInputDto } from "@/domain/kubernetes/workloads/workload-dto";
 import { useEffect, useState } from "react";
 
 import { CheckboxChangeEvent } from "antd/lib/checkbox";
 import { IClusterOutputDto } from "@/domain/kubernetes/clusters/cluster-dto";
 import { IClusterService } from "@/domain/kubernetes/clusters/icluster-service";
 import { IEnvironmentService } from "@/domain/environment/ienvironment-service";
-import { IInitContainerConfigurationOutputDto } from "@/domain/init-container-configurations/iinit-container-service-dto";
-import { IInitContainerService } from "@/domain/init-container-configurations/iinit-container-service";
 import { INameSpaceOutputDto } from "@/domain/kubernetes/namespaces/namespace-dto";
 import { INameSpaceService } from "@/domain/kubernetes/namespaces/inamespace-service";
 import { IOperationConfig } from "@/shared/operation/operationConfig";
+import { IWorkLoadCreateInputDto } from "@/domain/kubernetes/workloads/workload-dto";
 import { IWorkLoadService } from "@/domain/kubernetes/workloads/iworkload-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
 import _ from "lodash";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
-// import "../description.less";
-
-
-
 interface IProp {
+    /**
+     * 操作确认回调事件
+     */
+    onConfirmCallbackEvent?: any;
+
     /**
      * 操作成功回调事件
      */
@@ -76,9 +75,9 @@ const Operation = (props: IProp) => {
     const [clusterId, setClusterId] = useState<string>('');
     const [environmentData, setEnvironmentData] = useState<Array<any>>([]);
 
-    const [workLoadData, setWorkLoadData] = useState<IWorkLoadInputDto>();
+    const [workLoadData, setWorkLoadData] = useState<IWorkLoadCreateInputDto>();
     const [checked, setChecked] = useState(props.operationType === OperationTypeEnum.add);
-    const [deploymentConfigurationFormData] = Form.useForm();
+    const [workLoadFormData] = Form.useForm();
 
 
     /**
@@ -98,11 +97,11 @@ const Operation = (props: IProp) => {
         onGetEnvironmentList();
         switch (props.operationType) {
             case OperationTypeEnum.add:
-                deploymentConfigurationFormData.setFieldsValue(workLoadData)
+                workLoadFormData.setFieldsValue(workLoadData)
                 editOperationState(true, "添加");
                 break;
             case OperationTypeEnum.edit:
-                onGetDeploymentDetail()
+                onGetWorkLoadDetail()
                 break;
             case OperationTypeEnum.view:
                 editOperationState(true, "查看");
@@ -167,11 +166,10 @@ const Operation = (props: IProp) => {
     /**
      * 查询配置详情
      */
-    const onGetDeploymentDetail = () => {
+    const onGetWorkLoadDetail = () => {
         props.id && _workLoadService.getWorkLoadDetail(props.id).then(rep => {
             if (rep.success) {
-                deploymentConfigurationFormData.setFieldsValue(rep.result);
-                console.log(rep.result)
+                workLoadFormData.setFieldsValue(rep.result);
                 editOperationState(true, "编辑");
             } else {
                 message.error(rep.errorMessage, 3);
@@ -183,14 +181,11 @@ const Operation = (props: IProp) => {
      * 底部栏OK事件
      */
     const onFinish = () => {
-        deploymentConfigurationFormData.validateFields().then((_deployment: IWorkLoadInputDto) => {
-            _deployment.appId = props.appId;
+        workLoadFormData.validateFields().then((_workLoad: IWorkLoadCreateInputDto) => {
+            _workLoad.appId = props.appId;
             switch (props.operationType) {
                 case OperationTypeEnum.add:
-                    onCreate(_deployment);
-                    break;
-                case OperationTypeEnum.edit:
-                    props.id && onUpdateDeployment(_deployment)
+                    onCreate(_workLoad);
                     break;
             }
 
@@ -203,39 +198,28 @@ const Operation = (props: IProp) => {
     const onChange = (e: CheckboxChangeEvent) => {
         setChecked(e.target.checked);
     };
-    /**
-     * 修改事件
-     */
-    const onUpdateDeployment = (_deployment: IWorkLoadInputDto) => {
-        setLoading(true);
-        // (props.id && props.masterContainerId) && _deploymentConfigurationService.updateDeployment(props.id, props.masterContainerId, _deployment).then(rep => {
-        //     if (!rep.success) {
-        //         message.error(rep.errorMessage, 3);
-        //     } else {
-        //         message.success("保存成功", 3);
-        //         props.onCallbackEvent && props.onCallbackEvent();
-        //     }
-        // }).finally(() => {
-        //     setLoading(false);
-        // });
-    };
 
     /**
      * 弹框取消事件
      */
-    const onCreate = (_param: IWorkLoadInputDto) => {
+    const onCreate = (_param: IWorkLoadCreateInputDto) => {
         setLoading(true);
-        _workLoadService.createWorkLoad(_param).then(rep => {
-            if (!rep.success) {
-                message.error(rep.errorMessage, 3);
+        _workLoadService.createWorkLoad(_param).then(resp => {
+            if (!resp.success) {
+                message.error(resp.errorMessage, 3);
             } else {
-                message.success("保存成功", 3);
-                props.onCallbackEvent && props.onCallbackEvent();
+                message.success("创建成功", 3);
+
+
+                props.onConfirmCallbackEvent && props.onConfirmCallbackEvent(checked, resp.result)
+
+
             }
         }).finally(() => {
             setLoading(false);
         });
     };
+
 
     /**
      * 弹框取消事件
@@ -295,7 +279,7 @@ const Operation = (props: IProp) => {
                 }>
 
                 <Form
-                    form={deploymentConfigurationFormData}
+                    form={workLoadFormData}
                     name="nest-messages"
                     layout="vertical"
                     validateMessages={validateMessages}

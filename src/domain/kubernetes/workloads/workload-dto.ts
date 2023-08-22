@@ -83,59 +83,37 @@ export interface IStrategyDto {
 /**
  * 
  */
-export interface IWorkLoadInputDto extends IWorkLoadBaseDto {
+export interface IWorkLoadCreateInputDto extends IWorkLoadBaseDto {
+
+
+}
+
+
+/**
+ * 
+ */
+export interface IWorkLoadUpdateInputDto extends IWorkLoadBaseDto {
+
+
+}
+/**
+ * 配置对象输出Dto
+ */
+export interface IWorkLoadOutputDto extends IWorkLoadBaseDto, IEntity<string> {
     /**
      * 
      */
     workLoadPlugins?:IWorkLoadPlugin;
 
 }
-/**
- * 配置对象输出Dto
- */
-export interface IDeploymentConfigurationOutputDto extends IWorkLoadBaseDto, IEntity<string> {
 
-
-}
-
-/**
- * 输出Dto
- */
-export interface IDeploymentOutputDto {
-    /**
- * 部署配置
- */
-    deploymentConfiguration: IDeploymentConfigurationOutputDto;
-
-    /**
-     * 容器配置Dto
-     */
-    masterContainerConfiguration: IMasterContainerConfigurationOutputDto
-}
-
-
-/**
- * 应用部署配置Dto
- */
-export interface IDeploymentInputDto {
-    /**
-     * 部署配置
-     */
-    deploymentConfiguration: IWorkLoadInputDto;
-
-    /**
-     * 容器配置Dto
-     */
-    masterContainerConfiguration: IMasterContainerConfigurationInputDto
-
-}
 
 
 
 /**
  * 容器配置基础Dto
  */
-export interface IMasterContainerConfigurationBase {
+export interface IWorkLoadContainerBase {
     /**
      * 容器名称
      */
@@ -183,19 +161,7 @@ export interface IMasterContainerConfigurationBase {
     containerPortConfigurations?: IContainerPortConfiguration[];
 }
 
-/**
- * 容器输出Dto
- */
-export interface IMasterContainerConfigurationOutputDto extends IMasterContainerConfigurationBase, IEntity<string> {
 
-}
-
-/**
- * 容器输入Dto
- */
-export interface IMasterContainerConfigurationInputDto extends IMasterContainerConfigurationBase {
-
-}
 /**
  * 容器资源配置
  */

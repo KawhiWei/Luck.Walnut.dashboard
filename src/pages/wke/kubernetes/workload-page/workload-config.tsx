@@ -1,45 +1,23 @@
-import "@/pages/drawer.less";
+import "@/pages/search-panel.less"
+import "./workload-config.less"
+import { } from "@/domain/kubernetes/workloads/workload-dto";
 
-import { Button, Card, Col, Drawer, Form, Input, InputNumber, Row, Space, Switch, message } from "antd";
-import {
-    MinusCircleOutlined,
-    PlusOutlined
-} from "@ant-design/icons";
+import { ApplicationRuntimeTypeMap, DeploymentTypeMap } from "@/domain/maps/deployment-configuration-map";
+import { Button, Form, Input, InputNumber, Layout, Row, Select, Spin, message } from "antd";
 import { useEffect, useState } from "react";
 
-import { IMasterContainerConfigurationInputDto } from "@/domain/kubernetes/workloads/workload-dto";
-import { IOperationConfig } from "@/shared/operation/operationConfig";
+import { IClusterOutputDto } from "@/domain/kubernetes/clusters/cluster-dto";
+import { INameSpaceOutputDto } from "@/domain/kubernetes/namespaces/namespace-dto";
 import { IWorkLoadService } from "@/domain/kubernetes/workloads/iworkload-service";
 import { IocTypes } from "@/shared/config/ioc-types";
-import { OperationTypeEnum } from "@/shared/operation/operationType";
-import { formItemDoubleRankLayout } from "@/constans/layout/optionlayout";
+import {
+    SaveOutlined
+} from "@ant-design/icons";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
 // import "../description.less";
 
 
-
-interface IProp {
-    /**
-     * 操作成功回调事件
-     */
-    onCallbackEvent?: any;
-
-    /**
-     * id
-     */
-    id?: string;
-
-    /**
-     * 操作类型
-     */
-    operationType: OperationTypeEnum;
-
-    /**
-     * 部署配置Id
-     */
-    deploymentId: string;
-}
 
 const validateMessages = {
     required: "${label} 不可为空",
@@ -51,20 +29,15 @@ const validateMessages = {
         range: "${label} must be between ${min} and ${max}",
     },
 };
-const ContainerConfigurationOperation = (props: IProp) => {
-    const _deploymentConfigurationService: IWorkLoadService = useHookProvider(IocTypes.WorkLoadService);
-    const [operationState, setOperationState] = useState<IOperationConfig>({
-        visible: false,
-    });
+const WorkLoadConfigOperation = (props: any) => {
+    const _workLoadService: IWorkLoadService = useHookProvider(IocTypes.WorkLoadService);
+    const [workLoadFormData] = Form.useForm();
     const [loading, setLoading] = useState<boolean>(false);
-    const [deploymentContainerConfiguration, setDeploymentContainerConfiguration] = useState<IMasterContainerConfigurationInputDto>({
-        containerName: '',
-        restartPolicy: '',
-        isInitContainer: false,
-        imagePullPolicy: ''
-    });
     const [containerConfigurationFormData] = Form.useForm();
-
+    const [clusterId, setClusterId] = useState<string>('');
+    const [nameSpaceArrayData, setNameSpaceArrayData] = useState<Array<INameSpaceOutputDto>>([]);
+    const [environmentData, setEnvironmentData] = useState<Array<any>>([]);
+    const [clusterData, setClusterData] = useState<Array<IClusterOutputDto>>([]);
     /**
      * 初始化加载事件
      */
@@ -79,25 +52,17 @@ const ContainerConfigurationOperation = (props: IProp) => {
      * @param _id
      */
     const onLoad = () => {
-        switch (props.operationType) {
-            case OperationTypeEnum.add:
-                containerConfigurationFormData.setFieldsValue(deploymentContainerConfiguration)
-                editOperationState(true, "添加");
-                break;
-            case OperationTypeEnum.edit:
-                props.id && onGetDeploymentContainerConfigurationDetail(props.id)
-                break;
-            case OperationTypeEnum.view:
-                editOperationState(true, "查看");
-                break;
-        }
+
     };
 
-    const onGetDeploymentContainerConfigurationDetail = (_id: string) => {
-        _deploymentConfigurationService.getDeploymentContainerConfigurationDetail(_id).then(rep => {
+
+    const onChangeClusterId = (_clusterId: string) => {
+        setClusterId(_clusterId)
+    };
+    const onGetWorkLoadDetail = (_id: string) => {
+        _workLoadService.getWorkLoadDetail(_id).then(rep => {
             if (rep.success) {
                 containerConfigurationFormData.setFieldsValue(rep.result);
-                editOperationState(true, "编辑");
             } else {
                 message.error(rep.errorMessage, 3);
             }
@@ -108,18 +73,7 @@ const ContainerConfigurationOperation = (props: IProp) => {
        * 底部栏OK事件
        */
     const onFinish = () => {
-        containerConfigurationFormData.validateFields().then((_deploymentContainer: IMasterContainerConfigurationInputDto) => {
-            switch (props.operationType) {
-                case OperationTypeEnum.add:
-                    break;
-                case OperationTypeEnum.edit:
-                    props.id && onUpdate(props.deploymentId, props.id, _deploymentContainer)
-                    break;
-            }
-        })
-            .catch((error) => {
-                
-            });
+
 
     };
 
@@ -128,85 +82,169 @@ const ContainerConfigurationOperation = (props: IProp) => {
     /**
      * 修改事件
      */
-    const onUpdate = (_deploymentId: string, _id: string, _deploymentContainer: IMasterContainerConfigurationInputDto) => {
-        setLoading(true);
-        _deploymentConfigurationService.updateDeploymentContainerConfiguration(_deploymentId, _id, _deploymentContainer).then(rep => {
-            if (!rep.success) {
-                message.error(rep.errorMessage, 3);
-            } else {
-                message.success("保存成功", 3);
-                props.onCallbackEvent && props.onCallbackEvent();
-            }
-        }).finally(() => {
-            setLoading(false);
-        });
+    const onUpdate = (_id: string) => {
+
     };
 
 
-    /**
-     * 弹框取消事件
-     */
-    const onCancel = () => {
-        editOperationState(false);
-        props.onCallbackEvent && props.onCallbackEvent();
-    };
-
-    /**
-     * 修改弹框属性
-     * @param _visible
-     * @param _title
-     */
-    const editOperationState = (_visible: boolean, _title?: string) => {
-        setOperationState({ visible: _visible, title: _title + "容器配置" });
-    };
     return (
-        <div>
-            <Drawer style={{ borderRadius: 6 }}
-                width="60%"
-                title={
-                    <div
-                        style={{
-                            borderRadius: 10,
-                        }}
-                    >
-                        {operationState.title}
-                    </div>
-                }
-                onClose={() => onCancel()}
-                closable={true}
-                open={operationState.visible}
-                footer={
-                    <Space style={{ float: "right" }}>
+        <div style={{ height: "100%" }}>
+            <Spin style={{ height: "100%" }} spinning={loading} >
+                <Row className="search-panel">
+                    <Row className="search-button">
                         <Button
-                            shape="round"
-                            disabled={loading}
-                            onClick={() => onCancel()}
-                        >
-                            取消
+                            style={{ margin: "8px 8px" }}
+                            icon={<SaveOutlined />}
+                            onClick={() => {
+                            }}>
+                            保存构建计划
                         </Button>
-                        <Button
-                            shape="round"
-                            style={{ margin: "0 8px" }}
-                            type="primary"
-                            loading={loading}
-                            onClick={() => onFinish()}
+                    </Row>
+                </Row>
+                <Layout className="workload-config-layout">
+                    <Layout.Content>Content</Layout.Content>
+                    <Layout.Sider theme="light" className="workload-config-sider">
+
+                        <Form
+                            form={workLoadFormData}
+                            name="nest-messages"
+                            layout="vertical"
+                            validateMessages={validateMessages}
                         >
-                            保存
-                        </Button>
-                    </Space>
-                }>
-                <Form
-                    {...formItemDoubleRankLayout}
-                    form={containerConfigurationFormData}
-                    name="nest-messages"
-                    layout="horizontal"
-                    onFinish={onFinish}
-                    validateMessages={validateMessages}
-                >
-                    
-                </Form>
-            </Drawer>
+                            <Form.Item
+                                name="chineseName"
+                                label="中文名称"
+                                rules={[{ required: true }]}>
+                                <Input />
+                            </Form.Item>
+                            <Form.Item
+                                name="name"
+                                label="名称"
+                                rules={[{ required: true }]}>
+                                <Input />
+                            </Form.Item>
+                            <Form.Item
+                                name="environmentName"
+                                label="部署环境"
+                                rules={[{ required: true }]}
+                            >
+                                <Select
+                                    allowClear={true}
+                                    placeholder="部署环境"
+                                    onChange={onChangeClusterId}
+                                >
+                                    {environmentData.map((item: any) => {
+                                        return (
+                                            <Select.Option value={item.name}>
+                                                {item.name}
+                                            </Select.Option>
+                                        );
+                                    })}
+                                </Select>
+                            </Form.Item>
+
+                            <Form.Item
+                                name="clusterId"
+                                label="部署集群"
+                                rules={[{ required: true }]}
+                            >
+                                <Select
+                                    allowClear={true}
+                                    placeholder="绑定集群"
+                                    onChange={onChangeClusterId}
+                                >
+                                    {clusterData.map((item: IClusterOutputDto) => {
+                                        return (
+                                            <Select.Option value={item.id}>
+                                                {item.name}
+                                            </Select.Option>
+                                        );
+                                    })}
+                                </Select>
+                            </Form.Item>
+                            <Form.Item
+                                name="nameSpace"
+                                label="命名空间"
+                                rules={[{ required: true }]}>
+                                <Select
+                                    allowClear={true}
+                                >
+                                    {nameSpaceArrayData.filter(x => x.clusterId === clusterId).map((item: INameSpaceOutputDto) => {
+                                        return (
+                                            <Select.Option value={item.name}>
+                                                {item.name}
+                                            </Select.Option>
+                                        );
+                                    })}
+                                </Select>
+                            </Form.Item>
+                            <Form.Item
+                                name="applicationRuntimeType"
+                                label="运行时类型"
+                                rules={[{ required: true }]}>
+                                <Select allowClear={true}
+                                    placeholder="请选择运行时类型">
+                                    {ApplicationRuntimeTypeMap.map((item: any) => {
+                                        return (
+                                            <Select.Option value={item.key}>
+                                                {item.value}
+                                            </Select.Option>
+                                        );
+                                    })}
+                                </Select>
+                            </Form.Item>
+                            <Form.Item
+                                name="deploymentType"
+                                label="部署类型"
+                                rules={[{ required: true }]}
+                            >
+                                <Select allowClear={true}
+                                    placeholder="请选择部署类型">
+                                    {DeploymentTypeMap.map((item: any) => {
+                                        return (
+                                            <Select.Option value={item.key}>
+                                                {item.value}
+                                            </Select.Option>
+                                        );
+                                    })}
+                                </Select>
+                            </Form.Item>
+                            <Form.Item
+                                name="replicas"
+                                label="部署副本数量"
+                                rules={[{ required: true }]}
+                            >
+                                <InputNumber />
+                            </Form.Item>
+
+                            <Form.Item
+                                name={["workLoadPlugins", "strategy", "type"]}
+                                label="更新策略类型"
+                            >
+                                <Select allowClear={true}
+                                    placeholder="请选择更新策略类型">
+                                    <Select.Option value="Recreate">Recreate</Select.Option>
+                                    <Select.Option value="RollingUpdate">RollingUpdate</Select.Option>
+
+                                </Select>
+                            </Form.Item>
+
+                            <Form.Item
+                                name={["workLoadPlugins", "strategy", "maxUnavailable"]}
+                                label="最大不可用">
+                                <Input />
+                            </Form.Item>
+
+                            <Form.Item
+                                name={["workLoadPlugins", "strategy", "maxSurge"]}
+                                label="可调度数量">
+                                <Input />
+                            </Form.Item>
+                        </Form>
+                    </Layout.Sider>
+                </Layout>
+            </Spin>
         </div>
     )
 }
-export default ContainerConfigurationOperation;
+export default WorkLoadConfigOperation;

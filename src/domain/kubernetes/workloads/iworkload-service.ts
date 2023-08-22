@@ -1,5 +1,5 @@
-import { IDeploymentConfigurationOutputDto, IDeploymentInputDto, IDeploymentOutputDto, IMasterContainerConfigurationInputDto, IMasterContainerConfigurationOutputDto, IWorkLoadInputDto } from "./workload-dto";
 import { IServerPageReturn, IServerReturn } from "@/shared/entity";
+import { IWorkLoadCreateInputDto, IWorkLoadOutputDto, IWorkLoadUpdateInputDto } from "./workload-dto";
 
 export interface IWorkLoadService {
     /**
@@ -7,7 +7,7 @@ export interface IWorkLoadService {
      * @param _appId 
      * @param _param 
      */
-    getWorkLoadPage(_appId: string, _param: any): Promise<IServerReturn<IServerPageReturn<IDeploymentConfigurationOutputDto>>>;
+    getWorkLoadPage(_appId: string, _param: any): Promise<IServerReturn<IServerPageReturn<IWorkLoadOutputDto>>>;
 
     /**
      * 删除一个部署
@@ -19,22 +19,22 @@ export interface IWorkLoadService {
      * 创建一个部署
      * @param _params 
      */
-    createWorkLoad(_params: IWorkLoadInputDto): Promise<IServerReturn<any>>;
+    createWorkLoad(_params: IWorkLoadCreateInputDto): Promise<IServerReturn<string>>;
 
 
     /**
      * 根据Id获取一个部署
      * @param _id 
      */
-    getWorkLoadDetail(_deploymentId: string): Promise<IServerReturn<IDeploymentOutputDto>>;
+    getWorkLoadDetail(_id: string): Promise<IServerReturn<IWorkLoadOutputDto>>;
 
     /**
      * 
-     * @param _deploymentId 
+     * @param _id 
      * @param _masterContainerId 
      * @param _params 
      */
-    updateWorkLoad(_deploymentId: string, _masterContainerId: string, _params: IDeploymentInputDto): Promise<IServerReturn<any>>;
+    updateWorkLoad(_id: string, _params: IWorkLoadUpdateInputDto): Promise<IServerReturn<any>>;
 
     /**
          * 根据应用Id获取部署列表
@@ -42,39 +42,6 @@ export interface IWorkLoadService {
          * @param _param 
          * @returns 
          */
-    getWorkLoadByAppIdList(_appId: string): Promise<IServerReturn<Array<IDeploymentConfigurationOutputDto>>>;
+    getWorkLoadByAppIdList(_appId: string): Promise<IServerReturn<Array<IWorkLoadOutputDto>>>;
 
-
-    /**
-     * 修改一个容器配置
-     * @param _deploymentId 
-     * @param _id 
-     * @param _params 
-     */
-    updateDeploymentContainerConfiguration(_deploymentId: string, _id: string, _params: IMasterContainerConfigurationInputDto): Promise<IServerReturn<any>>;
-
-
-    /**
-     * 根据Id获取一个容器配置
-     * @param _deploymentConfigurationId 
-     * @param _params 
-     * @returns 
-     */
-    getDeploymentContainerConfigurationDetail(_id: string): Promise<IServerReturn<IMasterContainerConfigurationOutputDto>>;
-
-
-    /**
-     * 根据部署ID获取一组容器配置
-     * @param _deploymentConfigurationId 
-     * @param _params 
-     * @returns 
-     */
-    getDeploymentContainerConfigurationListDeploymentId(_deploymentId: string): Promise<IServerReturn<Array<IMasterContainerConfigurationOutputDto>>>;
-
-    /**
-     * 删除一个容器配置
-     * @param _deploymentId 
-     * @param _id 
-     */
-    deleteDeploymentContainerConfiguration(_deploymentId: string, _id: string): Promise<IServerReturn<any>>;
 }

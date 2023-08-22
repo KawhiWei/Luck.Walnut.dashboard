@@ -27,12 +27,13 @@ import {
 } from "../../../../shared/ajax/request";
 import { useEffect, useState } from "react";
 
-import { IDeploymentConfigurationOutputDto } from "@/domain/kubernetes/workloads/workload-dto";
+import { IWorkLoadOutputDto } from "@/domain/kubernetes/workloads/workload-dto";
 import { IWorkLoadService } from "@/domain/kubernetes/workloads/iworkload-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import Operation from "./operation";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
 import { searchFormItemDoubleRankLayout } from "@/constans/layout/optionlayout";
+import { useHistory } from "react-router-dom";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
 interface IProp {
@@ -44,9 +45,10 @@ interface IProp {
 
 }
 const DeploymentConfigurationPage = (props: IProp) => {
+    const history = useHistory();
     const [loading, setLoading] = useState<boolean>(false);
     const [formData] = Form.useForm();
-    const [tableData, setTableData] = useState<Array<IDeploymentConfigurationOutputDto>>();
+    const [tableData, setTableData] = useState<Array<IWorkLoadOutputDto>>();
     const [subOperationElement, setOperationElement] = useState<any>(null);
     const [paginationConfig, setPaginationConfig] =
         useState<initPaginationConfig>(new initPaginationConfig());
@@ -92,13 +94,13 @@ const DeploymentConfigurationPage = (props: IProp) => {
             title: "操作",
             dataIndex: "id",
             key: "id",
-            render: (text: any, record: IDeploymentConfigurationOutputDto) => {
+            render: (text: any, record: IWorkLoadOutputDto) => {
                 return (
                     <div className="table-operation">
                         <Tooltip placement="top" title="编辑">
                             <EditOutlined
                                 style={{ color: "orange", marginRight: 10, fontSize: 16 }}
-                                onClick={() => editRow(record.id)} />
+                                onClick={() => gotoWorkLoadConfig(record.id)} />
                         </Tooltip>
                         <Tooltip placement="top" title="发布">
                             <CloudUploadOutlined
@@ -168,10 +170,31 @@ const DeploymentConfigurationPage = (props: IProp) => {
             setLoading(false);
         })
     }
-    const addChange = () => {
-        setOperationElement(<Operation operationType={OperationTypeEnum.add} appId={props.appId} onCallbackEvent={clearElement}></Operation>)
+    const addWorkLoad = () => {
+        setOperationElement(<Operation 
+            operationType={OperationTypeEnum.add} 
+            appId={props.appId} 
+            onCallbackEvent={clearElement}
+            onConfirmCallbackEvent={ConfirmCallbackEvent}></Operation>)
     }
 
+     /**
+   * 抽屉确认回调事件，判断是否需要前往流水线配置界面
+   * @param _isGotoWorkLoadConfig 
+   * @param _id 
+   */
+  const ConfirmCallbackEvent = (_isGotoWorkLoadConfig: boolean, _id: string) => {
+    if (_isGotoWorkLoadConfig) {
+        gotoWorkLoadConfig(_id)
+    }
+    else {
+        clearElement();
+      getPageList();
+    }
+
+  }
+
+  
     /***
      * 修改一个配置
      */
@@ -179,6 +202,17 @@ const DeploymentConfigurationPage = (props: IProp) => {
         setOperationElement(<Operation operationType={OperationTypeEnum.edit} appId={props.appId} id={_id} onCallbackEvent={clearElement}></Operation>)
     }
 
+    /**
+* 是否前往流水线配置
+*/
+    const gotoWorkLoadConfig = (_id: string) => {
+        history.push({
+            pathname: "/wke/kubernetes/workload/config",
+            state: {
+                id: _id,
+            },
+        });
+    };
     /***
      * 发布一个部署配置
      */
@@ -213,13 +247,13 @@ const DeploymentConfigurationPage = (props: IProp) => {
                     <Button
                         icon={<PlusOutlined />}
                         onClick={() => {
-                            addChange();
+                            addWorkLoad();
                         }}>
                         创建部署计划
                     </Button>
                 </Row>
             </Row>
-            <Table   columns={columns}
+            <Table columns={columns}
                 dataSource={tableData}
                 pagination={pagination}
                 scroll={{ y: 700 }}

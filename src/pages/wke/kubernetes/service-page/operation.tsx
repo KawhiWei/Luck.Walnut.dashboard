@@ -11,11 +11,11 @@ import { useEffect, useState } from "react";
 
 import { IClusterOutputDto } from "@/domain/kubernetes/clusters/cluster-dto";
 import { IClusterService } from "@/domain/kubernetes/clusters/icluster-service";
-import { IDeploymentConfigurationOutputDto } from "@/domain/kubernetes/workloads/workload-dto";
 import { INameSpaceService } from "@/domain/kubernetes/namespaces/inamespace-service";
 import { IOperationConfig } from "@/shared/operation/operationConfig";
 import { IServiceInputDto } from "@/domain/kubernetes/services/service-dto";
 import { IServiceService } from "@/domain/kubernetes/services/iservice-service";
+import { IWorkLoadOutputDto } from "@/domain/kubernetes/workloads/workload-dto";
 import { IWorkLoadService } from "@/domain/kubernetes/workloads/iworkload-service";
 import { IocTypes } from "@/shared/config/ioc-types";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
@@ -59,7 +59,7 @@ const Operation = (props: IProp) => {
     const [operationState, setOperationState] = useState<IOperationConfig>({
         visible: false,
     });
-    const [deploymentConfigurationData, setDeploymentConfigurationData] = useState<Array<IDeploymentConfigurationOutputDto>>([]);
+    const [deploymentConfigurationData, setDeploymentConfigurationData] = useState<Array<IWorkLoadOutputDto>>([]);
 
 
     const [clusterData, setClusterData] = useState<Array<IClusterOutputDto>>([]);
@@ -294,7 +294,7 @@ const Operation = (props: IProp) => {
                                         allowClear={true}
                                         onChange={onChangeDeployment}
                                     >
-                                        {deploymentConfigurationData.map((item: IDeploymentConfigurationOutputDto) => {
+                                        {deploymentConfigurationData.map((item: IWorkLoadOutputDto) => {
                                             return (
                                                 <Select.Option value={item.id}>
                                                     {item.name}

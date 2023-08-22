@@ -1,5 +1,5 @@
-import { IDeploymentConfigurationOutputDto, IDeploymentInputDto, IDeploymentOutputDto, IMasterContainerConfigurationInputDto, IMasterContainerConfigurationOutputDto, IWorkLoadInputDto } from "./workload-dto";
 import { IServerPageReturn, IServerReturn } from "@/shared/entity";
+import { IWorkLoadCreateInputDto, IWorkLoadOutputDto, IWorkLoadUpdateInputDto } from "./workload-dto";
 
 import BaseService from "@/shared/service/BaseService/BaseService";
 import { IWorkLoadService } from "./iworkload-service";
@@ -13,7 +13,7 @@ export default class WorkLoadService extends BaseService implements IWorkLoadSer
      * @param _param 
      * @returns 
      */
-    getWorkLoadPage(_appId: string, _param: any): Promise<IServerReturn<IServerPageReturn<IDeploymentConfigurationOutputDto>>> {
+    getWorkLoadPage(_appId: string, _param: any): Promise<IServerReturn<IServerPageReturn<IWorkLoadOutputDto>>> {
         return this.dataRequest.getRequest(`${WorkLoad.workloads}/${_appId}/page/list`, _param);
     }
 
@@ -30,7 +30,7 @@ export default class WorkLoadService extends BaseService implements IWorkLoadSer
      * @param _params 
      * @returns 
      */
-    createWorkLoad(_params: IWorkLoadInputDto): Promise<IServerReturn<any>> {
+    createWorkLoad(_params: IWorkLoadCreateInputDto): Promise<IServerReturn<string>> {
         return this.dataRequest.postRequest(`${WorkLoad.workloads}`, _params)
     }
 
@@ -39,8 +39,8 @@ export default class WorkLoadService extends BaseService implements IWorkLoadSer
      * @param _params 
      * @returns 
      */
-    updateWorkLoad(_deploymentId: string, _masterContainerId: string, _params: IDeploymentInputDto): Promise<IServerReturn<any>> {
-        return this.dataRequest.putRequest(`${WorkLoad.workloads}/${_deploymentId}/${_masterContainerId}`, _params)
+    updateWorkLoad(_id: string, _params: IWorkLoadUpdateInputDto): Promise<IServerReturn<any>> {
+        return this.dataRequest.putRequest(`${WorkLoad.workloads}/${_id}`, _params)
     }
 
 
@@ -49,8 +49,8 @@ export default class WorkLoadService extends BaseService implements IWorkLoadSer
      * @param _params 
      * @returns 
      */
-    getWorkLoadDetail(_deploymentId: string): Promise<IServerReturn<IDeploymentOutputDto>> {
-        return this.dataRequest.getRequest(`${WorkLoad.workloads}/${_deploymentId}/`)
+    getWorkLoadDetail(_id: string): Promise<IServerReturn<IWorkLoadOutputDto>> {
+        return this.dataRequest.getRequest(`${WorkLoad.workloads}/${_id}/`)
     }
     /**
      * 根据应用Id获取部署列表
@@ -58,67 +58,8 @@ export default class WorkLoadService extends BaseService implements IWorkLoadSer
      * @param _param 
      * @returns 
      */
-    getWorkLoadByAppIdList(_appId: string): Promise<IServerReturn<Array<IDeploymentConfigurationOutputDto>>> {
+    getWorkLoadByAppIdList(_appId: string): Promise<IServerReturn<Array<IWorkLoadOutputDto>>> {
         return this.dataRequest.getRequest(`${WorkLoad.workloads}/${_appId}/list`);
-    }
-
-
-
-
-
-
-
-
-    /**
-     * 创建一个容器配置
-     * @param _deploymentId 
-     * @param _params 
-     * @returns 
-     */
-    createDeploymentContainerConfiguration(_deploymentId: string, _params: IMasterContainerConfigurationInputDto): Promise<IServerReturn<any>> {
-        return this.dataRequest.postRequest(`${WorkLoad.workloads}/${_deploymentId}/container`, _params)
-    }
-
-
-    /**
-     * 修改一个容器配置
-     * @param _deploymentId 
-     * @param _params 
-     * @returns 
-     */
-    updateDeploymentContainerConfiguration(_deploymentId: string, _id: string, _params: IMasterContainerConfigurationInputDto): Promise<IServerReturn<any>> {
-        return this.dataRequest.putRequest(`${WorkLoad.workloads}/${_deploymentId}/${_id}/container`, _params)
-    }
-
-
-    /**
-     * 根据Id获取一个容器配置
-     * @param _deploymentConfigurationId 
-     * @param _params 
-     * @returns 
-     */
-    getDeploymentContainerConfigurationDetail(_id: string): Promise<IServerReturn<IMasterContainerConfigurationOutputDto>> {
-        return this.dataRequest.getRequest(`${WorkLoad.workloads}/${_id}/container`)
-    }
-
-
-    /**
-     * 根据部署Id获取一组容器配置
-     * @param _deploymentId 
-     * @returns 
-     */
-    getDeploymentContainerConfigurationListDeploymentId(_deploymentId: string): Promise<IServerReturn<IMasterContainerConfigurationOutputDto[]>> {
-        return this.dataRequest.getRequest(`${WorkLoad.workloads}/${_deploymentId}/container/list`)
-    }
-
-
-    /**
-     * 删除一个容器配置
-     * @param _deploymentId 
-     * @param _id 
-     */
-    deleteDeploymentContainerConfiguration(_deploymentId: string, _id: string): Promise<IServerReturn<any>> {
-        return this.dataRequest.deleteRequest(`${WorkLoad.workloads}/${_deploymentId}/${_id}/container`)
     }
 
 }

@@ -92,14 +92,14 @@ const Operation = (props: IProp) => {
             case OperationTypeEnum.edit:
                 props.id && _applicationPipelineService.getDetail(props.id).then(resp => {
                     if (resp.success) {
-        
+
                         formData.setFieldsValue(resp.result)
                         editOperationState(true, "基础配置")
                     }
                 })
-                .finally(()=>{
-                    
-                })
+                    .finally(() => {
+
+                    })
                 break;
         }
     };
