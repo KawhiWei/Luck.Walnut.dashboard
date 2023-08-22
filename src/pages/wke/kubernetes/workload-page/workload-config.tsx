@@ -104,7 +104,6 @@ const WorkLoadConfigOperation = (props: any) => {
                 <Layout className="workload-config-layout">
                     <Layout.Content>Content</Layout.Content>
                     <Layout.Sider theme="light" className="workload-config-sider">
-
                         <Form
                             form={workLoadFormData}
                             name="nest-messages"
