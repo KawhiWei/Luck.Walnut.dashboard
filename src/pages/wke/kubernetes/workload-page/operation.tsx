@@ -1,6 +1,6 @@
 import "@/pages/drawer.less";
 
-import { ApplicationRuntimeTypeMap, DeploymentTypeMap } from "@/domain/maps/deployment-configuration-map";
+import { ApplicationRuntimeTypeMap, WorkLoadTypeMap } from "@/domain/maps/deployment-configuration-map";
 import { Button, Checkbox, Drawer, Form, Input, InputNumber, Select, Space, message } from "antd";
 import { useEffect, useState } from "react";
 
@@ -367,13 +367,13 @@ const Operation = (props: IProp) => {
                         </Select>
                     </Form.Item>
                     <Form.Item
-                        name="deploymentType"
+                        name="workLoadType"
                         label="部署类型"
                         rules={[{ required: true }]}
                     >
                         <Select allowClear={true}
                             placeholder="请选择部署类型">
-                            {DeploymentTypeMap.map((item: any) => {
+                            {WorkLoadTypeMap.map((item: any) => {
                                 return (
                                     <Select.Option value={item.key}>
                                         {item.value}

@@ -14,6 +14,7 @@ import { IocTypes } from "@/shared/config/ioc-types";
 import Operation from "./operation";
 import { OperationTypeEnum } from "@/shared/operation/operationType";
 import PipelineFlow from "../pipeline-operation-component-page/pipeline-flow";
+import { useHistory } from "react-router-dom";
 import useHookProvider from "@/shared/customHooks/ioc-hook-provider";
 
 const initialize: IApplicationPipelineFlowUpdateInputDto = {
@@ -24,6 +25,7 @@ const initialize: IApplicationPipelineFlowUpdateInputDto = {
  * 应用流水线设计
  */
 const PipeFlowConfig = (props: any) => {
+  const history = useHistory();
   const [loading, setLoading] = useState<boolean>(false);
   const [applicationPipelineBasicElement, setApplicationPipelineBasicElement] = useState<any>(null);
   const [applicationPipelineId, setApplicationPipelineId] = useState<string>("");
@@ -51,6 +53,12 @@ const PipeFlowConfig = (props: any) => {
       }).finally(() => {
         setLoading(false)
       })
+    } else {
+
+      history.push({
+        pathname: "/home",
+      });
+
     }
   };
 
@@ -120,7 +128,7 @@ const PipeFlowConfig = (props: any) => {
   return (
     <div style={{ height: "100%" }}>
       <Spin spinning={loading}>
-      <Row className="search-panel">
+        <Row className="search-panel">
           <Row className="search-button">
             <Button
               style={{ margin: "8px 8px" }}

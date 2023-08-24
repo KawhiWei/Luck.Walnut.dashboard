@@ -103,8 +103,12 @@ export interface IWorkLoadOutputDto extends IWorkLoadBaseDto, IEntity<string> {
     /**
      * 
      */
-    workLoadPlugins?:IWorkLoadPlugin;
+    workLoadPlugins?: IWorkLoadPlugin;
 
+    /**
+     * 
+     */
+    workLoadContainers: Array<IWorkLoadContainerBase>;
 }
 
 
@@ -134,33 +138,42 @@ export interface IWorkLoadContainerBase {
      * 镜像名称
      */
     image?: string;
+
+    workLoadContainerPlugins: IWorkLoadContainerPlugin
+}
+
+
+export interface IWorkLoadContainerPlugin {
     /**
      * 准备完成探针配置
      */
-    readinessProbe?: INessProbe;
+    readiness?: INessProbe;
     /**
      * 存活探针配置
      */
-    liveNessProbe?: INessProbe;
+    liveNess?: INessProbe;
+
     /**
-     * 容器Cpu资源限制
+     * 环境变量
      */
-    requests?: IContainerResourceQuantity;
+    env?: Map<string, string>;
+
+
+    /**
+    * 容器Cpu资源限制
+    */
+    request?: IContainerResourceQuantity;
 
     /**
      * 容器内存资源限制
      */
-    limits?: IContainerResourceQuantity;
-    /**
-     * 环境变量
-     */
-    environments?: Object;
+    limit?: IContainerResourceQuantity;
     /**
      * 容器端口配置
      */
-    containerPortConfigurations?: IContainerPortConfiguration[];
-}
+    containerPorts?: Array<IContainerPortConfiguration>;
 
+}
 
 /**
  * 容器资源配置

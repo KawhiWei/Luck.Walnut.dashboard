@@ -111,9 +111,9 @@ export const menuList: IMenuOutput[] = [
         children: [],
       },
       {
-        id: "1001-5",
+        id: "1001-6",
         name: "WorkLoad配置",
-        path: "/wke/kubernetes/workload/config",
+        path: "/tks/kubernetes/workload/config",
         component: "pages/wke/kubernetes/workload-page/workload-config",
         tabs: [],
         buttonClick: "",
@@ -223,8 +223,8 @@ export const menuList: IMenuOutput[] = [
   },
   {
     id: "1005",
-    name: "WKE",
-    path: "/wke/dashboard",
+    name: "TKS",
+    path: "/tks/dashboard",
     component: "pages/wke/kubernetes/kubernetes-dashboard",
     tabs: [],
     buttonClick: "",
@@ -241,7 +241,7 @@ export const menuList: IMenuOutput[] = [
       {
         id: "1005-1",
         name: "Cluster OverView",
-        path: "/wke/kubernetes/dashboard",
+        path: "/tks/kubernetes/dashboard",
         component: "pages/wke/kubernetes/kubernetes-dashboard",
         tabs: [],
         buttonClick: "",
@@ -250,7 +250,7 @@ export const menuList: IMenuOutput[] = [
         icon: "",
         parentNumber: "",
         microName: "",
-        componentName: "wke-cluster-dashboard",
+        componentName: "tks-cluster-dashboard",
         sort: 0,
         isShow: true,
         type: 0,
@@ -259,7 +259,7 @@ export const menuList: IMenuOutput[] = [
       {
         id: "1005-2",
         name: "集群管理",
-        path: "/wke/kubernetes/cluster",
+        path: "/tks/kubernetes/cluster",
         component: "pages/wke/kubernetes/cluster-page/index",
         tabs: [],
         buttonClick: "",
@@ -277,7 +277,7 @@ export const menuList: IMenuOutput[] = [
       {
         id: "1005-3",
         name: "NameSpace",
-        path: "/wke/kubernetes/namespace",
+        path: "/tks/kubernetes/namespace",
         component: "pages/wke/kubernetes/namespace-page/index",
         tabs: [],
         buttonClick: "",

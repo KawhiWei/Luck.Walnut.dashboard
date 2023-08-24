@@ -7,7 +7,7 @@ export const ApplicationRuntimeTypeMap = [
     }
 ]
 
-export const DeploymentTypeMap = [
+export const WorkLoadTypeMap = [
     {
         key: DeploymentTypeEnum.pod,
         value: "Pod",

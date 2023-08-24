@@ -207,7 +207,7 @@ const DeploymentConfigurationPage = (props: IProp) => {
 */
     const gotoWorkLoadConfig = (_id: string) => {
         history.push({
-            pathname: "/wke/kubernetes/workload/config",
+            pathname: "/tks/kubernetes/workload/config",
             state: {
                 id: _id,
             },
