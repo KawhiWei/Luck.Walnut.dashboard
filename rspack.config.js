@@ -5,12 +5,12 @@ const CopyPlugin = require('copy-webpack-plugin');
  */
 const config = {
   entry: {
-    main: './src/index.jsx', // 配置项目入口文件
+    main: '/src/index.jsx', // 配置项目入口文件
   },
   builtins: {
     html: [
       {
-        template: './index.html', // 对齐 CRA 生成index.html
+        template: 'public/index.html', // 对齐 CRA 生成index.html
       },
     ],
     copy: {
