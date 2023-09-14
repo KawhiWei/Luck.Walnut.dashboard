@@ -174,9 +174,17 @@ const WorkLoadConfigOperation = (props: any) => {
                     </Row>
                 </Row>
                 <Layout className="workload-config-layout">
-                    <Layout.Content>
-                        <Card size="small" title="工作负载">
+                    <Layout.Content className="workload-config-content">
 
+                        <Card size="small" title="工作负载" extra={<a href="#">运维插件</a>}>
+                            <Form
+                                form={workLoadFormData}
+                                name="nest-messages"
+                                layout="vertical"
+                                validateMessages={validateMessages}
+                            >
+
+                            </Form>
                         </Card>
                     </Layout.Content>
                     <Layout.Sider theme="light" className="workload-config-sider">
@@ -292,7 +300,6 @@ const WorkLoadConfigOperation = (props: any) => {
                                 >
                                     <InputNumber />
                                 </Form.Item>
-
                                 <Form.Item
                                     name={["workLoadPlugins", "strategy", "type"]}
                                     label="更新策略类型"
@@ -304,13 +311,11 @@ const WorkLoadConfigOperation = (props: any) => {
 
                                     </Select>
                                 </Form.Item>
-
                                 <Form.Item
                                     name={["workLoadPlugins", "strategy", "maxUnavailable"]}
                                     label="最大不可用">
                                     <Input />
                                 </Form.Item>
-
                                 <Form.Item
                                     name={["workLoadPlugins", "strategy", "maxSurge"]}
                                     label="可调度数量">
